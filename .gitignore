@@ -2,3 +2,4 @@
 !/assignments/
 /assignments/*
 !/assignments/**/*
+*.tar.gz
