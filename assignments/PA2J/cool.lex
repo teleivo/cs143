@@ -72,8 +72,12 @@ import java_cup.runtime.Symbol;
 %char
 %state LINE_COMMENT
 
+WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
+
 %%
 
+<YYINITIAL>{WHITESPACE_WITHOUT_NEWLINE} {
+}
 <YYINITIAL>"--" {
   yybegin(LINE_COMMENT);
 }
