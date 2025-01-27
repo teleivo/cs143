@@ -90,6 +90,12 @@ import java_cup.runtime.Symbol;
 <YYINITIAL>";" {
   return new Symbol(TokenConstants.SEMI);
 }
+<YYINITIAL>"{" {
+  return new Symbol(TokenConstants.LBRACE);
+}
+<YYINITIAL>"}" {
+  return new Symbol(TokenConstants.LBRACE);
+}
 <YYINITIAL>"=>"			{ /* Sample lexical rule for "=>" arrow.
                                      Further lexical rules should be defined
                                      here, after the last %% separator */
