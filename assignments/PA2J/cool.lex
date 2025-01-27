@@ -68,9 +68,28 @@ import java_cup.runtime.Symbol;
 
 %class CoolLexer
 %cup
+%line
+%char
+%state LINE_COMMENT
 
 %%
 
+<YYINITIAL>"--" {
+  yybegin(LINE_COMMENT);
+}
+<LINE_COMMENT>. {
+  // comments are discarded
+}
+<YYINITIAL,LINE_COMMENT> \n {
+  // comments are discarded
+  yybegin(YYINITIAL);
+}
+<YYINITIAL>"class" {
+  return new Symbol(TokenConstants.CLASS);
+}
+<YYINITIAL>";" {
+  return new Symbol(TokenConstants.SEMI);
+}
 <YYINITIAL>"=>"			{ /* Sample lexical rule for "=>" arrow.
                                      Further lexical rules should be defined
                                      here, after the last %% separator */
