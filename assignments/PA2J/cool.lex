@@ -72,6 +72,9 @@ import java_cup.runtime.Symbol;
 %char
 %state LINE_COMMENT
 
+DIGIT=[0-9]
+ALPHA=[A-Za-z]
+TYPEID=(^[A-Z[{DIGIT}{ALPHA}_]*)
 WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
 
 %%
@@ -90,6 +93,10 @@ WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
 }
 <YYINITIAL>"class" {
   return new Symbol(TokenConstants.CLASS);
+}
+<YYINITIAL>{TYPEID} {
+	// TODO capture the id in string table?
+  return new Symbol(TokenConstants.TYPEID);
 }
 <YYINITIAL>";" {
   return new Symbol(TokenConstants.SEMI);
