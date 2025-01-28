@@ -73,30 +73,31 @@ import java_cup.runtime.Symbol;
 %state LINE_COMMENT
 
 DIGIT=[0-9]
+UPPERCASE=[A-Z]
 ALPHA=[A-Za-z]
-TYPEID=(^[A-Z[{DIGIT}{ALPHA}_]*)
 WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
 
 %%
 
-<YYINITIAL>{WHITESPACE_WITHOUT_NEWLINE} {
+<YYINITIAL> {WHITESPACE_WITHOUT_NEWLINE} {
 }
-<YYINITIAL>"--" {
+<YYINITIAL> "--" {
   yybegin(LINE_COMMENT);
 }
-<LINE_COMMENT>. {
+<LINE_COMMENT> . {
   // comments are discarded
 }
 <YYINITIAL,LINE_COMMENT> \n {
   // comments are discarded
   yybegin(YYINITIAL);
 }
-<YYINITIAL>"class" {
+<YYINITIAL> "class" {
   return new Symbol(TokenConstants.CLASS);
 }
-<YYINITIAL>{TYPEID} {
-	// TODO capture the id in string table?
-  return new Symbol(TokenConstants.TYPEID);
+<YYINITIAL> {UPPERCASE}({DIGIT}|{ALPHA}|_)* {
+  // TODO add throws for ids > max length
+  AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+  return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 <YYINITIAL>";" {
   return new Symbol(TokenConstants.SEMI);
@@ -105,7 +106,7 @@ WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
   return new Symbol(TokenConstants.LBRACE);
 }
 <YYINITIAL>"}" {
-  return new Symbol(TokenConstants.LBRACE);
+  return new Symbol(TokenConstants.RBRACE);
 }
 <YYINITIAL>"=>"			{ /* Sample lexical rule for "=>" arrow.
                                      Further lexical rules should be defined
