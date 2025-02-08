@@ -72,6 +72,7 @@ import java_cup.runtime.Symbol;
 %char
 %state LINE_COMMENT
 
+CLASS=[Cc][Ll][Aa][Ss][Ss]
 TRUE=(t[rR][uU][eE])
 FALSE=(f[aA][lL][sS][eE])
 DIGIT=[0-9]
@@ -93,7 +94,7 @@ WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
   // comments are discarded
   yybegin(YYINITIAL);
 }
-<YYINITIAL> "class" {
+<YYINITIAL> {CLASS} {
   return new Symbol(TokenConstants.CLASS);
 }
 <YYINITIAL> {TRUE} {
