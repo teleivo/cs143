@@ -72,6 +72,8 @@ import java_cup.runtime.Symbol;
 %char
 %state LINE_COMMENT
 
+TRUE=(t[rR][uU][eE])
+FALSE=(f[aA][lL][sS][eE])
 DIGIT=[0-9]
 UPPERCASE=[A-Z]
 ALPHA=[A-Za-z]
@@ -94,8 +96,14 @@ WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
 <YYINITIAL> "class" {
   return new Symbol(TokenConstants.CLASS);
 }
+<YYINITIAL> {TRUE} {
+  return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
+}
+<YYINITIAL> {FALSE} {
+  return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
+}
 <YYINITIAL> {UPPERCASE}({DIGIT}|{ALPHA}|_)* {
-  // TODO add throws for ids > max length
+  // TODO add throws for ids > max length or catch it and return an error symbol?
   AbstractSymbol id = AbstractTable.idtable.addString(yytext());
   return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
