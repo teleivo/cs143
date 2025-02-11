@@ -74,6 +74,22 @@ import java_cup.runtime.Symbol;
 %state STRING
 
 CLASS=[Cc][Ll][Aa][Ss][Ss]
+IF=[Ii][Ff]
+FI=[Ff][Ii]
+ELSE=[Ee][Ll][Ss][Ee]
+IN=[Ii][Nn]
+INHERITS=[Ii][Nn][Hh][Ee][Rr][Ii][Tt][Ss]
+ISVOID=[Ii][Ss][Vv][Oo][Ii][Dd]
+LET=[Ll][Ee][Tt]
+LOOP=[Ll][Oo][Oo][Pp]
+POOL=[Pp][Oo][Oo][Ll]
+THEN=[Tt][Hh][Ee][Nn]
+WHILE=[Ww][Hh][Ii][Ll][Ee]
+CASE=[Cc][Aa][Ss][Ee]
+ESAC=[Ee][Ss][Aa][Cc]
+NEW=[Nn][Ee][Ww]
+OF=[Oo][Ff]
+NOT=[Nn][Oo][Tt]
 TRUE=(t[rR][uU][eE])
 FALSE=(f[aA][lL][sS][eE])
 DIGIT=[0-9]
@@ -100,6 +116,54 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
 }
 <YYINITIAL> {CLASS} {
     return new Symbol(TokenConstants.CLASS);
+}
+<YYINITIAL> {IF} {
+    return new Symbol(TokenConstants.IF);
+}
+<YYINITIAL> {FI} {
+    return new Symbol(TokenConstants.FI);
+}
+<YYINITIAL> {ELSE} {
+    return new Symbol(TokenConstants.ELSE);
+}
+<YYINITIAL> {IN} {
+    return new Symbol(TokenConstants.IN);
+}
+<YYINITIAL> {INHERITS} {
+    return new Symbol(TokenConstants.INHERITS);
+}
+<YYINITIAL> {ISVOID} {
+    return new Symbol(TokenConstants.ISVOID);
+}
+<YYINITIAL> {LET} {
+    return new Symbol(TokenConstants.LET);
+}
+<YYINITIAL> {LOOP} {
+    return new Symbol(TokenConstants.LOOP);
+}
+<YYINITIAL> {POOL} {
+    return new Symbol(TokenConstants.POOL);
+}
+<YYINITIAL> {THEN} {
+    return new Symbol(TokenConstants.THEN);
+}
+<YYINITIAL> {WHILE} {
+    return new Symbol(TokenConstants.WHILE);
+}
+<YYINITIAL> {CASE} {
+    return new Symbol(TokenConstants.CASE);
+}
+<YYINITIAL> {ESAC} {
+    return new Symbol(TokenConstants.ESAC);
+}
+<YYINITIAL> {NEW} {
+    return new Symbol(TokenConstants.NEW);
+}
+<YYINITIAL> {OF} {
+    return new Symbol(TokenConstants.OF);
+}
+<YYINITIAL> {NOT} {
+    return new Symbol(TokenConstants.NOT);
 }
 <YYINITIAL> {TRUE} {
     return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
