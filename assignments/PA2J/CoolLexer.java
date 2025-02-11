@@ -1,4 +1,5 @@
 /*
+ *  vim: set ft=java:
  *  The scanner definition for COOL.
  */
 import java_cup.runtime.Symbol;
@@ -15,24 +16,24 @@ class CoolLexer implements java_cup.runtime.Scanner {
 	private final int YY_BOL = 128;
 	private final int YY_EOF = 129;
 
-/*  Stuff enclosed in %{ %} is copied verbatim to the lexer class
- *  definition, all the extra variables/functions you want to use in the
- *  lexer actions should go here.  Don't remove or modify anything that
- *  was there initially.  */
+/*  Stuff enclosed in %{ %} is copied verbatim to the lexer class definition, all the extra
+ *  variables/functions you want to use in the lexer actions should go here.  Don't remove or modify
+ *  anything that was there initially.
+ */
     // Max size of string constants
     static int MAX_STR_CONST = 1025;
     // For assembling string constants
     StringBuffer string_buf = new StringBuffer();
     private int curr_lineno = 1;
     int get_curr_lineno() {
-	return curr_lineno;
+        return curr_lineno;
     }
     private AbstractSymbol filename;
     void set_filename(String fname) {
-	filename = AbstractTable.stringtable.addString(fname);
+	    filename = AbstractTable.stringtable.addString(fname);
     }
     AbstractSymbol curr_filename() {
-	return filename;
+	    return filename;
     }
 	private java.io.BufferedReader yy_reader;
 	private int yy_buffer_index;
@@ -72,9 +73,9 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		yy_at_bol = true;
 		yy_lexical_state = YYINITIAL;
 
-/*  Stuff enclosed in %init{ %init} is copied verbatim to the lexer
- *  class constructor, all the extra initialization you want to do should
- *  go here.  Don't remove or modify anything that was there initially. */
+/*  Stuff enclosed in %init{ %init} is copied verbatim to the lexer class constructor, all the extra
+ *  initialization you want to do should go here.  Don't remove or modify anything that was there
+ *  initially. */
     // empty for now
 	}
 
@@ -323,15 +324,13 @@ class CoolLexer implements java_cup.runtime.Scanner {
 			yy_next_state = yy_nxt[yy_rmap[yy_state]][yy_cmap[yy_lookahead]];
 			if (YY_EOF == yy_lookahead && true == yy_initial) {
 
-/*  Stuff enclosed in %eofval{ %eofval} specifies java code that is
- *  executed when end-of-file is reached.  If you use multiple lexical
- *  states and want to do something special if an EOF is encountered in
- *  one of those states, place your code in the switch statement.
- *  Ultimately, you should return the EOF symbol, or your lexer won't
- *  work.  */
+/*  Stuff enclosed in %eofval{ %eofval} specifies java code that is executed when end-of-file is
+ *  reached.  If you use multiple lexical states and want to do something special if an EOF is
+ *  encountered in one of those states, place your code in the switch statement. Ultimately, you
+ *  should return the EOF symbol, or your lexer won't work.  */
     switch(yy_lexical_state) {
     case YYINITIAL:
-	/* nothing special to do in the initial state */
+    /* nothing special to do in the initial state */
 	break;
 	/* If necessary, add code for other states here, e.g:
 	   case COMMENT:
@@ -380,8 +379,8 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 4:
 						{
-  // comments are discarded
-  yybegin(YYINITIAL);
+    // comments are discarded
+    yybegin(YYINITIAL);
 }
 					case -5:
 						break;
@@ -395,38 +394,41 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 6:
 						{
-  return new Symbol(TokenConstants.error, "Unterminated string constant");
+    return new Symbol(TokenConstants.error, "Unterminated string constant");
 }
 					case -7:
 						break;
 					case 7:
 						{
-  return new Symbol(TokenConstants.SEMI);
+    return new Symbol(TokenConstants.SEMI);
 }
 					case -8:
 						break;
 					case 8:
 						{
-  return new Symbol(TokenConstants.LBRACE);
+    return new Symbol(TokenConstants.LBRACE);
 }
 					case -9:
 						break;
 					case 9:
 						{
-  return new Symbol(TokenConstants.RBRACE);
+    return new Symbol(TokenConstants.RBRACE);
 }
 					case -10:
 						break;
 					case 10:
 						{
-  yybegin(LINE_COMMENT);
+    yybegin(LINE_COMMENT);
 }
 					case -11:
 						break;
 					case 11:
 						{
-  AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
-  return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
+	if (yytext().length() > MAX_STR_CONST) {
+        return new Symbol(TokenConstants.error, "String constant too long");
+	}
+    AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
+    return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
 }
 					case -12:
 						break;
@@ -439,31 +441,31 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 13:
 						{
-  return new Symbol(TokenConstants.error, "String contains null character");
+    return new Symbol(TokenConstants.error, "String contains null character");
 }
 					case -14:
 						break;
 					case 14:
 						{
-  return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
+    return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
 }
 					case -15:
 						break;
 					case 15:
 						{
-  return new Symbol(TokenConstants.CLASS);
+    return new Symbol(TokenConstants.CLASS);
 }
 					case -16:
 						break;
 					case 16:
 						{
-  return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
+    return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
 }
 					case -17:
 						break;
 					case 17:
 						{
-  // comments are discarded
+    // comments are discarded
 }
 					case -18:
 						break;
@@ -485,13 +487,13 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 21:
 						{
-  return new Symbol(TokenConstants.error, "Unterminated string constant");
+    return new Symbol(TokenConstants.error, "Unterminated string constant");
 }
 					case -21:
 						break;
 					case 22:
 						{
-  return new Symbol(TokenConstants.CLASS);
+    return new Symbol(TokenConstants.CLASS);
 }
 					case -22:
 						break;
@@ -505,7 +507,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 25:
 						{
-  return new Symbol(TokenConstants.error, "Unterminated string constant");
+    return new Symbol(TokenConstants.error, "Unterminated string constant");
 }
 					case -24:
 						break;

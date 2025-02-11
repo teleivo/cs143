@@ -1,17 +1,17 @@
 /*
+ *  vim: set ft=java:
  *  The scanner definition for COOL.
  */
-
 import java_cup.runtime.Symbol;
 
 %%
 
 %{
 
-/*  Stuff enclosed in %{ %} is copied verbatim to the lexer class
- *  definition, all the extra variables/functions you want to use in the
- *  lexer actions should go here.  Don't remove or modify anything that
- *  was there initially.  */
+/*  Stuff enclosed in %{ %} is copied verbatim to the lexer class definition, all the extra
+ *  variables/functions you want to use in the lexer actions should go here.  Don't remove or modify
+ *  anything that was there initially.
+ */
 
     // Max size of string constants
     static int MAX_STR_CONST = 1025;
@@ -20,42 +20,41 @@ import java_cup.runtime.Symbol;
     StringBuffer string_buf = new StringBuffer();
 
     private int curr_lineno = 1;
+
     int get_curr_lineno() {
-	return curr_lineno;
+        return curr_lineno;
     }
 
     private AbstractSymbol filename;
 
     void set_filename(String fname) {
-	filename = AbstractTable.stringtable.addString(fname);
+	    filename = AbstractTable.stringtable.addString(fname);
     }
 
     AbstractSymbol curr_filename() {
-	return filename;
+	    return filename;
     }
 %}
 
 %init{
 
-/*  Stuff enclosed in %init{ %init} is copied verbatim to the lexer
- *  class constructor, all the extra initialization you want to do should
- *  go here.  Don't remove or modify anything that was there initially. */
+/*  Stuff enclosed in %init{ %init} is copied verbatim to the lexer class constructor, all the extra
+ *  initialization you want to do should go here.  Don't remove or modify anything that was there
+ *  initially. */
 
     // empty for now
 %init}
 
 %eofval{
 
-/*  Stuff enclosed in %eofval{ %eofval} specifies java code that is
- *  executed when end-of-file is reached.  If you use multiple lexical
- *  states and want to do something special if an EOF is encountered in
- *  one of those states, place your code in the switch statement.
- *  Ultimately, you should return the EOF symbol, or your lexer won't
- *  work.  */
+/*  Stuff enclosed in %eofval{ %eofval} specifies java code that is executed when end-of-file is
+ *  reached.  If you use multiple lexical states and want to do something special if an EOF is
+ *  encountered in one of those states, place your code in the switch statement. Ultimately, you
+ *  should return the EOF symbol, or your lexer won't work.  */
 
     switch(yy_lexical_state) {
     case YYINITIAL:
-	/* nothing special to do in the initial state */
+    /* nothing special to do in the initial state */
 	break;
 	/* If necessary, add code for other states here, e.g:
 	   case COMMENT:
@@ -63,6 +62,7 @@ import java_cup.runtime.Symbol;
 	   break;
 	*/
     }
+
     return new Symbol(TokenConstants.EOF);
 %eofval}
 
@@ -89,23 +89,23 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
 <YYINITIAL> {WHITESPACE_WITHOUT_NEWLINE} {
 }
 <YYINITIAL> "--" {
-  yybegin(LINE_COMMENT);
+    yybegin(LINE_COMMENT);
 }
 <LINE_COMMENT> . {
-  // comments are discarded
+    // comments are discarded
 }
 <YYINITIAL,LINE_COMMENT> \n {
-  // comments are discarded
-  yybegin(YYINITIAL);
+    // comments are discarded
+    yybegin(YYINITIAL);
 }
 <YYINITIAL> {CLASS} {
-  return new Symbol(TokenConstants.CLASS);
+    return new Symbol(TokenConstants.CLASS);
 }
 <YYINITIAL> {TRUE} {
-  return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
+    return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
 }
 <YYINITIAL> {FALSE} {
-  return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
+    return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
 }
 <YYINITIAL> {UPPERCASE}({DIGIT}|{ALPHA}|_)* {
 // TODO does it also have a max length?
@@ -113,23 +113,26 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
   return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 <YYINITIAL> \"{STRING_TEXT}\" {
-  AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
-  return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
+	if (yytext().length() > MAX_STR_CONST) {
+        return new Symbol(TokenConstants.error, "String constant too long");
+	}
+    AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
+    return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
 }
 <YYINITIAL> \"{STRING_TEXT_NUL_BYTE}\" {
-  return new Symbol(TokenConstants.error, "String contains null character");
+    return new Symbol(TokenConstants.error, "String contains null character");
 }
 <YYINITIAL> \"{STRING_TEXT_UNTERMINATED} {
-  return new Symbol(TokenConstants.error, "Unterminated string constant");
+    return new Symbol(TokenConstants.error, "Unterminated string constant");
 }
 <YYINITIAL>";" {
-  return new Symbol(TokenConstants.SEMI);
+    return new Symbol(TokenConstants.SEMI);
 }
 <YYINITIAL>"{" {
-  return new Symbol(TokenConstants.LBRACE);
+    return new Symbol(TokenConstants.LBRACE);
 }
 <YYINITIAL>"}" {
-  return new Symbol(TokenConstants.RBRACE);
+    return new Symbol(TokenConstants.RBRACE);
 }
 <YYINITIAL>"=>"			{ /* Sample lexical rule for "=>" arrow.
                                      Further lexical rules should be defined
