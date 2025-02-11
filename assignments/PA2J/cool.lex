@@ -71,6 +71,7 @@ import java_cup.runtime.Symbol;
 %line
 %char
 %state LINE_COMMENT
+%state STRING
 
 CLASS=[Cc][Ll][Aa][Ss][Ss]
 TRUE=(t[rR][uU][eE])
@@ -79,6 +80,9 @@ DIGIT=[0-9]
 UPPERCASE=[A-Z]
 ALPHA=[A-Za-z]
 WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
+STRING_TEXT=([^\n\0\"]|(\\\n))*
+STRING_TEXT_NUL_BYTE=([^\n\"]|(\\\n))*
+STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
 
 %%
 
@@ -104,9 +108,19 @@ WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
   return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
 }
 <YYINITIAL> {UPPERCASE}({DIGIT}|{ALPHA}|_)* {
-  // TODO add throws for ids > max length or catch it and return an error symbol?
+// TODO does it also have a max length?
   AbstractSymbol id = AbstractTable.idtable.addString(yytext());
   return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+<YYINITIAL> \"{STRING_TEXT}\" {
+  AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
+  return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
+}
+<YYINITIAL> \"{STRING_TEXT_NUL_BYTE}\" {
+  return new Symbol(TokenConstants.error, "String contains null character");
+}
+<YYINITIAL> \"{STRING_TEXT_UNTERMINATED} {
+  return new Symbol(TokenConstants.error, "Unterminated string constant");
 }
 <YYINITIAL>";" {
   return new Symbol(TokenConstants.SEMI);
