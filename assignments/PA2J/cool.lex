@@ -58,6 +58,9 @@ import java_cup.runtime.Symbol;
         /* nothing special to do in the initial state */
         break;
     case LINE_COMMENT:
+    // The Cool Reference Manual 10.3 Comments
+    // Any characters between two dashes “--” and the next newline (or EOF, if there is no next
+    // newline) are treated as comments
         yybegin(YYINITIAL);
         break;
     case BLOCK_COMMENT:
