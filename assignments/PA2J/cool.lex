@@ -14,7 +14,16 @@ import java_cup.runtime.Symbol;
  */
 
     // Max size of string constants
-    static int MAX_STR_CONST = 1025;
+    /*
+    // The Cool Reference Manual 7.1 Constants
+     * String constants are sequences of characters enclosed in double quotes, such as "This is a
+     * string." String constants may be at most 1024 characters long. There are other restrictions
+     * on strings; see Section 10
+     *
+     * My interpretation is that the double-quotes are part of the string and thus count towards the
+     * max length.
+     */
+    static int MAX_STR_CONST = 1024;
 
     // For assembling string constants
     StringBuffer string_buf = new StringBuffer();
