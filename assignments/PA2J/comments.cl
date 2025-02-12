@@ -1,5 +1,8 @@
 -- this is a line -- comment
 (* this is a mutli-
-
+ (* foo (*
+	  bar
+	  *) *)
 line comment *)
--- this is a line terminated by EOF
+(*
+Unterminated comment

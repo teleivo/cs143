@@ -19,6 +19,7 @@ import java_cup.runtime.Symbol;
     // For assembling string constants
     StringBuffer string_buf = new StringBuffer();
 
+    private int openBlockComments;
     private int curr_lineno = 1;
 
     int get_curr_lineno() {
@@ -120,13 +121,20 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
 }
 <YYINITIAL> "(*" {
     yybegin(BLOCK_COMMENT);
+    openBlockComments++;
+}
+<BLOCK_COMMENT>"(*"  {
+    openBlockComments++;
 }
 <BLOCK_COMMENT> (.|\n) {
     // comments are discarded
 }
 <BLOCK_COMMENT> "*)" {
     // comments are discarded
-    yybegin(YYINITIAL);
+    openBlockComments--;
+    if (openBlockComments == 0) {
+        yybegin(YYINITIAL);
+    }
 }
 <YYINITIAL> {CLASS} {
     return new Symbol(TokenConstants.CLASS);
