@@ -173,8 +173,12 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
 }
 <YYINITIAL> {UPPERCASE}({DIGIT}|{ALPHA}|_)* {
 // TODO does it also have a max length?
-  AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-  return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+<YYINITIAL> {DIGIT}* {
+    AbstractSymbol number = AbstractTable.inttable.addString(yytext());
+    return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
 }
 <YYINITIAL> \"{STRING_TEXT}\" {
 	if (yytext().length() > MAX_STR_CONST) {
