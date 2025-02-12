@@ -166,6 +166,7 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
     return new Symbol(TokenConstants.ISVOID);
 }
 <YYINITIAL> {LET} {
+// TODO do I also need to lex a let statement or is that the parsers job?
     return new Symbol(TokenConstants.LET);
 }
 <YYINITIAL> {LOOP} {
@@ -234,22 +235,61 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 <YYINITIAL> \"{STRING_TEXT_UNESCAPED_NEWLINE} {
     yybegin(STRING);
 }
-<YYINITIAL>";" {
+<YYINITIAL> "*" {
+    return new Symbol(TokenConstants.MULT);
+}
+<YYINITIAL> "/" {
+    return new Symbol(TokenConstants.DIV);
+}
+<YYINITIAL> "-" {
+// TODO does the lexer need to discern minus and negate?
+    return new Symbol(TokenConstants.MINUS);
+}
+<YYINITIAL> "+" {
+    return new Symbol(TokenConstants.PLUS);
+}
+<YYINITIAL> "." {
+    return new Symbol(TokenConstants.DOT);
+}
+<YYINITIAL> "," {
+    return new Symbol(TokenConstants.COMMA);
+}
+<YYINITIAL> ":" {
+    return new Symbol(TokenConstants.COLON);
+}
+<YYINITIAL> ";" {
     return new Symbol(TokenConstants.SEMI);
 }
-<YYINITIAL>"{" {
+<YYINITIAL> "{" {
     return new Symbol(TokenConstants.LBRACE);
 }
-<YYINITIAL>"}" {
+<YYINITIAL> "}" {
     return new Symbol(TokenConstants.RBRACE);
 }
-<YYINITIAL>"=>"			{ /* Sample lexical rule for "=>" arrow.
-                                     Further lexical rules should be defined
-                                     here, after the last %% separator */
-                                  return new Symbol(TokenConstants.DARROW); }
-
-.                               { /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+<YYINITIAL> "(" {
+    return new Symbol(TokenConstants.LPAREN);
+}
+<YYINITIAL> ")" {
+    return new Symbol(TokenConstants.RPAREN);
+}
+<YYINITIAL> "<=" {
+    return new Symbol(TokenConstants.LE);
+}
+<YYINITIAL> "<" {
+    return new Symbol(TokenConstants.LT);
+}
+<YYINITIAL> "=" {
+// TODO does the lexer need to discern eq and assign?
+    return new Symbol(TokenConstants.EQ);
+}
+<YYINITIAL> "=>" {
+    return new Symbol(TokenConstants.DARROW);
+}
+<YYINITIAL> "@"	{
+    return new Symbol(TokenConstants.AT);
+}
+. {
+/* This rule should be the very last in your lexical specification and will match match
+everything not matched by other lexical rules. */
+  System.err.println("LEXER BUG - UNMATCHED: " + yytext());
+}
