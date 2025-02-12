@@ -87,9 +87,9 @@ class CoolLexer implements java_cup.runtime.Scanner {
 	private final int YYINITIAL = 0;
 	private final int yy_state_dtrans[] = {
 		0,
-		82,
-		86,
-		89
+		84,
+		88,
+		91
 	};
 	private void yybegin (int state) {
 		yy_lexical_state = state;
@@ -271,8 +271,8 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 26 */ YY_NO_ANCHOR,
 		/* 27 */ YY_NO_ANCHOR,
 		/* 28 */ YY_NO_ANCHOR,
-		/* 29 */ YY_NOT_ACCEPT,
-		/* 30 */ YY_NO_ANCHOR,
+		/* 29 */ YY_NO_ANCHOR,
+		/* 30 */ YY_NOT_ACCEPT,
 		/* 31 */ YY_NO_ANCHOR,
 		/* 32 */ YY_NO_ANCHOR,
 		/* 33 */ YY_NO_ANCHOR,
@@ -306,9 +306,9 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 61 */ YY_NO_ANCHOR,
 		/* 62 */ YY_NO_ANCHOR,
 		/* 63 */ YY_NO_ANCHOR,
-		/* 64 */ YY_NOT_ACCEPT,
+		/* 64 */ YY_NO_ANCHOR,
 		/* 65 */ YY_NO_ANCHOR,
-		/* 66 */ YY_NO_ANCHOR,
+		/* 66 */ YY_NOT_ACCEPT,
 		/* 67 */ YY_NO_ANCHOR,
 		/* 68 */ YY_NO_ANCHOR,
 		/* 69 */ YY_NO_ANCHOR,
@@ -324,16 +324,16 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 79 */ YY_NO_ANCHOR,
 		/* 80 */ YY_NO_ANCHOR,
 		/* 81 */ YY_NO_ANCHOR,
-		/* 82 */ YY_NOT_ACCEPT,
+		/* 82 */ YY_NO_ANCHOR,
 		/* 83 */ YY_NO_ANCHOR,
-		/* 84 */ YY_NO_ANCHOR,
+		/* 84 */ YY_NOT_ACCEPT,
 		/* 85 */ YY_NO_ANCHOR,
-		/* 86 */ YY_NOT_ACCEPT,
+		/* 86 */ YY_NO_ANCHOR,
 		/* 87 */ YY_NO_ANCHOR,
-		/* 88 */ YY_NO_ANCHOR,
-		/* 89 */ YY_NOT_ACCEPT,
+		/* 88 */ YY_NOT_ACCEPT,
+		/* 89 */ YY_NO_ANCHOR,
 		/* 90 */ YY_NO_ANCHOR,
-		/* 91 */ YY_NO_ANCHOR,
+		/* 91 */ YY_NOT_ACCEPT,
 		/* 92 */ YY_NO_ANCHOR,
 		/* 93 */ YY_NO_ANCHOR,
 		/* 94 */ YY_NO_ANCHOR,
@@ -418,93 +418,96 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 173 */ YY_NO_ANCHOR,
 		/* 174 */ YY_NO_ANCHOR,
 		/* 175 */ YY_NO_ANCHOR,
-		/* 176 */ YY_NO_ANCHOR
+		/* 176 */ YY_NO_ANCHOR,
+		/* 177 */ YY_NO_ANCHOR,
+		/* 178 */ YY_NO_ANCHOR
 	};
 	private int yy_cmap[] = unpackFromString(1,130,
-"3,49:8,4,5,49,4,1,49:18,4,49,48,49:5,6,8,7,52,54,2,53,51,46:10,55,56,59,60," +
-"61,49,62,11,47,9,23,30,14,47,17,13,47:2,31,47,16,22,34,47,18,29,19,27,20,25" +
+"3,49:8,4,5,49,4,1,49:18,4,49,48,49:5,6,8,7,53,55,2,54,51,46:10,56,57,60,61," +
+"62,49,63,11,47,9,23,30,14,47,17,13,47:2,31,47,16,22,34,47,18,29,19,27,20,25" +
 ",47,33,47,49,50,49:2,32,49,35,36,37,38,15,28,36,39,40,36:2,10,36,41,42,24,3" +
-"6,43,12,26,44,21,45,36:3,57,49,58,49:2,0:2")[0];
+"6,43,12,26,44,21,45,36:3,58,49,59,52,49,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,177,
-"0,1:2,2,1:2,3,1:2,4,5,6,1:8,7,8,1:3,9,10,9:2,11,1:3,12,9:2,1:2,9,12:3,9,12:" +
+	private int yy_rmap[] = unpackFromString(1,179,
+"0,1:2,2,1:2,3,1:2,4,5,6,1:9,7,8,1:3,9,10,9:2,11,1:4,12,9:2,1:2,9,12:3,9,12:" +
 "2,9:2,12,9:3,1:4,13,12,14,15,16,12,17,12:2,18,9,12:3,9:3,12,9,12:4,19,20,21" +
 ",22,23,24,25,26,27,28,29,30,31,32,33,12,34,35,36,37,38,39,40,41,42,43,44,45" +
 ",46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70" +
 ",71,72,73,74,12,75,76,77,78,79,80,81,82,9,83,84,85,86,87,88,89,90,91,92,93," +
 "94,95,96,97,98,99,100,101,102,103,104,105,106,9,107,108,109,110,111,112,113")[0];
 
-	private int yy_nxt[][] = unpackFromString(114,63,
-"1,2,3,4,2,5,6,7,8,9,10,169,135,57,79,141,134,169:2,171,169,56,84,169,143,17" +
-"2,145,169,58,173,174,140,4,169,175,135:2,147,135:2,80,149,85,135:2,151,55,1" +
-"69,11,4:2,12,13,14,15,16,17,18,19,20,21,4,22,-1:65,23,-1:67,24,-1:64,169,17" +
-"6,142,169:19,176,144,169:2,142,169:10,144,169,-1:24,135:6,88,135:6,91,135:7" +
-",88,135,93,135:9,91,135:3,93,135,-1:16,11:2,29,11,59,11:42,30,11,81,11:12,-" +
-"1:60,31,-1:63,32,-1:10,169:23,144,169:13,144,169,-1:24,169:8,159,169:14,144" +
-",169:6,159,169:6,144,169,-1:16,29:4,-1,29:42,36,29,64,29:12,-1:9,135:23,93," +
-"135:13,93,135,-1:61,55,-1:25,169:3,146,169,25,169,26,169:11,25,146,169:2,14" +
-"4,169:8,26,169:4,144,169,-1:24,135:2,103,135,62,135:18,93,135:2,103,135:4,6" +
-"2,135:5,93,135,-1:16,59:2,-1,59:44,37,59:14,-1:9,135:8,123,135:14,93,135:6," +
-"123,135:6,93,135,-1:16,29:47,36,29,64,29:12,-1:7,53,-1:64,169:4,27,169:18,1" +
-"44,169:7,27,169:5,144,169,-1:24,135:3,105,135,60,135,61,135:11,60,105,135:2" +
-",93,135:8,61,135:4,93,135,-1:16,11:2,29,11:44,30,11,81,11:12,1,-1,51:3,5,51" +
-":57,-1:8,54,-1:63,169:5,28,169:13,28,169:3,144,169:13,144,169,-1:24,135:5,6" +
-"3,135:13,63,135:3,93,135:13,93,135,-1:15,1,-1,52:4,78,83,52:55,-1:9,169:16," +
-"34,169:6,144,169:12,34,144,169,-1:24,135:10,33,135:6,33,135:5,93,135:13,93," +
-"135,-1:15,1,-1,4:3,-1,4:57,-1:9,169:10,35,169:6,35,169:5,144,169:13,144,169" +
-",-1:24,135:13,113,135:9,93,135:9,113,135:3,93,135,-1:24,169:10,65,169:6,65," +
-"169:5,144,169:13,144,169,-1:24,169:6,38,169:14,38,169,144,169:13,144,169,-1" +
-":24,135:3,115,135:16,115,135:2,93,135:13,93,135,-1:24,169:7,42,169:15,144,1" +
-"69:8,42,169:4,144,169,-1:24,135:2,116,135:20,93,135:2,116,135:10,93,135,-1:" +
-"24,169:6,70,169:14,70,169,144,169:13,144,169,-1:24,135:6,118,135:14,118,135" +
-",93,135:13,93,135,-1:24,71,169:22,144,169:4,71,169:8,144,169,-1:24,135:18,1" +
-"19,135:4,93,135:11,119,135,93,135,-1:24,169:15,69,169:7,144,169,69,169:11,1" +
-"44,169,-1:24,135,120,135:20,120,93,135:13,93,135,-1:24,169,73,169:20,73,144" +
-",169:13,144,169,-1:24,135:11,122:2,135:10,93,135:13,93,135,-1:24,169:3,45,1" +
-"69:16,45,169:2,144,169:13,144,169,-1:24,135:16,66,135:6,93,135:12,66,93,135" +
-",-1:24,169:6,46,169:14,46,169,144,169:13,144,169,-1:24,135:10,67,135:6,67,1" +
-"35:5,93,135:13,93,135,-1:24,169:14,48,169:8,144,169:5,48,169:7,144,169,-1:2" +
-"4,135:4,124,135:18,93,135:7,124,135:5,93,135,-1:24,169:3,49,169:16,49,169:2" +
-",144,169:13,144,169,-1:24,135:15,39,135:7,93,135,39,135:11,93,135,-1:24,169" +
-":21,50,169,144,169:13,144,169,-1:24,135:6,40,135:14,40,135,93,135:13,93,135" +
-",-1:24,41,135:22,93,135:4,41,135:8,93,135,-1:24,135,43,135:20,43,93,135:13," +
-"93,135,-1:24,135:7,72,135:15,93,135:8,72,135:4,93,135,-1:24,135:6,44,135:14" +
-",44,135,93,135:13,93,135,-1:24,135:3,125,135:16,125,135:2,93,135:13,93,135," +
-"-1:24,135:6,68,135:14,68,135,93,135:13,93,135,-1:24,135:13,127,135:9,93,135" +
-":9,127,135:3,93,135,-1:24,135:6,128,135:14,128,135,93,135:13,93,135,-1:24,1" +
-"35,129,135:20,129,93,135:13,93,135,-1:24,135:6,47,135:14,47,135,93,135:13,9" +
-"3,135,-1:24,135:3,74,135:16,74,135:2,93,135:13,93,135,-1:24,135:4,130,135:1" +
-"8,93,135:7,130,135:5,93,135,-1:24,135:9,131,135:13,93,135:10,131,135:2,93,1" +
-"35,-1:24,135:6,75,135:14,75,135,93,135:13,93,135,-1:24,135:14,76,135:8,93,1" +
-"35:5,76,135:7,93,135,-1:24,135:4,132,135:18,93,135:7,132,135:5,93,135,-1:24" +
-",135:10,133,135:6,133,135:5,93,135:13,93,135,-1:24,135:3,77,135:16,77,135:2" +
-",93,135:13,93,135,-1:24,169:6,87,169:6,90,169:7,87,169,144,169:9,90,169:3,1" +
-"44,169,-1:24,135:13,117,135:9,93,135:9,117,135:3,93,135,-1:24,135:3,121,135" +
-":16,121,135:2,93,135:13,93,135,-1:24,135:2,139,135:20,93,135:2,139,135:10,9" +
-"3,135,-1:24,135:3,126,135:16,126,135:2,93,135:13,93,135,-1:24,169:6,92,169:" +
-"6,155,169:7,92,169,144,169:9,155,169:3,144,169,-1:24,135,95,135,97,135:16,9" +
-"7,135,95,93,135:13,93,135,-1:24,169:3,94,169:16,94,169:2,144,169:13,144,169" +
-",-1:24,135:13,136,135:9,93,135:9,136,135:3,93,135,-1:24,135:8,99,101,135:13" +
-",93,135:6,99,135:3,101,135:2,93,135,-1:24,169:11,158:2,169:10,144,169:13,14" +
-"4,169,-1:24,135,138,137,135:19,138,93,135:2,137,135:10,93,135,-1:24,169:6,9" +
-"6,169:14,96,169,144,169:13,144,169,-1:24,135:6,107,135:6,109,135:7,107,135," +
-"93,135:9,109,135:3,93,135,-1:24,169:4,160,169:18,144,169:7,160,169:5,144,16" +
-"9,-1:24,135:8,111,135:14,93,135:6,111,135:6,93,135,-1:24,169:22,161,144,169" +
-":13,144,169,-1:24,169:3,98,169:16,98,169:2,144,169:13,144,169,-1:24,169:2,1" +
-"00,169:20,144,169:2,100,169:10,144,169,-1:24,169:13,102,169:9,144,169:9,102" +
-",169:3,144,169,-1:24,169:13,104,169:9,144,169:9,104,169:3,144,169,-1:24,169" +
-":3,106,169:16,106,169:2,144,169:13,144,169,-1:24,169:13,162,169:9,144,169:9" +
-",162,169:3,144,169,-1:24,169:6,163,169:14,163,169,144,169:13,144,169,-1:24," +
-"169,108,169:20,108,144,169:13,144,169,-1:24,169:5,170,169:17,144,169:13,144" +
-",169,-1:24,169:4,110,169:18,144,169:7,110,169:5,144,169,-1:24,169:9,164,169" +
-":13,144,169:10,164,169:2,144,169,-1:24,169:4,166,169:18,144,169:7,166,169:5" +
-",144,169,-1:24,169:10,167,169:12,144,169:13,144,169,-1:24,169:10,112,169:6," +
-"112,169:5,144,169:13,144,169,-1:24,169:23,144,168,169:12,144,169,-1:24,169:" +
-"23,144,169,114,169:11,144,169,-1:24,169:23,165,169:13,144,169,-1:24,169:8,1" +
-"48,169:14,144,169:6,148,169:6,144,169,-1:24,169:8,150,169:14,144,169:6,150," +
-"169:6,144,169,-1:24,169:21,152,169,144,169:13,144,169,-1:24,169,153,169,154" +
-",169:16,154,169,153,144,169:13,144,169,-1:24,169:13,156,169:9,144,169:9,156" +
-",169:3,144,169,-1:24,169:2,157,169:20,144,169:2,157,169:10,144,169,-1:15");
+	private int yy_nxt[][] = unpackFromString(114,64,
+"1,2,3,4,2,5,6,7,8,9,10,171,137,59,81,143,136,171:2,173,171,58,86,171,145,17" +
+"4,147,171,60,175,176,142,4,171,177,137:2,149,137:2,82,151,87,137:2,153,57,1" +
+"71,11,4:2,12,13,14,15,16,17,18,19,20,21,22,4,23,-1:66,24,-1:68,25,-1:65,171" +
+",178,144,171:19,178,146,171:2,144,171:10,146,171,-1:25,137:6,90,137:6,93,13" +
+"7:7,90,137,95,137:9,93,137:3,95,137,-1:17,11:2,30,11,61,11:42,31,11,83,11:1" +
+"3,-1:2,32,-1:58,33,-1:64,34,-1:10,171:23,146,171:13,146,171,-1:25,171:8,161" +
+",171:14,146,171:6,161,171:6,146,171,-1:17,30:4,-1,30:42,38,30,66,30:13,-1:9" +
+",137:23,95,137:13,95,137,-1:62,57,-1:26,171:3,148,171,26,171,27,171:11,26,1" +
+"48,171:2,146,171:8,27,171:4,146,171,-1:25,137:2,105,137,64,137:18,95,137:2," +
+"105,137:4,64,137:5,95,137,-1:17,61:2,-1,61:44,39,61:15,-1:9,137:8,125,137:1" +
+"4,95,137:6,125,137:6,95,137,-1:17,30:47,38,30,66,30:13,-1:7,55,-1:65,171:4," +
+"28,171:18,146,171:7,28,171:5,146,171,-1:25,137:3,107,137,62,137,63,137:11,6" +
+"2,107,137:2,95,137:8,63,137:4,95,137,-1:17,11:2,30,11:44,31,11,83,11:13,1,-" +
+"1,53:3,5,53:58,-1:8,56,-1:64,171:5,29,171:13,29,171:3,146,171:13,146,171,-1" +
+":25,137:5,65,137:13,65,137:3,95,137:13,95,137,-1:16,1,-1,54:4,80,85,54:56,-" +
+"1:9,171:16,36,171:6,146,171:12,36,146,171,-1:25,137:10,35,137:6,35,137:5,95" +
+",137:13,95,137,-1:16,1,-1,4:3,-1,4:58,-1:9,171:10,37,171:6,37,171:5,146,171" +
+":13,146,171,-1:25,137:13,115,137:9,95,137:9,115,137:3,95,137,-1:25,171:10,6" +
+"7,171:6,67,171:5,146,171:13,146,171,-1:25,171:6,40,171:14,40,171,146,171:13" +
+",146,171,-1:25,137:3,117,137:16,117,137:2,95,137:13,95,137,-1:25,171:7,44,1" +
+"71:15,146,171:8,44,171:4,146,171,-1:25,137:2,118,137:20,95,137:2,118,137:10" +
+",95,137,-1:25,171:6,72,171:14,72,171,146,171:13,146,171,-1:25,137:6,120,137" +
+":14,120,137,95,137:13,95,137,-1:25,73,171:22,146,171:4,73,171:8,146,171,-1:" +
+"25,137:18,121,137:4,95,137:11,121,137,95,137,-1:25,171:15,71,171:7,146,171," +
+"71,171:11,146,171,-1:25,137,122,137:20,122,95,137:13,95,137,-1:25,171,75,17" +
+"1:20,75,146,171:13,146,171,-1:25,137:11,124:2,137:10,95,137:13,95,137,-1:25" +
+",171:3,47,171:16,47,171:2,146,171:13,146,171,-1:25,137:16,68,137:6,95,137:1" +
+"2,68,95,137,-1:25,171:6,48,171:14,48,171,146,171:13,146,171,-1:25,137:10,69" +
+",137:6,69,137:5,95,137:13,95,137,-1:25,171:14,50,171:8,146,171:5,50,171:7,1" +
+"46,171,-1:25,137:4,126,137:18,95,137:7,126,137:5,95,137,-1:25,171:3,51,171:" +
+"16,51,171:2,146,171:13,146,171,-1:25,137:15,41,137:7,95,137,41,137:11,95,13" +
+"7,-1:25,171:21,52,171,146,171:13,146,171,-1:25,137:6,42,137:14,42,137,95,13" +
+"7:13,95,137,-1:25,43,137:22,95,137:4,43,137:8,95,137,-1:25,137,45,137:20,45" +
+",95,137:13,95,137,-1:25,137:7,74,137:15,95,137:8,74,137:4,95,137,-1:25,137:" +
+"6,46,137:14,46,137,95,137:13,95,137,-1:25,137:3,127,137:16,127,137:2,95,137" +
+":13,95,137,-1:25,137:6,70,137:14,70,137,95,137:13,95,137,-1:25,137:13,129,1" +
+"37:9,95,137:9,129,137:3,95,137,-1:25,137:6,130,137:14,130,137,95,137:13,95," +
+"137,-1:25,137,131,137:20,131,95,137:13,95,137,-1:25,137:6,49,137:14,49,137," +
+"95,137:13,95,137,-1:25,137:3,76,137:16,76,137:2,95,137:13,95,137,-1:25,137:" +
+"4,132,137:18,95,137:7,132,137:5,95,137,-1:25,137:9,133,137:13,95,137:10,133" +
+",137:2,95,137,-1:25,137:6,77,137:14,77,137,95,137:13,95,137,-1:25,137:14,78" +
+",137:8,95,137:5,78,137:7,95,137,-1:25,137:4,134,137:18,95,137:7,134,137:5,9" +
+"5,137,-1:25,137:10,135,137:6,135,137:5,95,137:13,95,137,-1:25,137:3,79,137:" +
+"16,79,137:2,95,137:13,95,137,-1:25,171:6,89,171:6,92,171:7,89,171,146,171:9" +
+",92,171:3,146,171,-1:25,137:13,119,137:9,95,137:9,119,137:3,95,137,-1:25,13" +
+"7:3,123,137:16,123,137:2,95,137:13,95,137,-1:25,137:2,141,137:20,95,137:2,1" +
+"41,137:10,95,137,-1:25,137:3,128,137:16,128,137:2,95,137:13,95,137,-1:25,17" +
+"1:6,94,171:6,157,171:7,94,171,146,171:9,157,171:3,146,171,-1:25,137,97,137," +
+"99,137:16,99,137,97,95,137:13,95,137,-1:25,171:3,96,171:16,96,171:2,146,171" +
+":13,146,171,-1:25,137:13,138,137:9,95,137:9,138,137:3,95,137,-1:25,137:8,10" +
+"1,103,137:13,95,137:6,101,137:3,103,137:2,95,137,-1:25,171:11,160:2,171:10," +
+"146,171:13,146,171,-1:25,137,140,139,137:19,140,95,137:2,139,137:10,95,137," +
+"-1:25,171:6,98,171:14,98,171,146,171:13,146,171,-1:25,137:6,109,137:6,111,1" +
+"37:7,109,137,95,137:9,111,137:3,95,137,-1:25,171:4,162,171:18,146,171:7,162" +
+",171:5,146,171,-1:25,137:8,113,137:14,95,137:6,113,137:6,95,137,-1:25,171:2" +
+"2,163,146,171:13,146,171,-1:25,171:3,100,171:16,100,171:2,146,171:13,146,17" +
+"1,-1:25,171:2,102,171:20,146,171:2,102,171:10,146,171,-1:25,171:13,104,171:" +
+"9,146,171:9,104,171:3,146,171,-1:25,171:13,106,171:9,146,171:9,106,171:3,14" +
+"6,171,-1:25,171:3,108,171:16,108,171:2,146,171:13,146,171,-1:25,171:13,164," +
+"171:9,146,171:9,164,171:3,146,171,-1:25,171:6,165,171:14,165,171,146,171:13" +
+",146,171,-1:25,171,110,171:20,110,146,171:13,146,171,-1:25,171:5,172,171:17" +
+",146,171:13,146,171,-1:25,171:4,112,171:18,146,171:7,112,171:5,146,171,-1:2" +
+"5,171:9,166,171:13,146,171:10,166,171:2,146,171,-1:25,171:4,168,171:18,146," +
+"171:7,168,171:5,146,171,-1:25,171:10,169,171:12,146,171:13,146,171,-1:25,17" +
+"1:10,114,171:6,114,171:5,146,171:13,146,171,-1:25,171:23,146,170,171:12,146" +
+",171,-1:25,171:23,146,171,116,171:11,146,171,-1:25,171:23,167,171:13,146,17" +
+"1,-1:25,171:8,150,171:14,146,171:6,150,171:6,146,171,-1:25,171:8,152,171:14" +
+",146,171:6,152,171:6,146,171,-1:25,171:21,154,171,146,171:13,146,171,-1:25," +
+"171,155,171,156,171:16,156,171,155,146,171:13,146,171,-1:25,171:13,158,171:" +
+"9,146,171:9,158,171:3,146,171,-1:25,171:2,159,171:20,146,171:2,159,171:10,1" +
+"46,171,-1:16");
 
 	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
@@ -592,7 +595,6 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 3:
 						{
-// TODO does the lexer need to discern minus and negate?
     return new Symbol(TokenConstants.MINUS);
 }
 					case -5:
@@ -659,103 +661,108 @@ everything not matched by other lexical rules. */
 						break;
 					case 13:
 						{
-    return new Symbol(TokenConstants.PLUS);
+    return new Symbol(TokenConstants.NEG);
 }
 					case -15:
 						break;
 					case 14:
 						{
-    return new Symbol(TokenConstants.DOT);
+    return new Symbol(TokenConstants.PLUS);
 }
 					case -16:
 						break;
 					case 15:
 						{
-    return new Symbol(TokenConstants.COMMA);
+    return new Symbol(TokenConstants.DOT);
 }
 					case -17:
 						break;
 					case 16:
 						{
-    return new Symbol(TokenConstants.COLON);
+    return new Symbol(TokenConstants.COMMA);
 }
 					case -18:
 						break;
 					case 17:
 						{
-    return new Symbol(TokenConstants.SEMI);
+    return new Symbol(TokenConstants.COLON);
 }
 					case -19:
 						break;
 					case 18:
 						{
-    return new Symbol(TokenConstants.LBRACE);
+    return new Symbol(TokenConstants.SEMI);
 }
 					case -20:
 						break;
 					case 19:
 						{
-    return new Symbol(TokenConstants.RBRACE);
+    return new Symbol(TokenConstants.LBRACE);
 }
 					case -21:
 						break;
 					case 20:
 						{
-    return new Symbol(TokenConstants.LT);
+    return new Symbol(TokenConstants.RBRACE);
 }
 					case -22:
 						break;
 					case 21:
 						{
-// TODO does the lexer need to discern eq and assign?
-    return new Symbol(TokenConstants.EQ);
+    return new Symbol(TokenConstants.LT);
 }
 					case -23:
 						break;
 					case 22:
 						{
-    return new Symbol(TokenConstants.AT);
+    return new Symbol(TokenConstants.EQ);
 }
 					case -24:
 						break;
 					case 23:
 						{
-    yybegin(LINE_COMMENT);
+    return new Symbol(TokenConstants.AT);
 }
 					case -25:
 						break;
 					case 24:
 						{
-    yybegin(BLOCK_COMMENT);
-    openBlockComments++;
+    yybegin(LINE_COMMENT);
 }
 					case -26:
 						break;
 					case 25:
 						{
-    return new Symbol(TokenConstants.IF);
+    yybegin(BLOCK_COMMENT);
+    openBlockComments++;
 }
 					case -27:
 						break;
 					case 26:
 						{
-    return new Symbol(TokenConstants.IN);
+    return new Symbol(TokenConstants.IF);
 }
 					case -28:
 						break;
 					case 27:
 						{
-    return new Symbol(TokenConstants.FI);
+    return new Symbol(TokenConstants.IN);
 }
 					case -29:
 						break;
 					case 28:
 						{
-    return new Symbol(TokenConstants.OF);
+    return new Symbol(TokenConstants.FI);
 }
 					case -30:
 						break;
-					case 30:
+					case 29:
+						{
+    return new Symbol(TokenConstants.OF);
+}
+					case -31:
+						break;
+					case 31:
 						{
 	if (yytext().length() > MAX_STR_CONST) {
         return new Symbol(TokenConstants.ERROR, "String constant too long");
@@ -763,149 +770,155 @@ everything not matched by other lexical rules. */
     AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
     return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
 }
-					case -31:
-						break;
-					case 31:
-						{
-    return new Symbol(TokenConstants.LE);
-}
 					case -32:
 						break;
 					case 32:
 						{
-    return new Symbol(TokenConstants.DARROW);
+    return new Symbol(TokenConstants.ASSIGN);
 }
 					case -33:
 						break;
 					case 33:
 						{
-// TODO do I also need to lex a let statement or is that the parsers job?
-    return new Symbol(TokenConstants.LET);
+    return new Symbol(TokenConstants.LE);
 }
 					case -34:
 						break;
 					case 34:
 						{
-    return new Symbol(TokenConstants.NEW);
+    return new Symbol(TokenConstants.DARROW);
 }
 					case -35:
 						break;
 					case 35:
 						{
-    return new Symbol(TokenConstants.NOT);
+// TODO do I also need to lex a let statement or is that the parsers job?
+    return new Symbol(TokenConstants.LET);
 }
 					case -36:
 						break;
 					case 36:
 						{
-    return new Symbol(TokenConstants.ERROR, "String contains null character");
+    return new Symbol(TokenConstants.NEW);
 }
 					case -37:
 						break;
 					case 37:
 						{
-    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+    return new Symbol(TokenConstants.NOT);
 }
 					case -38:
 						break;
 					case 38:
 						{
-    return new Symbol(TokenConstants.CASE);
+    return new Symbol(TokenConstants.ERROR, "String contains null character");
 }
 					case -39:
 						break;
 					case 39:
 						{
-    return new Symbol(TokenConstants.LOOP);
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 }
 					case -40:
 						break;
 					case 40:
 						{
-    return new Symbol(TokenConstants.ELSE);
+    return new Symbol(TokenConstants.CASE);
 }
 					case -41:
 						break;
 					case 41:
 						{
-    return new Symbol(TokenConstants.ESAC);
+    return new Symbol(TokenConstants.LOOP);
 }
 					case -42:
 						break;
 					case 42:
 						{
-    return new Symbol(TokenConstants.THEN);
+    return new Symbol(TokenConstants.ELSE);
 }
 					case -43:
 						break;
 					case 43:
 						{
-    return new Symbol(TokenConstants.POOL);
+    return new Symbol(TokenConstants.ESAC);
 }
 					case -44:
 						break;
 					case 44:
 						{
-    return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
+    return new Symbol(TokenConstants.THEN);
 }
 					case -45:
 						break;
 					case 45:
 						{
-    return new Symbol(TokenConstants.CLASS);
+    return new Symbol(TokenConstants.POOL);
 }
 					case -46:
 						break;
 					case 46:
 						{
-    return new Symbol(TokenConstants.WHILE);
+    return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
 }
 					case -47:
 						break;
 					case 47:
 						{
-    return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
+    return new Symbol(TokenConstants.CLASS);
 }
 					case -48:
 						break;
 					case 48:
 						{
-    return new Symbol(TokenConstants.ISVOID);
+    return new Symbol(TokenConstants.WHILE);
 }
 					case -49:
 						break;
 					case 49:
 						{
-    return new Symbol(TokenConstants.INHERITS);
+    return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
 }
 					case -50:
 						break;
 					case 50:
 						{
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.STR_CONST, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.ISVOID);
 }
 					case -51:
 						break;
 					case 51:
 						{
-    // comments are discarded
+    return new Symbol(TokenConstants.INHERITS);
 }
 					case -52:
 						break;
 					case 52:
 						{
-    // comments are discarded
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.STR_CONST, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -53:
 						break;
 					case 53:
 						{
-    openBlockComments++;
+    // comments are discarded
 }
 					case -54:
 						break;
 					case 54:
+						{
+    // comments are discarded
+}
+					case -55:
+						break;
+					case 55:
+						{
+    openBlockComments++;
+}
+					case -56:
+						break;
+					case 56:
 						{
     // comments are discarded
     openBlockComments--;
@@ -914,193 +927,178 @@ everything not matched by other lexical rules. */
         yybegin(YYINITIAL);
     }
 }
-					case -55:
-						break;
-					case 55:
-						{
-    AbstractSymbol number = AbstractTable.inttable.addString(yytext());
-    return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
-}
-					case -56:
-						break;
-					case 56:
-						{
-}
 					case -57:
 						break;
 					case 57:
 						{
-// TODO does it also have a max length?
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    AbstractSymbol number = AbstractTable.inttable.addString(yytext());
+    return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
 }
 					case -58:
 						break;
 					case 58:
 						{
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -59:
 						break;
 					case 59:
 						{
-    yybegin(STRING);
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -60:
 						break;
 					case 60:
 						{
-    return new Symbol(TokenConstants.IF);
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -61:
 						break;
 					case 61:
 						{
-    return new Symbol(TokenConstants.IN);
+    yybegin(STRING);
 }
 					case -62:
 						break;
 					case 62:
 						{
-    return new Symbol(TokenConstants.FI);
+    return new Symbol(TokenConstants.IF);
 }
 					case -63:
 						break;
 					case 63:
 						{
-    return new Symbol(TokenConstants.OF);
+    return new Symbol(TokenConstants.IN);
 }
 					case -64:
 						break;
-					case 65:
+					case 64:
 						{
-// TODO do I also need to lex a let statement or is that the parsers job?
-    return new Symbol(TokenConstants.LET);
+    return new Symbol(TokenConstants.FI);
 }
 					case -65:
 						break;
-					case 66:
+					case 65:
 						{
-    return new Symbol(TokenConstants.NEW);
+    return new Symbol(TokenConstants.OF);
 }
 					case -66:
 						break;
 					case 67:
 						{
-    return new Symbol(TokenConstants.NOT);
+// TODO do I also need to lex a let statement or is that the parsers job?
+    return new Symbol(TokenConstants.LET);
 }
 					case -67:
 						break;
 					case 68:
 						{
-    return new Symbol(TokenConstants.CASE);
+    return new Symbol(TokenConstants.NEW);
 }
 					case -68:
 						break;
 					case 69:
 						{
-    return new Symbol(TokenConstants.LOOP);
+    return new Symbol(TokenConstants.NOT);
 }
 					case -69:
 						break;
 					case 70:
 						{
-    return new Symbol(TokenConstants.ELSE);
+    return new Symbol(TokenConstants.CASE);
 }
 					case -70:
 						break;
 					case 71:
 						{
-    return new Symbol(TokenConstants.ESAC);
+    return new Symbol(TokenConstants.LOOP);
 }
 					case -71:
 						break;
 					case 72:
 						{
-    return new Symbol(TokenConstants.THEN);
+    return new Symbol(TokenConstants.ELSE);
 }
 					case -72:
 						break;
 					case 73:
 						{
-    return new Symbol(TokenConstants.POOL);
+    return new Symbol(TokenConstants.ESAC);
 }
 					case -73:
 						break;
 					case 74:
 						{
-    return new Symbol(TokenConstants.CLASS);
+    return new Symbol(TokenConstants.THEN);
 }
 					case -74:
 						break;
 					case 75:
 						{
-    return new Symbol(TokenConstants.WHILE);
+    return new Symbol(TokenConstants.POOL);
 }
 					case -75:
 						break;
 					case 76:
 						{
-    return new Symbol(TokenConstants.ISVOID);
+    return new Symbol(TokenConstants.CLASS);
 }
 					case -76:
 						break;
 					case 77:
 						{
-    return new Symbol(TokenConstants.INHERITS);
+    return new Symbol(TokenConstants.WHILE);
 }
 					case -77:
 						break;
 					case 78:
 						{
-    // comments are discarded
+    return new Symbol(TokenConstants.ISVOID);
 }
 					case -78:
 						break;
 					case 79:
 						{
-// TODO does it also have a max length?
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.INHERITS);
 }
 					case -79:
 						break;
 					case 80:
 						{
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    // comments are discarded
 }
 					case -80:
 						break;
 					case 81:
 						{
-    yybegin(STRING);
-}
-					case -81:
-						break;
-					case 83:
-						{
-    // comments are discarded
-}
-					case -82:
-						break;
-					case 84:
-						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -81:
+						break;
+					case 82:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -82:
+						break;
+					case 83:
+						{
+    yybegin(STRING);
 }
 					case -83:
 						break;
 					case 85:
 						{
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    // comments are discarded
 }
 					case -84:
 						break;
-					case 87:
+					case 86:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1108,14 +1106,14 @@ everything not matched by other lexical rules. */
 }
 					case -85:
 						break;
-					case 88:
+					case 87:
 						{
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -86:
 						break;
-					case 90:
+					case 89:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1123,7 +1121,7 @@ everything not matched by other lexical rules. */
 }
 					case -87:
 						break;
-					case 91:
+					case 90:
 						{
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1312,8 +1310,9 @@ everything not matched by other lexical rules. */
 						break;
 					case 116:
 						{
+// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -113:
 						break;
@@ -1438,9 +1437,8 @@ everything not matched by other lexical rules. */
 						break;
 					case 134:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -131:
 						break;
@@ -1453,8 +1451,9 @@ everything not matched by other lexical rules. */
 						break;
 					case 136:
 						{
+// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -133:
 						break;
@@ -1481,9 +1480,8 @@ everything not matched by other lexical rules. */
 						break;
 					case 140:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -137:
 						break;
@@ -1579,9 +1577,8 @@ everything not matched by other lexical rules. */
 						break;
 					case 153:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -150:
 						break;
@@ -1768,6 +1765,22 @@ everything not matched by other lexical rules. */
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -173:
+						break;
+					case 177:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -174:
+						break;
+					case 178:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -175:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

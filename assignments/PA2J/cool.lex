@@ -241,8 +241,10 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 <YYINITIAL> "/" {
     return new Symbol(TokenConstants.DIV);
 }
+<YYINITIAL> "~" {
+    return new Symbol(TokenConstants.NEG);
+}
 <YYINITIAL> "-" {
-// TODO does the lexer need to discern minus and negate?
     return new Symbol(TokenConstants.MINUS);
 }
 <YYINITIAL> "+" {
@@ -279,8 +281,10 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
     return new Symbol(TokenConstants.LT);
 }
 <YYINITIAL> "=" {
-// TODO does the lexer need to discern eq and assign?
     return new Symbol(TokenConstants.EQ);
+}
+<YYINITIAL> "<-" {
+    return new Symbol(TokenConstants.ASSIGN);
 }
 <YYINITIAL> "=>" {
     return new Symbol(TokenConstants.DARROW);
