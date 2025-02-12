@@ -304,5 +304,5 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 . {
 /* This rule should be the very last in your lexical specification and will match match
 everything not matched by other lexical rules. */
-  System.err.println("LEXER BUG - UNMATCHED: " + yytext());
+    return new Symbol(TokenConstants.ERROR, yytext());
 }
