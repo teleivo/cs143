@@ -145,6 +145,9 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 <BLOCK_COMMENT> (.|\n) {
     // comments are discarded
 }
+<YYINITIAL> "*)" {
+    return new Symbol(TokenConstants.ERROR, "Unmatched *)");
+}
 <BLOCK_COMMENT> "*)" {
     // comments are discarded
     openBlockComments--;
