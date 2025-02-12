@@ -2,5 +2,6 @@
 self
 SELF_TYPE
 String
+String_12
 string
 f12oo_bar

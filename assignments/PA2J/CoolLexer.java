@@ -85,8 +85,8 @@ class CoolLexer implements java_cup.runtime.Scanner {
 	private final int YYINITIAL = 0;
 	private final int yy_state_dtrans[] = {
 		0,
-		113,
-		114
+		65,
+		68
 	};
 	private void yybegin (int state) {
 		yy_lexical_state = state;
@@ -250,12 +250,12 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 8 */ YY_NO_ANCHOR,
 		/* 9 */ YY_NO_ANCHOR,
 		/* 10 */ YY_NO_ANCHOR,
-		/* 11 */ YY_NOT_ACCEPT,
+		/* 11 */ YY_NO_ANCHOR,
 		/* 12 */ YY_NO_ANCHOR,
 		/* 13 */ YY_NO_ANCHOR,
 		/* 14 */ YY_NO_ANCHOR,
 		/* 15 */ YY_NO_ANCHOR,
-		/* 16 */ YY_NO_ANCHOR,
+		/* 16 */ YY_NOT_ACCEPT,
 		/* 17 */ YY_NO_ANCHOR,
 		/* 18 */ YY_NO_ANCHOR,
 		/* 19 */ YY_NO_ANCHOR,
@@ -278,7 +278,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 36 */ YY_NO_ANCHOR,
 		/* 37 */ YY_NO_ANCHOR,
 		/* 38 */ YY_NO_ANCHOR,
-		/* 39 */ YY_NOT_ACCEPT,
+		/* 39 */ YY_NO_ANCHOR,
 		/* 40 */ YY_NO_ANCHOR,
 		/* 41 */ YY_NO_ANCHOR,
 		/* 42 */ YY_NO_ANCHOR,
@@ -286,7 +286,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 44 */ YY_NO_ANCHOR,
 		/* 45 */ YY_NO_ANCHOR,
 		/* 46 */ YY_NO_ANCHOR,
-		/* 47 */ YY_NO_ANCHOR,
+		/* 47 */ YY_NOT_ACCEPT,
 		/* 48 */ YY_NO_ANCHOR,
 		/* 49 */ YY_NO_ANCHOR,
 		/* 50 */ YY_NO_ANCHOR,
@@ -299,69 +299,69 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 57 */ YY_NO_ANCHOR,
 		/* 58 */ YY_NO_ANCHOR,
 		/* 59 */ YY_NO_ANCHOR,
-		/* 60 */ YY_NOT_ACCEPT,
+		/* 60 */ YY_NO_ANCHOR,
 		/* 61 */ YY_NO_ANCHOR,
 		/* 62 */ YY_NO_ANCHOR,
-		/* 63 */ YY_NOT_ACCEPT,
+		/* 63 */ YY_NO_ANCHOR,
 		/* 64 */ YY_NO_ANCHOR,
-		/* 65 */ YY_NO_ANCHOR,
-		/* 66 */ YY_NOT_ACCEPT,
+		/* 65 */ YY_NOT_ACCEPT,
+		/* 66 */ YY_NO_ANCHOR,
 		/* 67 */ YY_NO_ANCHOR,
-		/* 68 */ YY_NO_ANCHOR,
-		/* 69 */ YY_NOT_ACCEPT,
+		/* 68 */ YY_NOT_ACCEPT,
+		/* 69 */ YY_NO_ANCHOR,
 		/* 70 */ YY_NO_ANCHOR,
 		/* 71 */ YY_NO_ANCHOR,
-		/* 72 */ YY_NOT_ACCEPT,
+		/* 72 */ YY_NO_ANCHOR,
 		/* 73 */ YY_NO_ANCHOR,
 		/* 74 */ YY_NO_ANCHOR,
-		/* 75 */ YY_NOT_ACCEPT,
+		/* 75 */ YY_NO_ANCHOR,
 		/* 76 */ YY_NO_ANCHOR,
 		/* 77 */ YY_NO_ANCHOR,
-		/* 78 */ YY_NOT_ACCEPT,
+		/* 78 */ YY_NO_ANCHOR,
 		/* 79 */ YY_NO_ANCHOR,
 		/* 80 */ YY_NO_ANCHOR,
-		/* 81 */ YY_NOT_ACCEPT,
+		/* 81 */ YY_NO_ANCHOR,
 		/* 82 */ YY_NO_ANCHOR,
 		/* 83 */ YY_NO_ANCHOR,
-		/* 84 */ YY_NOT_ACCEPT,
+		/* 84 */ YY_NO_ANCHOR,
 		/* 85 */ YY_NO_ANCHOR,
 		/* 86 */ YY_NO_ANCHOR,
-		/* 87 */ YY_NOT_ACCEPT,
+		/* 87 */ YY_NO_ANCHOR,
 		/* 88 */ YY_NO_ANCHOR,
 		/* 89 */ YY_NO_ANCHOR,
-		/* 90 */ YY_NOT_ACCEPT,
+		/* 90 */ YY_NO_ANCHOR,
 		/* 91 */ YY_NO_ANCHOR,
-		/* 92 */ YY_NOT_ACCEPT,
+		/* 92 */ YY_NO_ANCHOR,
 		/* 93 */ YY_NO_ANCHOR,
-		/* 94 */ YY_NOT_ACCEPT,
+		/* 94 */ YY_NO_ANCHOR,
 		/* 95 */ YY_NO_ANCHOR,
-		/* 96 */ YY_NOT_ACCEPT,
+		/* 96 */ YY_NO_ANCHOR,
 		/* 97 */ YY_NO_ANCHOR,
-		/* 98 */ YY_NOT_ACCEPT,
-		/* 99 */ YY_NOT_ACCEPT,
-		/* 100 */ YY_NOT_ACCEPT,
-		/* 101 */ YY_NOT_ACCEPT,
-		/* 102 */ YY_NOT_ACCEPT,
-		/* 103 */ YY_NOT_ACCEPT,
-		/* 104 */ YY_NOT_ACCEPT,
-		/* 105 */ YY_NOT_ACCEPT,
-		/* 106 */ YY_NOT_ACCEPT,
-		/* 107 */ YY_NOT_ACCEPT,
-		/* 108 */ YY_NOT_ACCEPT,
-		/* 109 */ YY_NOT_ACCEPT,
-		/* 110 */ YY_NOT_ACCEPT,
-		/* 111 */ YY_NOT_ACCEPT,
-		/* 112 */ YY_NOT_ACCEPT,
-		/* 113 */ YY_NOT_ACCEPT,
-		/* 114 */ YY_NOT_ACCEPT,
-		/* 115 */ YY_NOT_ACCEPT,
+		/* 98 */ YY_NO_ANCHOR,
+		/* 99 */ YY_NO_ANCHOR,
+		/* 100 */ YY_NO_ANCHOR,
+		/* 101 */ YY_NO_ANCHOR,
+		/* 102 */ YY_NO_ANCHOR,
+		/* 103 */ YY_NO_ANCHOR,
+		/* 104 */ YY_NO_ANCHOR,
+		/* 105 */ YY_NO_ANCHOR,
+		/* 106 */ YY_NO_ANCHOR,
+		/* 107 */ YY_NO_ANCHOR,
+		/* 108 */ YY_NO_ANCHOR,
+		/* 109 */ YY_NO_ANCHOR,
+		/* 110 */ YY_NO_ANCHOR,
+		/* 111 */ YY_NO_ANCHOR,
+		/* 112 */ YY_NO_ANCHOR,
+		/* 113 */ YY_NO_ANCHOR,
+		/* 114 */ YY_NO_ANCHOR,
+		/* 115 */ YY_NO_ANCHOR,
 		/* 116 */ YY_NO_ANCHOR,
-		/* 117 */ YY_NOT_ACCEPT,
-		/* 118 */ YY_NOT_ACCEPT,
-		/* 119 */ YY_NOT_ACCEPT,
-		/* 120 */ YY_NOT_ACCEPT,
+		/* 117 */ YY_NO_ANCHOR,
+		/* 118 */ YY_NO_ANCHOR,
+		/* 119 */ YY_NO_ANCHOR,
+		/* 120 */ YY_NO_ANCHOR,
 		/* 121 */ YY_NO_ANCHOR,
-		/* 122 */ YY_NOT_ACCEPT,
+		/* 122 */ YY_NO_ANCHOR,
 		/* 123 */ YY_NO_ANCHOR,
 		/* 124 */ YY_NO_ANCHOR,
 		/* 125 */ YY_NO_ANCHOR,
@@ -383,59 +383,104 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 141 */ YY_NO_ANCHOR,
 		/* 142 */ YY_NO_ANCHOR,
 		/* 143 */ YY_NO_ANCHOR,
-		/* 144 */ YY_NO_ANCHOR
+		/* 144 */ YY_NO_ANCHOR,
+		/* 145 */ YY_NO_ANCHOR,
+		/* 146 */ YY_NO_ANCHOR,
+		/* 147 */ YY_NO_ANCHOR,
+		/* 148 */ YY_NO_ANCHOR,
+		/* 149 */ YY_NO_ANCHOR,
+		/* 150 */ YY_NO_ANCHOR,
+		/* 151 */ YY_NO_ANCHOR,
+		/* 152 */ YY_NO_ANCHOR,
+		/* 153 */ YY_NO_ANCHOR,
+		/* 154 */ YY_NO_ANCHOR,
+		/* 155 */ YY_NO_ANCHOR,
+		/* 156 */ YY_NO_ANCHOR,
+		/* 157 */ YY_NO_ANCHOR
 	};
 	private int yy_cmap[] = unpackFromString(1,130,
-"3,44:8,4,5,44,4,1,44:18,4,44,43,44:10,2,44:2,41:10,44,46,44,49,50,44:2,26,2" +
-"7,28,29,30,11,27,31,32,27:2,33,27,34,35,36,27,37,38,16,39,17,40,27:3,44,45," +
-"44:2,42,44,8,42,6,20,12,25,42,14,10,42:2,7,42,13,19,21,42,15,9,23,24,18,22," +
-"42:3,47,44,48,44:2,0:2")[0];
+"3,46:8,4,5,46,4,1,46:18,4,46,45,46:10,2,46:2,43:10,46,48,46,51,52,46:2,8,44" +
+",6,20,27,11,44,14,10,44:2,28,44,13,19,31,44,15,26,16,24,17,22,44,30,44,46,4" +
+"7,46:2,29,46,32,33,34,35,12,25,33,36,37,33:2,7,33,38,39,21,33,40,9,23,41,18" +
+",42,33:3,49,46,50,46:2,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,145,
-"0,1:2,2,1,3,4,1:4,5,1,6,7,1:11,7,1:8,8,1,9,10,11,7,12,1,7:8,1,7:5,13,14,15," +
-"16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40," +
-"41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65," +
-"66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90," +
-"91,92,93,94,95,7,96,97,98,99")[0];
+	private int yy_rmap[] = unpackFromString(1,158,
+"0,1:2,2,1,3,4,5,1:4,6,7,6:2,8,1:2,9,6:2,1,6,9:3,6,9:2,6:2,9,6:3,1,10,9,1,11" +
+",12,13,9,14,9:2,15,6,9:3,6:3,9,6,9:4,16,17,18,19,20,21,22,23,24,25,26,27,28" +
+",9,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52," +
+"53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,9,70,71,72,73,74,75,76,7" +
+"7,6,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,1" +
+"01,6,102,103,104,105,106,107,108")[0];
 
-	private int yy_nxt[][] = unpackFromString(100,51,
-"1,2,3,36,2,4,57,61,36:2,64,5,67,70,36:2,37,140,2,73,36,76,79,82,36,85,140:2" +
-",141,140,142,140,58,116,121,62,143,140:3,144,35,36,6,36:2,7,8,9,88,36,-1:53" +
-",10,-1:54,140:4,14,140:21,14,140:10,-1:9,6:2,87,6,38,6:37,16,6,59,6:5,-1:8," +
-"122,-1:17,122,-1:38,119,-1:16,119,-1:25,140:37,-1:49,35,-1:15,140:8,123,140" +
-":16,123,140:11,-1:9,38:2,-1,38:39,-1,38:7,-1:9,90,-1:28,90,-1:18,140:8,134," +
-"140:16,134,140:11,-1:15,11,39,-1:17,39,-1:6,11,-1:23,140:3,128,140,40,140,4" +
-"1,140:11,40,140:8,41,140:3,128,140:4,-1:9,6:2,87,6:39,16,6,59,6:5,-1:16,18," +
-"-1:6,18,-1:39,60,-1:6,63,-1:10,60,-1:4,63,-1:21,140:5,43,140:13,43,140:17,-" +
-"1:27,92,-1:15,92,-1:24,66,-1,12,-1,13,-1:11,12,-1:8,13,-1:3,66,-1:18,140:10" +
-",44,140:6,44,140:19,-1:25,94:2,-1:39,117,-1,115,-1:23,117,-1:4,115,-1:18,14" +
-"0:16,45,140:17,45,140:2,-1:30,19,-1:17,19,-1:22,69,-1:6,72,-1:10,69,-1:4,72" +
-",-1:21,140:10,46,140:6,46,140:19,-1:24,20,-1:6,20,-1:38,15,-1:13,15,-1:31,1" +
-"40:7,26,140:20,26,140:8,-1:18,120,-1:21,120,-1:37,118,-1:15,118,-1:21,140:6" +
-",47,140:17,47,140:12,-1:20,100,-1:17,100,-1:34,75,-1:16,75,-1:25,140:6,49,1" +
-"40:17,49,140:12,-1:32,101,-1:14,101,-1:25,78,81,-1:15,78,-1:5,81,-1:19,50,1" +
-"40:21,50,140:14,-1:15,102,-1:25,102,-1:25,84,-1,42,-1:15,84,-1:5,42,-1:24,1" +
-"40:15,48,140:14,48,140:6,-1:9,87:4,-1,87:37,21,87,103,87:5,-1:50,17,-1:6,14" +
-"0,52,140:25,52,140:9,-1:20,22,-1:17,22,-1:26,140:3,53,140:28,53,140:4,-1:29" +
-",23,-1:14,23,-1:20,140:6,54,140:17,54,140:12,-1:27,105,-1:15,105,-1:21,140:" +
-"14,55,140:8,55,140:13,-1:20,24,-1:17,24,-1:26,140:3,56,140:28,56,140:4,-1:1" +
-"4,25,-1:21,25,-1:29,27,-1:25,27,-1:30,51,-1:20,51,-1:28,28,-1:17,28,-1:29,1" +
-"08,-1:28,108,-1:13,87:42,21,87,103,87:5,-1:9,29,-1:28,29,-1:22,109,-1:21,10" +
-"9,-1:33,110,-1:21,110,-1:25,30,-1:17,30,-1:32,31,-1:17,31,-1:40,32,-1:8,32," +
-"-1:31,111,-1:21,111,-1:34,112,-1:6,112,-1:36,33,-1:28,33,-1:12,1,-1,34:3,4," +
-"34:45,1,-1,36:3,-1,36:45,-1:8,98,-1:17,98,-1:30,140:6,65,140:6,129,140:10,6" +
-"5,140:4,129,140:7,-1:17,96,-1:28,96,-1:31,99,-1:15,99,-1:27,106,-1:17,106,-" +
-"1:27,107,-1:25,107,-1:23,140:6,68,140:6,71,140:10,68,140:4,71,140:7,-1:17,1" +
-"04,-1:28,104,-1:18,140:6,74,140:17,74,140:12,-1:14,140:2,132,140:17,132,140" +
-":16,-1:14,140:3,77,140:28,77,140:4,-1:14,140:3,80,140:28,80,140:4,-1:14,140" +
-":2,83,140:17,83,140:16,-1:14,140:11,133:2,140:24,-1:14,140:13,86,140:15,86," +
-"140:7,-1:14,140:13,89,140:15,89,140:7,-1:14,140:4,135,140:21,135,140:10,-1:" +
-"14,140:3,91,140:28,91,140:4,-1:14,140:13,136,140:15,136,140:7,-1:14,140:6,1" +
-"37,140:17,137,140:12,-1:14,140,93,140:25,93,140:9,-1:14,140:4,95,140:21,95," +
-"140:10,-1:14,140:9,138,140:21,138,140:5,-1:14,140:4,139,140:21,139,140:10,-" +
-"1:14,140:10,97,140:6,97,140:19,-1:14,140,124,125,140:17,125,140:6,124,140:9" +
-",-1:14,140,126,140,127,140:23,126,140:4,127,140:4,-1:14,140:13,130,140:15,1" +
-"30,140:7,-1:14,140:8,131,140:16,131,140:11,-1:8");
+	private int yy_nxt[][] = unpackFromString(109,53,
+"1,2,3,39,2,4,5,6,150,116,40,62,122,115,150:2,152,150,38,66,150,124,153,126," +
+"150,41,154,155,121,39,150,156,116:2,128,116:2,63,130,67,116:2,132,37,150,7," +
+"39:2,8,9,10,61,39,-1:55,11,-1:56,150,157,123,150:19,157,125,150:2,123,150:1" +
+"0,125,150,-1:14,116:6,70,116:6,72,116:7,70,116,74,116:9,72,116:3,74,116,-1:" +
+"9,7:2,16,7,42,7:39,17,7,64,7:5,-1:6,150:23,125,150:13,125,150,-1:14,150:8,1" +
+"40,150:14,125,150:6,140,150:6,125,150,-1:9,16:4,-1,16:39,22,16,47,16:5,-1:6" +
+",116:23,74,116:13,74,116,-1:51,37,-1:15,150:3,127,150,12,150,13,150:11,12,1" +
+"27,150:2,125,150:8,13,150:4,125,150,-1:14,116:2,84,116,45,116:18,74,116:2,8" +
+"4,116:4,45,116:5,74,116,-1:9,42:2,-1,42:41,-1,42:7,-1:6,116:8,104,116:14,74" +
+",116:6,104,116:6,74,116,-1:9,16:44,22,16,47,16:5,-1:52,18,-1:6,150:4,14,150" +
+":18,125,150:7,14,150:5,125,150,-1:14,116:3,86,116,43,116,44,116:11,43,86,11" +
+"6:2,74,116:8,44,116:4,74,116,-1:9,7:2,16,7:41,17,7,64,7:5,1,-1,36:3,4,36:47" +
+",-1:6,150:5,15,150:13,15,150:3,125,150:13,125,150,-1:14,116:5,46,116:13,46," +
+"116:3,74,116:13,74,116,-1:8,1,-1,39:3,-1,39:47,-1:6,150:16,20,150:6,125,150" +
+":12,20,125,150,-1:14,116:10,19,116:6,19,116:5,74,116:13,74,116,-1:14,150:10" +
+",21,150:6,21,150:5,125,150:13,125,150,-1:14,116:13,94,116:9,74,116:9,94,116" +
+":3,74,116,-1:14,150:10,48,150:6,48,150:5,125,150:13,125,150,-1:14,150:6,23," +
+"150:14,23,150,125,150:13,125,150,-1:14,116:3,96,116:16,96,116:2,74,116:13,7" +
+"4,116,-1:14,150:7,27,150:15,125,150:8,27,150:4,125,150,-1:14,116:2,97,116:2" +
+"0,74,116:2,97,116:10,74,116,-1:14,150:6,53,150:14,53,150,125,150:13,125,150" +
+",-1:14,116:6,99,116:14,99,116,74,116:13,74,116,-1:14,54,150:22,125,150:4,54" +
+",150:8,125,150,-1:14,116:18,100,116:4,74,116:11,100,116,74,116,-1:14,150:15" +
+",52,150:7,125,150,52,150:11,125,150,-1:14,116,101,116:20,101,74,116:13,74,1" +
+"16,-1:14,150,56,150:20,56,125,150:13,125,150,-1:14,116:11,103:2,116:10,74,1" +
+"16:13,74,116,-1:14,150:3,30,150:16,30,150:2,125,150:13,125,150,-1:14,116:16" +
+",49,116:6,74,116:12,49,74,116,-1:14,150:6,31,150:14,31,150,125,150:13,125,1" +
+"50,-1:14,116:10,50,116:6,50,116:5,74,116:13,74,116,-1:14,150:14,33,150:8,12" +
+"5,150:5,33,150:7,125,150,-1:14,116:4,105,116:18,74,116:7,105,116:5,74,116,-" +
+"1:14,150:3,34,150:16,34,150:2,125,150:13,125,150,-1:14,116:15,24,116:7,74,1" +
+"16,24,116:11,74,116,-1:14,150:21,35,150,125,150:13,125,150,-1:14,116:6,25,1" +
+"16:14,25,116,74,116:13,74,116,-1:14,26,116:22,74,116:4,26,116:8,74,116,-1:1" +
+"4,116,28,116:20,28,74,116:13,74,116,-1:14,116:7,55,116:15,74,116:8,55,116:4" +
+",74,116,-1:14,116:6,29,116:14,29,116,74,116:13,74,116,-1:14,116:3,106,116:1" +
+"6,106,116:2,74,116:13,74,116,-1:14,116:6,51,116:14,51,116,74,116:13,74,116," +
+"-1:14,116:13,108,116:9,74,116:9,108,116:3,74,116,-1:14,116:6,109,116:14,109" +
+",116,74,116:13,74,116,-1:14,116,110,116:20,110,74,116:13,74,116,-1:14,116:6" +
+",32,116:14,32,116,74,116:13,74,116,-1:14,116:3,57,116:16,57,116:2,74,116:13" +
+",74,116,-1:14,116:4,111,116:18,74,116:7,111,116:5,74,116,-1:14,116:9,112,11" +
+"6:13,74,116:10,112,116:2,74,116,-1:14,116:6,58,116:14,58,116,74,116:13,74,1" +
+"16,-1:14,116:14,59,116:8,74,116:5,59,116:7,74,116,-1:14,116:4,113,116:18,74" +
+",116:7,113,116:5,74,116,-1:14,116:10,114,116:6,114,116:5,74,116:13,74,116,-" +
+"1:14,116:3,60,116:16,60,116:2,74,116:13,74,116,-1:14,150:6,69,150:6,71,150:" +
+"7,69,150,125,150:9,71,150:3,125,150,-1:14,116:13,98,116:9,74,116:9,98,116:3" +
+",74,116,-1:14,116:3,102,116:16,102,116:2,74,116:13,74,116,-1:14,116:2,120,1" +
+"16:20,74,116:2,120,116:10,74,116,-1:14,116:3,107,116:16,107,116:2,74,116:13" +
+",74,116,-1:14,150:6,73,150:6,136,150:7,73,150,125,150:9,136,150:3,125,150,-" +
+"1:14,116,76,116,78,116:16,78,116,76,74,116:13,74,116,-1:14,150:3,75,150:16," +
+"75,150:2,125,150:13,125,150,-1:14,116:13,117,116:9,74,116:9,117,116:3,74,11" +
+"6,-1:14,116:8,80,82,116:13,74,116:6,80,116:3,82,116:2,74,116,-1:14,150:11,1" +
+"39:2,150:10,125,150:13,125,150,-1:14,116,119,118,116:19,119,74,116:2,118,11" +
+"6:10,74,116,-1:14,150:6,77,150:14,77,150,125,150:13,125,150,-1:14,116:6,88," +
+"116:6,90,116:7,88,116,74,116:9,90,116:3,74,116,-1:14,150:4,141,150:18,125,1" +
+"50:7,141,150:5,125,150,-1:14,116:8,92,116:14,74,116:6,92,116:6,74,116,-1:14" +
+",150:22,142,125,150:13,125,150,-1:14,150:3,79,150:16,79,150:2,125,150:13,12" +
+"5,150,-1:14,150:2,81,150:20,125,150:2,81,150:10,125,150,-1:14,150:13,83,150" +
+":9,125,150:9,83,150:3,125,150,-1:14,150:13,85,150:9,125,150:9,85,150:3,125," +
+"150,-1:14,150:3,87,150:16,87,150:2,125,150:13,125,150,-1:14,150:13,143,150:" +
+"9,125,150:9,143,150:3,125,150,-1:14,150:6,144,150:14,144,150,125,150:13,125" +
+",150,-1:14,150,89,150:20,89,125,150:13,125,150,-1:14,150:5,151,150:17,125,1" +
+"50:13,125,150,-1:14,150:4,91,150:18,125,150:7,91,150:5,125,150,-1:14,150:9," +
+"145,150:13,125,150:10,145,150:2,125,150,-1:14,150:4,147,150:18,125,150:7,14" +
+"7,150:5,125,150,-1:14,150:10,148,150:12,125,150:13,125,150,-1:14,150:10,93," +
+"150:6,93,150:5,125,150:13,125,150,-1:14,150:23,125,149,150:12,125,150,-1:14" +
+",150:23,125,150,95,150:11,125,150,-1:14,150:23,146,150:13,125,150,-1:14,150" +
+":8,129,150:14,125,150:6,129,150:6,125,150,-1:14,150:8,131,150:14,125,150:6," +
+"131,150:6,125,150,-1:14,150:21,133,150,125,150:13,125,150,-1:14,150,134,150" +
+",135,150:16,135,150,134,125,150:13,125,150,-1:14,150:13,137,150:9,125,150:9" +
+",137,150:3,125,150,-1:14,150:2,138,150:20,125,150:2,138,150:10,125,150,-1:8");
 
 	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
@@ -537,59 +582,66 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 6:
 						{
-    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -8:
 						break;
 					case 7:
 						{
-    return new Symbol(TokenConstants.SEMI);
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 }
 					case -9:
 						break;
 					case 8:
 						{
-    return new Symbol(TokenConstants.LBRACE);
+    return new Symbol(TokenConstants.SEMI);
 }
 					case -10:
 						break;
 					case 9:
 						{
-    return new Symbol(TokenConstants.RBRACE);
+    return new Symbol(TokenConstants.LBRACE);
 }
 					case -11:
 						break;
 					case 10:
 						{
-    yybegin(LINE_COMMENT);
+    return new Symbol(TokenConstants.RBRACE);
 }
 					case -12:
+						break;
+					case 11:
+						{
+    yybegin(LINE_COMMENT);
+}
+					case -13:
 						break;
 					case 12:
 						{
     return new Symbol(TokenConstants.IF);
 }
-					case -13:
+					case -14:
 						break;
 					case 13:
 						{
     return new Symbol(TokenConstants.IN);
 }
-					case -14:
+					case -15:
 						break;
 					case 14:
 						{
     return new Symbol(TokenConstants.FI);
 }
-					case -15:
+					case -16:
 						break;
 					case 15:
 						{
     return new Symbol(TokenConstants.OF);
 }
-					case -16:
+					case -17:
 						break;
-					case 16:
+					case 17:
 						{
 	if (yytext().length() > MAX_STR_CONST) {
         return new Symbol(TokenConstants.ERROR, "String constant too long");
@@ -597,269 +649,266 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
     return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
 }
-					case -17:
+					case -18:
 						break;
-					case 17:
+					case 18:
 						{ /* Sample lexical rule for "=>" arrow.
                                      Further lexical rules should be defined
                                      here, after the last %% separator */
                                   return new Symbol(TokenConstants.DARROW); }
-					case -18:
-						break;
-					case 18:
-						{
-    return new Symbol(TokenConstants.LET);
-}
 					case -19:
 						break;
 					case 19:
 						{
-    return new Symbol(TokenConstants.NEW);
+    return new Symbol(TokenConstants.LET);
 }
 					case -20:
 						break;
 					case 20:
 						{
-    return new Symbol(TokenConstants.NOT);
+    return new Symbol(TokenConstants.NEW);
 }
 					case -21:
 						break;
 					case 21:
 						{
-    return new Symbol(TokenConstants.ERROR, "String contains null character");
+    return new Symbol(TokenConstants.NOT);
 }
 					case -22:
 						break;
 					case 22:
 						{
-    return new Symbol(TokenConstants.CASE);
+    return new Symbol(TokenConstants.ERROR, "String contains null character");
 }
 					case -23:
 						break;
 					case 23:
 						{
-    return new Symbol(TokenConstants.LOOP);
+    return new Symbol(TokenConstants.CASE);
 }
 					case -24:
 						break;
 					case 24:
 						{
-    return new Symbol(TokenConstants.ELSE);
+    return new Symbol(TokenConstants.LOOP);
 }
 					case -25:
 						break;
 					case 25:
 						{
-    return new Symbol(TokenConstants.ESAC);
+    return new Symbol(TokenConstants.ELSE);
 }
 					case -26:
 						break;
 					case 26:
 						{
-    return new Symbol(TokenConstants.THEN);
+    return new Symbol(TokenConstants.ESAC);
 }
 					case -27:
 						break;
 					case 27:
 						{
-    return new Symbol(TokenConstants.POOL);
+    return new Symbol(TokenConstants.THEN);
 }
 					case -28:
 						break;
 					case 28:
 						{
-    return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
+    return new Symbol(TokenConstants.POOL);
 }
 					case -29:
 						break;
 					case 29:
 						{
-    return new Symbol(TokenConstants.CLASS);
+    return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
 }
 					case -30:
 						break;
 					case 30:
 						{
-    return new Symbol(TokenConstants.WHILE);
+    return new Symbol(TokenConstants.CLASS);
 }
 					case -31:
 						break;
 					case 31:
 						{
-    return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
+    return new Symbol(TokenConstants.WHILE);
 }
 					case -32:
 						break;
 					case 32:
 						{
-    return new Symbol(TokenConstants.ISVOID);
+    return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
 }
 					case -33:
 						break;
 					case 33:
 						{
-    return new Symbol(TokenConstants.INHERITS);
+    return new Symbol(TokenConstants.ISVOID);
 }
 					case -34:
 						break;
 					case 34:
 						{
-    // comments are discarded
+    return new Symbol(TokenConstants.INHERITS);
 }
 					case -35:
 						break;
 					case 35:
 						{
-    AbstractSymbol number = AbstractTable.inttable.addString(yytext());
-    return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.STR_CONST, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -36:
 						break;
 					case 36:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+						{
+    // comments are discarded
+}
 					case -37:
 						break;
 					case 37:
 						{
-// TODO does it also have a max length?
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    AbstractSymbol number = AbstractTable.inttable.addString(yytext());
+    return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
 }
 					case -38:
 						break;
 					case 38:
 						{
-    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 }
 					case -39:
 						break;
-					case 40:
-						{
-    return new Symbol(TokenConstants.IF);
-}
-					case -40:
-						break;
-					case 41:
-						{
-    return new Symbol(TokenConstants.IN);
-}
-					case -41:
-						break;
-					case 42:
-						{
-    return new Symbol(TokenConstants.FI);
-}
-					case -42:
-						break;
-					case 43:
-						{
-    return new Symbol(TokenConstants.OF);
-}
-					case -43:
-						break;
-					case 44:
-						{
-    return new Symbol(TokenConstants.LET);
-}
-					case -44:
-						break;
-					case 45:
-						{
-    return new Symbol(TokenConstants.NEW);
-}
-					case -45:
-						break;
-					case 46:
-						{
-    return new Symbol(TokenConstants.NOT);
-}
-					case -46:
-						break;
-					case 47:
-						{
-    return new Symbol(TokenConstants.CASE);
-}
-					case -47:
-						break;
-					case 48:
-						{
-    return new Symbol(TokenConstants.LOOP);
-}
-					case -48:
-						break;
-					case 49:
-						{
-    return new Symbol(TokenConstants.ELSE);
-}
-					case -49:
-						break;
-					case 50:
-						{
-    return new Symbol(TokenConstants.ESAC);
-}
-					case -50:
-						break;
-					case 51:
-						{
-    return new Symbol(TokenConstants.THEN);
-}
-					case -51:
-						break;
-					case 52:
-						{
-    return new Symbol(TokenConstants.POOL);
-}
-					case -52:
-						break;
-					case 53:
-						{
-    return new Symbol(TokenConstants.CLASS);
-}
-					case -53:
-						break;
-					case 54:
-						{
-    return new Symbol(TokenConstants.WHILE);
-}
-					case -54:
-						break;
-					case 55:
-						{
-    return new Symbol(TokenConstants.ISVOID);
-}
-					case -55:
-						break;
-					case 56:
-						{
-    return new Symbol(TokenConstants.INHERITS);
-}
-					case -56:
-						break;
-					case 57:
+					case 39:
 						{ /* This rule should be the very last
                                      in your lexical specification and
                                      will match match everything not
                                      matched by other lexical rules. */
                                   System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
-					case -57:
+					case -40:
 						break;
-					case 58:
+					case 40:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
+					case -41:
+						break;
+					case 41:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -42:
+						break;
+					case 42:
+						{
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+}
+					case -43:
+						break;
+					case 43:
+						{
+    return new Symbol(TokenConstants.IF);
+}
+					case -44:
+						break;
+					case 44:
+						{
+    return new Symbol(TokenConstants.IN);
+}
+					case -45:
+						break;
+					case 45:
+						{
+    return new Symbol(TokenConstants.FI);
+}
+					case -46:
+						break;
+					case 46:
+						{
+    return new Symbol(TokenConstants.OF);
+}
+					case -47:
+						break;
+					case 48:
+						{
+    return new Symbol(TokenConstants.LET);
+}
+					case -48:
+						break;
+					case 49:
+						{
+    return new Symbol(TokenConstants.NEW);
+}
+					case -49:
+						break;
+					case 50:
+						{
+    return new Symbol(TokenConstants.NOT);
+}
+					case -50:
+						break;
+					case 51:
+						{
+    return new Symbol(TokenConstants.CASE);
+}
+					case -51:
+						break;
+					case 52:
+						{
+    return new Symbol(TokenConstants.LOOP);
+}
+					case -52:
+						break;
+					case 53:
+						{
+    return new Symbol(TokenConstants.ELSE);
+}
+					case -53:
+						break;
+					case 54:
+						{
+    return new Symbol(TokenConstants.ESAC);
+}
+					case -54:
+						break;
+					case 55:
+						{
+    return new Symbol(TokenConstants.THEN);
+}
+					case -55:
+						break;
+					case 56:
+						{
+    return new Symbol(TokenConstants.POOL);
+}
+					case -56:
+						break;
+					case 57:
+						{
+    return new Symbol(TokenConstants.CLASS);
+}
+					case -57:
+						break;
+					case 58:
+						{
+    return new Symbol(TokenConstants.WHILE);
+}
 					case -58:
 						break;
 					case 59:
 						{
-    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+    return new Symbol(TokenConstants.ISVOID);
 }
 					case -59:
+						break;
+					case 60:
+						{
+    return new Symbol(TokenConstants.INHERITS);
+}
+					case -60:
 						break;
 					case 61:
 						{ /* This rule should be the very last
@@ -867,7 +916,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
                                      will match match everything not
                                      matched by other lexical rules. */
                                   System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
-					case -60:
+					case -61:
 						break;
 					case 62:
 						{
@@ -875,33 +924,22 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -61:
-						break;
-					case 64:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
 					case -62:
 						break;
-					case 65:
+					case 63:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -63:
 						break;
-					case 67:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case 64:
+						{
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+}
 					case -64:
 						break;
-					case 68:
+					case 66:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -909,15 +947,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -65:
 						break;
-					case 70:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case 67:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
 					case -66:
 						break;
-					case 71:
+					case 69:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -925,15 +962,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -67:
 						break;
-					case 73:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case 70:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
 					case -68:
 						break;
-					case 74:
+					case 71:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -941,15 +977,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -69:
 						break;
-					case 76:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case 72:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
 					case -70:
 						break;
-					case 77:
+					case 73:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -957,15 +992,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -71:
 						break;
-					case 79:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case 74:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
 					case -72:
 						break;
-					case 80:
+					case 75:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -973,15 +1007,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -73:
 						break;
-					case 82:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case 76:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
 					case -74:
 						break;
-					case 83:
+					case 77:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -989,15 +1022,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -75:
 						break;
-					case 85:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case 78:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
 					case -76:
 						break;
-					case 86:
+					case 79:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1005,15 +1037,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -77:
 						break;
-					case 88:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case 80:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
 					case -78:
 						break;
-					case 89:
+					case 81:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1021,15 +1052,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -79:
 						break;
-					case 91:
+					case 82:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -80:
 						break;
-					case 93:
+					case 83:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1037,15 +1067,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -81:
 						break;
-					case 95:
+					case 84:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -82:
 						break;
-					case 97:
+					case 85:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1053,15 +1082,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -83:
 						break;
-					case 116:
+					case 86:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -84:
 						break;
-					case 121:
+					case 87:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1069,15 +1097,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -85:
 						break;
-					case 123:
+					case 88:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -86:
 						break;
-					case 124:
+					case 89:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1085,15 +1112,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -87:
 						break;
-					case 125:
+					case 90:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -88:
 						break;
-					case 126:
+					case 91:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1101,15 +1127,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -89:
 						break;
-					case 127:
+					case 92:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -90:
 						break;
-					case 128:
+					case 93:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1117,15 +1142,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -91:
 						break;
-					case 129:
+					case 94:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -92:
 						break;
-					case 130:
+					case 95:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
@@ -1133,21 +1157,271 @@ class CoolLexer implements java_cup.runtime.Scanner {
 }
 					case -93:
 						break;
+					case 96:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -94:
+						break;
+					case 97:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -95:
+						break;
+					case 98:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -96:
+						break;
+					case 99:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -97:
+						break;
+					case 100:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -98:
+						break;
+					case 101:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -99:
+						break;
+					case 102:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -100:
+						break;
+					case 103:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -101:
+						break;
+					case 104:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -102:
+						break;
+					case 105:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -103:
+						break;
+					case 106:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -104:
+						break;
+					case 107:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -105:
+						break;
+					case 108:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -106:
+						break;
+					case 109:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -107:
+						break;
+					case 110:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -108:
+						break;
+					case 111:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -109:
+						break;
+					case 112:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -110:
+						break;
+					case 113:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -111:
+						break;
+					case 114:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -112:
+						break;
+					case 115:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -113:
+						break;
+					case 116:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -114:
+						break;
+					case 117:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -115:
+						break;
+					case 118:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -116:
+						break;
+					case 119:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -117:
+						break;
+					case 120:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -118:
+						break;
+					case 121:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -119:
+						break;
+					case 122:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -120:
+						break;
+					case 123:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -121:
+						break;
+					case 124:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -122:
+						break;
+					case 125:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -123:
+						break;
+					case 126:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -124:
+						break;
+					case 127:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -125:
+						break;
+					case 128:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -126:
+						break;
+					case 129:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -127:
+						break;
+					case 130:
+						{
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -128:
+						break;
 					case 131:
 						{
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -94:
+					case -129:
 						break;
 					case 132:
 						{
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -95:
+					case -130:
 						break;
 					case 133:
 						{
@@ -1155,7 +1429,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -96:
+					case -131:
 						break;
 					case 134:
 						{
@@ -1163,7 +1437,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -97:
+					case -132:
 						break;
 					case 135:
 						{
@@ -1171,7 +1445,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -98:
+					case -133:
 						break;
 					case 136:
 						{
@@ -1179,7 +1453,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -99:
+					case -134:
 						break;
 					case 137:
 						{
@@ -1187,7 +1461,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -100:
+					case -135:
 						break;
 					case 138:
 						{
@@ -1195,7 +1469,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -101:
+					case -136:
 						break;
 					case 139:
 						{
@@ -1203,7 +1477,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -102:
+					case -137:
 						break;
 					case 140:
 						{
@@ -1211,7 +1485,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -103:
+					case -138:
 						break;
 					case 141:
 						{
@@ -1219,7 +1493,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -104:
+					case -139:
 						break;
 					case 142:
 						{
@@ -1227,7 +1501,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -105:
+					case -140:
 						break;
 					case 143:
 						{
@@ -1235,7 +1509,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -106:
+					case -141:
 						break;
 					case 144:
 						{
@@ -1243,7 +1517,111 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
-					case -107:
+					case -142:
+						break;
+					case 145:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -143:
+						break;
+					case 146:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -144:
+						break;
+					case 147:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -145:
+						break;
+					case 148:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -146:
+						break;
+					case 149:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -147:
+						break;
+					case 150:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -148:
+						break;
+					case 151:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -149:
+						break;
+					case 152:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -150:
+						break;
+					case 153:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -151:
+						break;
+					case 154:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -152:
+						break;
+					case 155:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -153:
+						break;
+					case 156:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -154:
+						break;
+					case 157:
+						{
+// TODO does it also have a max length?
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+					case -155:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

@@ -93,6 +93,7 @@ NOT=[Nn][Oo][Tt]
 TRUE=(t[rR][uU][eE])
 FALSE=(f[aA][lL][sS][eE])
 DIGIT=[0-9]
+LOWERCASE=[a-z]
 UPPERCASE=[A-Z]
 ALPHA=[A-Za-z]
 WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
@@ -170,6 +171,14 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
 }
 <YYINITIAL> {FALSE} {
     return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
+}
+<YYINITIAL> "SELF_TYPE" {
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.STR_CONST, new IdSymbol(id.getString(),id.getString().length(), id.index));
+}
+<YYINITIAL> {LOWERCASE}({DIGIT}|{ALPHA}|_)*  {
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 <YYINITIAL> {UPPERCASE}({DIGIT}|{ALPHA}|_)* {
 // TODO does it also have a max length?
