@@ -537,7 +537,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 6:
 						{
-    return new Symbol(TokenConstants.error, "Unterminated string constant");
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 }
 					case -8:
 						break;
@@ -592,7 +592,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case 16:
 						{
 	if (yytext().length() > MAX_STR_CONST) {
-        return new Symbol(TokenConstants.error, "String constant too long");
+        return new Symbol(TokenConstants.ERROR, "String constant too long");
 	}
     AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
     return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
@@ -626,7 +626,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 21:
 						{
-    return new Symbol(TokenConstants.error, "String contains null character");
+    return new Symbol(TokenConstants.ERROR, "String contains null character");
 }
 					case -22:
 						break;
@@ -733,7 +733,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 38:
 						{
-    return new Symbol(TokenConstants.error, "Unterminated string constant");
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 }
 					case -39:
 						break;
@@ -857,7 +857,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 59:
 						{
-    return new Symbol(TokenConstants.error, "Unterminated string constant");
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 }
 					case -59:
 						break;

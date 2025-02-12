@@ -182,16 +182,16 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
 }
 <YYINITIAL> \"{STRING_TEXT}\" {
 	if (yytext().length() > MAX_STR_CONST) {
-        return new Symbol(TokenConstants.error, "String constant too long");
+        return new Symbol(TokenConstants.ERROR, "String constant too long");
 	}
     AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
     return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
 }
 <YYINITIAL> \"{STRING_TEXT_NUL_BYTE}\" {
-    return new Symbol(TokenConstants.error, "String contains null character");
+    return new Symbol(TokenConstants.ERROR, "String contains null character");
 }
 <YYINITIAL> \"{STRING_TEXT_UNTERMINATED} {
-    return new Symbol(TokenConstants.error, "Unterminated string constant");
+    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 }
 <YYINITIAL>";" {
     return new Symbol(TokenConstants.SEMI);
