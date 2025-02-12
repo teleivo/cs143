@@ -53,6 +53,8 @@ import java_cup.runtime.Symbol;
  *  encountered in one of those states, place your code in the switch statement. Ultimately, you
  *  should return the EOF symbol, or your lexer won't work.  */
 
+// TODO how can I also return the EOF symbol? I could go into an EOF state but would that then allow
+// me to add an action later? as there are no chars to consume anymore
     switch(yy_lexical_state) {
     case YYINITIAL:
         /* nothing special to do in the initial state */
@@ -65,9 +67,10 @@ import java_cup.runtime.Symbol;
         break;
     case BLOCK_COMMENT:
         yybegin(YYINITIAL);
-// TODO how can I also return the EOF symbol? I could go into an EOF state but would that then allow
-// me to add an action later? as there are no chars to consume anymore
-        return new Symbol(TokenConstants.ERROR,"EOF in comment");
+        return new Symbol(TokenConstants.ERROR, "EOF in comment");
+    case STRING:
+        yybegin(YYINITIAL);
+        return new Symbol(TokenConstants.ERROR, "EOF in string constant");
     }
 
     return new Symbol(TokenConstants.EOF);
@@ -79,6 +82,7 @@ import java_cup.runtime.Symbol;
 %char
 %state LINE_COMMENT
 %state BLOCK_COMMENT
+%state STRING
 
 CLASS=[Cc][Ll][Aa][Ss][Ss]
 IF=[Ii][Ff]
@@ -106,7 +110,7 @@ ALPHA=[A-Za-z]
 WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
 STRING_TEXT=([^\n\0\"]|(\\\n))*
 STRING_TEXT_NUL_BYTE=([^\n\"]|(\\\n))*
-STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
+STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 
 %%
 
@@ -136,6 +140,7 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
     // comments are discarded
     openBlockComments--;
     if (openBlockComments == 0) {
+        // all block comments have been properly closed
         yybegin(YYINITIAL);
     }
 }
@@ -223,8 +228,11 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
 <YYINITIAL> \"{STRING_TEXT_NUL_BYTE}\" {
     return new Symbol(TokenConstants.ERROR, "String contains null character");
 }
-<YYINITIAL> \"{STRING_TEXT_UNTERMINATED} {
+<YYINITIAL> \"{STRING_TEXT_UNESCAPED_NEWLINE}\" {
     return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+}
+<YYINITIAL> \"{STRING_TEXT_UNESCAPED_NEWLINE} {
+    yybegin(STRING);
 }
 <YYINITIAL>";" {
     return new Symbol(TokenConstants.SEMI);
