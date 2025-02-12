@@ -57,8 +57,13 @@ import java_cup.runtime.Symbol;
         /* nothing special to do in the initial state */
         break;
     case LINE_COMMENT:
-       yybegin(YYINITIAL);
-	   break;
+        yybegin(YYINITIAL);
+        break;
+    case BLOCK_COMMENT:
+        yybegin(YYINITIAL);
+// TODO how can I also return the EOF symbol? I could go into an EOF state but would that then allow
+// me to add an action later? as there are no chars to consume anymore
+        return new Symbol(TokenConstants.ERROR,"EOF in comment");
     }
 
     return new Symbol(TokenConstants.EOF);
@@ -69,7 +74,7 @@ import java_cup.runtime.Symbol;
 %line
 %char
 %state LINE_COMMENT
-%state STRING
+%state BLOCK_COMMENT
 
 CLASS=[Cc][Ll][Aa][Ss][Ss]
 IF=[Ii][Ff]
@@ -110,6 +115,16 @@ STRING_TEXT_UNTERMINATED=([^\0\"]|(\\\n))*
     // comments are discarded
 }
 <YYINITIAL,LINE_COMMENT> \n {
+    // comments are discarded
+    yybegin(YYINITIAL);
+}
+<YYINITIAL> "(*" {
+    yybegin(BLOCK_COMMENT);
+}
+<BLOCK_COMMENT> (.|\n) {
+    // comments are discarded
+}
+<BLOCK_COMMENT> "*)" {
     // comments are discarded
     yybegin(YYINITIAL);
 }
