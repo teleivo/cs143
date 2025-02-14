@@ -50,34 +50,38 @@ import java_cup.runtime.Symbol;
 
         int i = 0;
         while (i < stringText.length()) {
-          char c1 = stringText.charAt(i);
-          // TODO validation of char for \0 and \n
-          if (c1 == '\\' && i + 1 < stringText.length()) {
-            char c2 = stringText.charAt(i + 1);
-
-            if (c2 == 'b') {
-              out.append('\b');
-            } else if (c2 == 't') {
-              out.append('\t');
-            } else if (c2 == 'n') {
-              out.append('\n');
-            } else if (c2 == 'f') {
-              out.append('\f');
-            } else {
-              out.append(c2);
+            char c1 = stringText.charAt(i);
+            if (c1 == '\n') {
+                return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
             }
-            i++; // consume one extra char for '\'
-          } else {
-            out.append(c1);
-          }
-          i++;
+            if (c1 == '\0') {
+                return new Symbol(TokenConstants.ERROR, "String contains null character");
+            }
+
+            if (c1 == '\\' && i + 1 < stringText.length()) {
+                char c2 = stringText.charAt(i + 1);
+
+                if (c2 == 'b') {
+                  out.append('\b');
+                } else if (c2 == 't') {
+                  out.append('\t');
+                } else if (c2 == 'n') {
+                  out.append('\n');
+                } else if (c2 == 'f') {
+                  out.append('\f');
+                } else {
+                  out.append(c2);
+                }
+                i++; // consume one extra char for '\'
+            } else {
+                out.append(c1);
+            }
+            i++;
         }
 
         AbstractSymbol str = AbstractTable.stringtable.addString(out.toString());
         return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(), str.getString().length(), str.index));
     }
-
-
 %}
 
 %init{
@@ -103,9 +107,9 @@ import java_cup.runtime.Symbol;
         /* nothing special to do in the initial state */
         break;
     case LINE_COMMENT:
-    // The Cool Reference Manual 10.3 Comments
-    // Any characters between two dashes “--” and the next newline (or EOF, if there is no next
-    // newline) are treated as comments
+        // The Cool Reference Manual 10.3 Comments
+        // Any characters between two dashes “--” and the next newline (or EOF, if there is no next
+        // newline) are treated as comments
         yybegin(YYINITIAL);
         break;
     case BLOCK_COMMENT:
@@ -151,8 +155,7 @@ LOWERCASE=[a-z]
 UPPERCASE=[A-Z]
 ALPHA=[A-Za-z]
 WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
-STRING_TEXT=([^\n\0\"]|(\\\n))*
-STRING_TEXT_NUL_BYTE=([^\n\"]|(\\\n))*
+STRING_TEXT=([^\"])*
 STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 
 %%
@@ -276,12 +279,6 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
     }
 
     return unescapeString(text.substring(1, text.length()-1));
-}
-<YYINITIAL> \"{STRING_TEXT_NUL_BYTE}\" {
-    return new Symbol(TokenConstants.ERROR, "String contains null character");
-}
-<YYINITIAL> \"{STRING_TEXT_UNESCAPED_NEWLINE}\" {
-    return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
 }
 <YYINITIAL> \"{STRING_TEXT_UNESCAPED_NEWLINE} {
     yybegin(STRING);
