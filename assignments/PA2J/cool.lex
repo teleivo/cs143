@@ -20,10 +20,10 @@ import java_cup.runtime.Symbol;
      * string." String constants may be at most 1024 characters long. There are other restrictions
      * on strings; see Section 10
      *
-     * My interpretation is that the double-quotes are part of the string and thus count towards the
-     * max length.
+     * Added 2 to 1024 to compare the string including quotes which are then stripped before
+     * inserting it into the string table.
      */
-    static int MAX_STR_CONST = 1024;
+    static int MAX_STR_CONST = 1026;
 
     // For assembling string constants
     StringBuffer string_buf = new StringBuffer();
@@ -178,7 +178,6 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
     return new Symbol(TokenConstants.ISVOID);
 }
 <YYINITIAL> {LET} {
-// TODO do I also need to lex a let statement or is that the parsers job?
     return new Symbol(TokenConstants.LET);
 }
 <YYINITIAL> {LOOP} {
@@ -235,8 +234,15 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 	if (yytext().length() > MAX_STR_CONST) {
         return new Symbol(TokenConstants.ERROR, "String constant too long");
 	}
-    AbstractSymbol str = AbstractTable.stringtable.addString(yytext());
-    return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(),str.getString().length(), str.index));
+    String text = yytext();
+    if (text.length() == 2) {
+        text = "";
+    } else {
+        text = text.substring(1, text.length()-1); // strip quotes
+    }
+    AbstractSymbol str = AbstractTable.stringtable.addString(text);
+// TODO convert escape characters in string constants to their correct values
+    return new Symbol(TokenConstants.STR_CONST, new StringSymbol(str.getString(), str.getString().length(), str.index));
 }
 <YYINITIAL> \"{STRING_TEXT_NUL_BYTE}\" {
     return new Symbol(TokenConstants.ERROR, "String contains null character");
