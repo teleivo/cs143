@@ -929,7 +929,7 @@ everything not matched by other lexical rules. */
 					case 51:
 						{
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.STR_CONST, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -52:
 						break;

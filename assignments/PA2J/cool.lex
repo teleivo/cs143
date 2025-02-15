@@ -252,7 +252,7 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 }
 <YYINITIAL> "SELF_TYPE" {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.STR_CONST, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 <YYINITIAL> {LOWERCASE}({DIGIT}|{ALPHA}|_)*  {
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
