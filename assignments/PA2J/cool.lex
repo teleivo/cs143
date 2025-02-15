@@ -113,9 +113,11 @@ import java_cup.runtime.Symbol;
         yybegin(YYINITIAL);
         break;
     case BLOCK_COMMENT:
+        curr_lineno = yyline+1;
         yybegin(YYINITIAL);
         return new Symbol(TokenConstants.ERROR, "EOF in comment");
     case STRING:
+        curr_lineno = yyline+1;
         yybegin(YYINITIAL);
         return new Symbol(TokenConstants.ERROR, "EOF in string constant");
     }
@@ -194,80 +196,107 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
     }
 }
 <YYINITIAL> {CLASS} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.CLASS);
 }
 <YYINITIAL> {IF} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.IF);
 }
 <YYINITIAL> {FI} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.FI);
 }
 <YYINITIAL> {ELSE} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ELSE);
 }
 <YYINITIAL> {IN} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.IN);
 }
 <YYINITIAL> {INHERITS} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.INHERITS);
 }
 <YYINITIAL> {ISVOID} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ISVOID);
 }
 <YYINITIAL> {LET} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LET);
 }
 <YYINITIAL> {LOOP} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LOOP);
 }
 <YYINITIAL> {POOL} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.POOL);
 }
 <YYINITIAL> {THEN} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.THEN);
 }
 <YYINITIAL> {WHILE} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.WHILE);
 }
 <YYINITIAL> {CASE} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.CASE);
 }
 <YYINITIAL> {ESAC} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ESAC);
 }
 <YYINITIAL> {NEW} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.NEW);
 }
 <YYINITIAL> {OF} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.OF);
 }
 <YYINITIAL> {NOT} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.NOT);
 }
 <YYINITIAL> {TRUE} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
 }
 <YYINITIAL> {FALSE} {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
 }
 <YYINITIAL> "SELF_TYPE" {
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 <YYINITIAL> {LOWERCASE}({DIGIT}|{ALPHA}|_)*  {
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 <YYINITIAL> {UPPERCASE}({DIGIT}|{ALPHA}|_)* {
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 <YYINITIAL> {DIGIT}* {
+    curr_lineno = yyline+1;
     AbstractSymbol number = AbstractTable.inttable.addString(yytext());
     return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
 }
 <YYINITIAL> \"{STRING_TEXT}\" {
+// TODO check line nr for \n and multi-line strings with \
+// When reporting line numbers for a multi-line string, use the last line. In general, the line number
+// should be where the token ends.
+    curr_lineno = yyline+1;
     String text = yytext();
 	if (text.length() > MAX_STR_CONST) {
         return new Symbol(TokenConstants.ERROR, "String constant too long");
@@ -284,64 +313,84 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
     yybegin(STRING);
 }
 <YYINITIAL> "*" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.MULT);
 }
 <YYINITIAL> "/" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.DIV);
 }
 <YYINITIAL> "~" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.NEG);
 }
 <YYINITIAL> "-" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.MINUS);
 }
 <YYINITIAL> "+" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.PLUS);
 }
 <YYINITIAL> "." {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.DOT);
 }
 <YYINITIAL> "," {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.COMMA);
 }
 <YYINITIAL> ":" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.COLON);
 }
 <YYINITIAL> ";" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.SEMI);
 }
 <YYINITIAL> "{" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LBRACE);
 }
 <YYINITIAL> "}" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.RBRACE);
 }
 <YYINITIAL> "(" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LPAREN);
 }
 <YYINITIAL> ")" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.RPAREN);
 }
 <YYINITIAL> "<=" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LE);
 }
 <YYINITIAL> "<" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LT);
 }
 <YYINITIAL> "=" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.EQ);
 }
 <YYINITIAL> "<-" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ASSIGN);
 }
 <YYINITIAL> "=>" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.DARROW);
 }
 <YYINITIAL> "@"	{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.AT);
 }
 . {
 /* This rule should be the very last in your lexical specification and will match match
 everything not matched by other lexical rules. */
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ERROR, yytext());
 }

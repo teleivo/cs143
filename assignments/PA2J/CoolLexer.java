@@ -585,9 +585,11 @@ class CoolLexer implements java_cup.runtime.Scanner {
         yybegin(YYINITIAL);
         break;
     case BLOCK_COMMENT:
+        curr_lineno = yyline+1;
         yybegin(YYINITIAL);
         return new Symbol(TokenConstants.ERROR, "EOF in comment");
     case STRING:
+        curr_lineno = yyline+1;
         yybegin(YYINITIAL);
         return new Symbol(TokenConstants.ERROR, "EOF in string constant");
     }
@@ -615,6 +617,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					switch (yy_last_accept_state) {
 					case 0:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol number = AbstractTable.inttable.addString(yytext());
     return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
 }
@@ -631,6 +634,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						break;
 					case 3:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.MINUS);
 }
 					case -5:
@@ -639,6 +643,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 						{
 /* This rule should be the very last in your lexical specification and will match match
 everything not matched by other lexical rules. */
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ERROR, yytext());
 }
 					case -6:
@@ -652,24 +657,28 @@ everything not matched by other lexical rules. */
 						break;
 					case 6:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LPAREN);
 }
 					case -8:
 						break;
 					case 7:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.MULT);
 }
 					case -9:
 						break;
 					case 8:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.RPAREN);
 }
 					case -10:
 						break;
 					case 9:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -678,6 +687,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 10:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -691,72 +701,84 @@ everything not matched by other lexical rules. */
 						break;
 					case 12:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.DIV);
 }
 					case -14:
 						break;
 					case 13:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.NEG);
 }
 					case -15:
 						break;
 					case 14:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.PLUS);
 }
 					case -16:
 						break;
 					case 15:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.DOT);
 }
 					case -17:
 						break;
 					case 16:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.COMMA);
 }
 					case -18:
 						break;
 					case 17:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.COLON);
 }
 					case -19:
 						break;
 					case 18:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.SEMI);
 }
 					case -20:
 						break;
 					case 19:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LBRACE);
 }
 					case -21:
 						break;
 					case 20:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.RBRACE);
 }
 					case -22:
 						break;
 					case 21:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LT);
 }
 					case -23:
 						break;
 					case 22:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.EQ);
 }
 					case -24:
 						break;
 					case 23:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.AT);
 }
 					case -25:
@@ -782,30 +804,38 @@ everything not matched by other lexical rules. */
 						break;
 					case 27:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.IF);
 }
 					case -29:
 						break;
 					case 28:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.IN);
 }
 					case -30:
 						break;
 					case 29:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.FI);
 }
 					case -31:
 						break;
 					case 30:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.OF);
 }
 					case -32:
 						break;
 					case 32:
 						{
+// TODO check line nr for \n and multi-line strings with \
+// When reporting line numbers for a multi-line string, use the last line. In general, the line number
+// should be where the token ends.
+    curr_lineno = yyline+1;
     String text = yytext();
 	if (text.length() > MAX_STR_CONST) {
         return new Symbol(TokenConstants.ERROR, "String constant too long");
@@ -820,114 +850,133 @@ everything not matched by other lexical rules. */
 						break;
 					case 33:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ASSIGN);
 }
 					case -34:
 						break;
 					case 34:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LE);
 }
 					case -35:
 						break;
 					case 35:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.DARROW);
 }
 					case -36:
 						break;
 					case 36:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LET);
 }
 					case -37:
 						break;
 					case 37:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.NEW);
 }
 					case -38:
 						break;
 					case 38:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.NOT);
 }
 					case -39:
 						break;
 					case 39:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.CASE);
 }
 					case -40:
 						break;
 					case 40:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LOOP);
 }
 					case -41:
 						break;
 					case 41:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ELSE);
 }
 					case -42:
 						break;
 					case 42:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ESAC);
 }
 					case -43:
 						break;
 					case 43:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.THEN);
 }
 					case -44:
 						break;
 					case 44:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.POOL);
 }
 					case -45:
 						break;
 					case 45:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.BOOL_CONST, Boolean.TRUE);
 }
 					case -46:
 						break;
 					case 46:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.CLASS);
 }
 					case -47:
 						break;
 					case 47:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.WHILE);
 }
 					case -48:
 						break;
 					case 48:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.BOOL_CONST, Boolean.FALSE);
 }
 					case -49:
 						break;
 					case 49:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ISVOID);
 }
 					case -50:
 						break;
 					case 50:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.INHERITS);
 }
 					case -51:
 						break;
 					case 51:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -964,6 +1013,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 56:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol number = AbstractTable.inttable.addString(yytext());
     return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
 }
@@ -976,6 +1026,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 58:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -984,6 +1035,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 59:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -991,102 +1043,119 @@ everything not matched by other lexical rules. */
 						break;
 					case 60:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.IF);
 }
 					case -61:
 						break;
 					case 61:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.IN);
 }
 					case -62:
 						break;
 					case 62:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.FI);
 }
 					case -63:
 						break;
 					case 63:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.OF);
 }
 					case -64:
 						break;
 					case 65:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LET);
 }
 					case -65:
 						break;
 					case 66:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.NEW);
 }
 					case -66:
 						break;
 					case 67:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.NOT);
 }
 					case -67:
 						break;
 					case 68:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.CASE);
 }
 					case -68:
 						break;
 					case 69:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.LOOP);
 }
 					case -69:
 						break;
 					case 70:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ELSE);
 }
 					case -70:
 						break;
 					case 71:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ESAC);
 }
 					case -71:
 						break;
 					case 72:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.THEN);
 }
 					case -72:
 						break;
 					case 73:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.POOL);
 }
 					case -73:
 						break;
 					case 74:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.CLASS);
 }
 					case -74:
 						break;
 					case 75:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.WHILE);
 }
 					case -75:
 						break;
 					case 76:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ISVOID);
 }
 					case -76:
 						break;
 					case 77:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.INHERITS);
 }
 					case -77:
@@ -1099,6 +1168,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 79:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1107,6 +1177,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 80:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1120,6 +1191,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 83:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1128,6 +1200,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 84:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1135,6 +1208,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 86:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1143,6 +1217,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 87:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1150,6 +1225,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 88:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1158,6 +1234,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 89:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1165,6 +1242,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 90:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1173,6 +1251,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 91:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1180,6 +1259,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 92:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1188,6 +1268,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 93:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1195,6 +1276,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 94:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1203,6 +1285,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 95:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1210,6 +1293,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 96:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1218,6 +1302,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 97:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1225,6 +1310,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 98:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1233,6 +1319,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 99:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1240,6 +1327,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 100:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1248,6 +1336,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 101:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1255,6 +1344,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 102:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1263,6 +1353,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 103:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1270,6 +1361,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 104:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1278,6 +1370,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 105:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1285,6 +1378,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 106:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1293,6 +1387,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 107:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1300,6 +1395,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 108:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1308,6 +1404,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 109:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1315,6 +1412,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 110:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1323,6 +1421,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 111:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1330,6 +1429,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 112:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1338,6 +1438,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 113:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1345,6 +1446,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 114:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1352,6 +1454,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 115:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1359,6 +1462,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 116:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1366,6 +1470,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 117:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1373,6 +1478,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 118:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1380,6 +1486,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 119:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1387,6 +1494,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 120:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1394,6 +1502,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 121:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1401,6 +1510,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 122:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1408,6 +1518,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 123:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1415,6 +1526,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 124:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1422,6 +1534,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 125:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1429,6 +1542,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 126:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1436,6 +1550,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 127:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1443,6 +1558,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 128:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1450,6 +1566,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 129:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1457,6 +1574,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 130:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1464,6 +1582,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 131:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1471,6 +1590,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 132:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1479,6 +1599,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 133:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1486,6 +1607,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 134:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1493,6 +1615,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 135:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1500,6 +1623,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 136:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1507,6 +1631,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 137:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1514,6 +1639,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 138:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1522,6 +1648,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 139:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1529,6 +1656,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 140:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1537,6 +1665,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 141:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1544,6 +1673,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 142:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1552,6 +1682,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 143:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1559,6 +1690,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 144:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1567,6 +1699,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 145:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1574,6 +1707,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 146:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1582,6 +1716,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 147:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1589,6 +1724,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 148:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1597,6 +1733,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 149:
 						{
+    curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -1604,6 +1741,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 150:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1612,6 +1750,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 151:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1620,6 +1759,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 152:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1628,6 +1768,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 153:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1636,6 +1777,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 154:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1644,6 +1786,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 155:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1652,6 +1795,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 156:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1660,6 +1804,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 157:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1668,6 +1813,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 158:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1676,6 +1822,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 159:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1684,6 +1831,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 160:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1692,6 +1840,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 161:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1700,6 +1849,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 162:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1708,6 +1858,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 163:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1716,6 +1867,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 164:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1724,6 +1876,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 165:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1732,6 +1885,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 166:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1740,6 +1894,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 167:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1748,6 +1903,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 168:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1756,6 +1912,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 169:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1764,6 +1921,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 170:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1772,6 +1930,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 171:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1780,6 +1939,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 172:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1788,6 +1948,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 173:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
@@ -1796,6 +1957,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 174:
 						{
+    curr_lineno = yyline+1;
 // TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
