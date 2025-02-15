@@ -185,6 +185,7 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
     // comments are discarded
 }
 <YYINITIAL> "*)" {
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ERROR, "Unmatched *)");
 }
 <BLOCK_COMMENT> "*)" {

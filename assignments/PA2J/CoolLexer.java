@@ -798,6 +798,7 @@ everything not matched by other lexical rules. */
 						break;
 					case 26:
 						{
+    curr_lineno = yyline+1;
     return new Symbol(TokenConstants.ERROR, "Unmatched *)");
 }
 					case -28:
