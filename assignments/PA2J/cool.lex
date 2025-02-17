@@ -44,39 +44,62 @@ import java_cup.runtime.Symbol;
 	    return filename;
     }
 
-    // Convert escaped chars according to PA1 4.3 Strings and the Cool Reference Manual 10.2 Strings
-    private Symbol unescapeString(String stringText) {
+    // Lex string according to PA1 4.3 Strings and the Cool Reference Manual 10.2 Strings
+    private Symbol lexString(String stringText) {
+        curr_lineno = yyline+1;
+        if (stringText.length() > MAX_STR_CONST) {
+            return new Symbol(TokenConstants.ERROR, "String constant too long");
+        }
+
         StringBuilder out = new StringBuilder(stringText.length());
 
-        int i = 0;
+        boolean isClosed = false;
+        int i = 1; // skip opening quote
         while (i < stringText.length()) {
             char c1 = stringText.charAt(i);
             if (c1 == '\n') {
+                curr_lineno = yyline+2;
                 return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
             }
             if (c1 == '\0') {
-                return new Symbol(TokenConstants.ERROR, "String contains null character");
+                curr_lineno = yyline+1;
+                return new Symbol(TokenConstants.ERROR, "String contains null character.");
             }
 
             if (c1 == '\\' && i + 1 < stringText.length()) {
                 char c2 = stringText.charAt(i + 1);
 
                 if (c2 == 'b') {
-                  out.append('\b');
+                    out.append('\b');
                 } else if (c2 == 't') {
-                  out.append('\t');
+                    out.append('\t');
                 } else if (c2 == 'n') {
-                  out.append('\n');
+                    out.append('\n');
+                } else if (c2 == '\n') {
+                    curr_lineno++;
+                    out.append('\n');
                 } else if (c2 == 'f') {
-                  out.append('\f');
+                    out.append('\f');
                 } else {
-                  out.append(c2);
+                    out.append(c2);
                 }
                 i++; // consume one extra char for '\'
+            } else if (c1 == '"' && i == stringText.length() - 1) {
+                isClosed = true;
+                // skip closing quote
             } else {
+                // TODO how is the \015 represented?
+                // System.out.append(String.format("\\%03o", (int) c1));
                 out.append(c1);
             }
             i++;
+        }
+
+        if (!isClosed) {
+            // According to PA1 4.3: error should be reported at
+            // 1. the beginning of the next line if an unescaped newline occurs at any point in the string;
+            curr_lineno = curr_lineno+1;
+            return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
         }
 
         AbstractSymbol str = AbstractTable.stringtable.addString(out.toString());
@@ -100,8 +123,6 @@ import java_cup.runtime.Symbol;
  *  encountered in one of those states, place your code in the switch statement. Ultimately, you
  *  should return the EOF symbol, or your lexer won't work.  */
 
-// TODO how can I also return the EOF symbol? I could go into an EOF state but would that then allow
-// me to add an action later? as there are no chars to consume anymore
     switch(yy_lexical_state) {
     case YYINITIAL:
         /* nothing special to do in the initial state */
@@ -119,6 +140,8 @@ import java_cup.runtime.Symbol;
     case STRING:
         curr_lineno = yyline+1;
         yybegin(YYINITIAL);
+        // PA 4.1 Error Handling
+        // The reference implementation returns ERROR "Unterminated string constant"
         return new Symbol(TokenConstants.ERROR, "EOF in string constant");
     }
 
@@ -157,8 +180,7 @@ LOWERCASE=[a-z]
 UPPERCASE=[A-Z]
 ALPHA=[A-Za-z]
 WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
-STRING_TEXT=([^\"])*
-STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
+STRING_TEXT=(.|\n)*
 
 %%
 
@@ -284,7 +306,6 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
 }
 <YYINITIAL> {UPPERCASE}({DIGIT}|{ALPHA}|_)* {
     curr_lineno = yyline+1;
-// TODO does it also have a max length?
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
@@ -293,25 +314,12 @@ STRING_TEXT_UNESCAPED_NEWLINE=([^\0\"]|(\\\n))*
     AbstractSymbol number = AbstractTable.inttable.addString(yytext());
     return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
 }
-<YYINITIAL> \"{STRING_TEXT}\" {
-// TODO check line nr for \n and multi-line strings with \
-// When reporting line numbers for a multi-line string, use the last line. In general, the line number
-// should be where the token ends.
-    curr_lineno = yyline+1;
-    String text = yytext();
-	if (text.length() > MAX_STR_CONST) {
-        return new Symbol(TokenConstants.ERROR, "String constant too long");
-	}
-
-    if (text.length() == 2) {
-        AbstractSymbol stringText = AbstractTable.stringtable.addString("");
-        return new Symbol(TokenConstants.STR_CONST, new StringSymbol(stringText.getString(), stringText.getString().length(), stringText.index));
-    }
-
-    return unescapeString(text.substring(1, text.length()-1));
+<YYINITIAL> \"([^\"]|\n)*\" {
+    return lexString(yytext());
 }
-<YYINITIAL> \"{STRING_TEXT_UNESCAPED_NEWLINE} {
+<YYINITIAL> \"([^\"]|\n)* {
     yybegin(STRING);
+    return lexString(yytext());
 }
 <YYINITIAL> "*" {
     curr_lineno = yyline+1;
