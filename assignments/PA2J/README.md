@@ -3,8 +3,9 @@
 This is my implementation of the assignment described in `./README`. The
 [PA1.pdf](https://web.stanford.edu/class/cs143/handouts/PA1.pdf) contains more details.
 
-I collected some more test input in `./testdata/`. You can run the reference implementation of the
-scanner against mine by first building the lexer via `make lexer` and then running
+I ran my lexer against all `.cl` files from all assignments. I collected some more test input in
+`./testdata/`. You can run the reference implementation of the scanner against mine by first
+building the lexer via `make lexer` and then running
 
 ```sh
 ./test.sh
