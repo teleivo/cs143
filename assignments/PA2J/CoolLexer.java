@@ -44,7 +44,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
     AbstractSymbol curr_filename() {
 	    return filename;
     }
-    // Convert escaped chars according to PA1 4.3 Strings and the Cool Reference Manual 10.2 Strings
+    // Lex string according to PA1 4.3 Strings and the Cool Reference Manual 10.2 Strings
     private Symbol lexString(String stringText) {
         curr_lineno = yyline+1;
         if (stringText.length() > MAX_STR_CONST) {
@@ -53,7 +53,6 @@ class CoolLexer implements java_cup.runtime.Scanner {
         StringBuilder out = new StringBuilder(stringText.length());
         boolean isClosed = false;
         int i = 1; // skip opening quote
-        int adjustLineNr = 0;
         while (i < stringText.length()) {
             char c1 = stringText.charAt(i);
             if (c1 == '\n') {
@@ -85,13 +84,10 @@ class CoolLexer implements java_cup.runtime.Scanner {
                 isClosed = true;
                 // skip closing quote
             } else {
-                // TODO how is the \015 represented?
-                // System.out.append(String.format("\\%03o", (int) c1));
                 out.append(c1);
             }
             i++;
         }
-        // curr_lineno = yyline+1+adjustLineNr;
         if (!isClosed) {
             // According to PA1 4.3: error should be reported at
             // 1. the beginning of the next line if an unescaped newline occurs at any point in the string;
@@ -717,7 +713,6 @@ everything not matched by other lexical rules. */
 					case 11:
 						{
     yybegin(STRING);
-    return lexString(yytext());
 }
 					case -13:
 						break;

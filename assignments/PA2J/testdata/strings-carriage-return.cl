@@ -1,0 +1,2 @@
+"valid	 string"
+"a"

@@ -88,8 +88,6 @@ import java_cup.runtime.Symbol;
                 isClosed = true;
                 // skip closing quote
             } else {
-                // TODO how is the \015 represented?
-                // System.out.append(String.format("\\%03o", (int) c1));
                 out.append(c1);
             }
             i++;
@@ -180,7 +178,6 @@ LOWERCASE=[a-z]
 UPPERCASE=[A-Z]
 ALPHA=[A-Za-z]
 WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t\v]
-STRING_TEXT=(.|\n)*
 
 %%
 
@@ -319,7 +316,6 @@ STRING_TEXT=(.|\n)*
 }
 <YYINITIAL> \"([^\"]|\n)* {
     yybegin(STRING);
-    return lexString(yytext());
 }
 <YYINITIAL> "*" {
     curr_lineno = yyline+1;
