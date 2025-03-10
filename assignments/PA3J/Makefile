@@ -2,7 +2,7 @@
 ASSN = 3J
 CLASS= cs143
 CLASSDIR= ../..
-LIB=  -lfl 
+LIB=  -lfl
 AR= gar
 ARCHIVE_NEW= -cr
 RANLIB= gar -qs
@@ -35,13 +35,13 @@ TSRC= myparser mycoolc cool-tree.aps
 CGEN= CoolParser.java TokenConstants.java
 LIBS= lexer semant cgen
 CFIL= ${CSRC} ${CGEN}
-HFIL= cool-tree.h cool-tree.handcode.h 
+HFIL= cool-tree.h cool-tree.handcode.h
 LSRC= Makefile
 CLS= ${CFIL:.java=.class}
 OUTPUT= good.output bad.output
 
 JAVAC := javac
-CUP := /usr/class/cs143/bin/java_cup
+CUP := ../../bin/java_cup
 
 CUPCLASSPATH := ${CLASSDIR}/lib
 
@@ -51,8 +51,8 @@ source: ${SRC} ${TSRC} ${LSRC} ${LIBS} ${CSRC}
 
 ${OUTPUT}:	parser good.cl bad.cl
 	@rm -f ${OUTPUT}
-	./myparser good.cl >good.output 2>&1 
-	-./myparser bad.cl >bad.output 2>&1 
+	./myparser good.cl >good.output 2>&1
+	-./myparser bad.cl >bad.output 2>&1
 
 parser: Makefile ${CLS}
 	@rm -f parser
@@ -66,7 +66,7 @@ CoolParser.java TokenConstants.java: cool.cup
 
 dotest:	parser good.cl bad.cl
 	@echo "\nRunning parser on good.cl\n"
-	-./myparser good.cl 
+	-./myparser good.cl
 	@echo "\nRunning parser on bad.cl\n"
 	-./myparser bad.cl
 
