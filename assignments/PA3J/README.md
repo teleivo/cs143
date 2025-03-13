@@ -1,0 +1,12 @@
+# Programming Assignment: Parser
+
+This is my implementation of the assignment described in `./README`. The
+[PA2.pdf](https://web.stanford.edu/class/cs143/handouts/PA2.pdf) contains more details.
+
+I ran my parser against all `.cl` files from all assignments. I collected some more test input in
+`./testdata/`. You can run the reference implementation of the parser against mine by first
+building the lexer via `make parser` and then running
+
+## TODO
+
+* do classes need to end in a SEMI? the current class rule says so but the grammar does not

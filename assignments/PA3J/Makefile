@@ -61,7 +61,7 @@ parser: Makefile ${CLS}
 	chmod 755 parser
 
 CoolParser.java TokenConstants.java: cool.cup
-	${CUP} -parser CoolParser -symbols TokenConstants -expect 10000 -dump -nopositions < $< >cool.output 2>&1 || { egrep '^Error at ' cool.output; false; }
+	${CUP} -parser CoolParser -symbols TokenConstants -expect 10000 -dump -nopositions < $< >cool.output 2>&1 || { egrep '^Error ' cool.output; false; }
 
 
 dotest:	parser good.cl bad.cl

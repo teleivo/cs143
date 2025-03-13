@@ -1,4 +1,4 @@
-xxREADME file for Programming Assignment 2 (Java edition)
+README file for Programming Assignment 2 (Java edition)
 =======================================================
 
 Your directory should now contain the following files:
@@ -34,7 +34,7 @@ Your directory should now contain the following files:
 
 	cool.lex is a skeleton file for the specification of the
 	lexical analyzer. You should complete it with your regular
-	expressions, patterns and actions. 
+	expressions, patterns and actions.
 
 	test.cl is a COOL program that you can test the lexical
 	analyzer on. It contains some errors, so it won't compile with
@@ -59,10 +59,10 @@ Your directory should now contain the following files:
         time you run jlex.
 
 	mycoolc is a shell script that glues together the phases of the
-	compiler using Unix pipes instead of statically linking code.  
+	compiler using Unix pipes instead of statically linking code.
 	While inefficient, this architecture makes it easy to mix and match
 	the components you write with those of the course compiler.
-	DO NOT MODIFY.	
+	DO NOT MODIFY.
 
 Instructions
 ------------

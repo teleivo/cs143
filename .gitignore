@@ -2,4 +2,11 @@
 /assignments/PA2J/*.class
 /assignments/PA2J/lexer
 !/assignments/PA2J/
+/assignments/PA3J/*.class
+/assignments/PA3J/lexer
+/assignments/PA3J/cgen
+/assignments/PA3J/semant
+/assignments/PA3J/parser
+/assignments/PA3J/*.output
+!/assignments/PA3J/
 *.tar.gz
