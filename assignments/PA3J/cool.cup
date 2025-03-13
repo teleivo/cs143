@@ -69,6 +69,7 @@ nonterminal Classes class_list;
 nonterminal class_c class;
 nonterminal Features feature_list;
 nonterminal Feature feature;
+nonterminal Expression expr;
 
 /* Precedence declarations go here. */
 
@@ -111,9 +112,20 @@ feature
 	/* attribute without initializing expression */
 	::= OBJECTID:n COLON TYPEID:t SEMI
 	    {: RESULT = new attr(curr_lineno(), n, t, new no_expr(curr_lineno())); :}
+	| OBJECTID:n COLON TYPEID:t ASSIGN expr:e SEMI
+	    {: RESULT = new attr(curr_lineno(), n, t, e); :}
 	;
 	/* TODO add attribute with init expression */
 	/* TODO add method and mix the order in attribute and method */
 	/* TODO error on duplicate attributes/methods? */
 	/* TODO add test for allowing same method name as attribute */
+
+expr
+	::= STR_CONST:e
+	    {: RESULT = new string_const(curr_lineno(), e); :}
+	| BOOL_CONST:e
+	    {: RESULT = new bool_const(curr_lineno(), e); :}
+	| INT_CONST:e
+	    {: RESULT = new int_const(curr_lineno(), e); :}
+	;
 
