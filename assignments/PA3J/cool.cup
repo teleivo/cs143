@@ -70,6 +70,7 @@ nonterminal class_c class;
 nonterminal Features feature_list;
 nonterminal Feature feature;
 nonterminal Expression expr;
+nonterminal Expressions block_expr_list;
 
 /* Precedence declarations go here. */
 
@@ -127,5 +128,15 @@ expr
 	    {: RESULT = new bool_const(curr_lineno(), e); :}
 	| INT_CONST:e
 	    {: RESULT = new int_const(curr_lineno(), e); :}
+	| LBRACE block_expr_list:el RBRACE
+	    {: RESULT = new block(curr_lineno(), el); :}
 	;
 
+block_expr_list
+	/* block with a single expression */
+	::= expr:e SEMI
+	    {: RESULT = (new Expressions(curr_lineno())).appendElement(e); :}
+	/* block with several expressions */
+	| block_expr_list:el expr:e SEMI
+	    {: RESULT = el.appendElement(e); :}
+	;

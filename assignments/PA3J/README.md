@@ -10,3 +10,7 @@ building the lexer via `make parser` and then running
 ## TODO
 
 * do classes need to end in a SEMI? the current class rule says so but the grammar does not
+> An occasional source of confusion in Cool is the use of semi-colons (“;”). Semi-colons are used
+as terminators in lists of expressions (e.g., the block syntax above) and not as expression
+separators.
+Semi-colons also terminate other Cool constructs, see Section 11 for details.
