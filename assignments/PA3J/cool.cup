@@ -118,16 +118,42 @@ feature
 	    {: RESULT = new attr(curr_lineno(), n, t, e); :}
 	;
 	/* TODO add method and mix the order in attribute and method */
-	/* TODO error on duplicate attributes/methods? */
-	/* TODO add test for allowing same method name as attribute */
+	/* TODO error if attribute and method use TYPEID, recover after SEMI */
 
 expr
-	::= STR_CONST:e
-	    {: RESULT = new string_const(curr_lineno(), e); :}
-	| BOOL_CONST:e
+	::= BOOL_CONST:e
 	    {: RESULT = new bool_const(curr_lineno(), e); :}
+	| STR_CONST:e
+	    {: RESULT = new string_const(curr_lineno(), e); :}
 	| INT_CONST:e
 	    {: RESULT = new int_const(curr_lineno(), e); :}
+	| OBJECTID:e
+	    {: RESULT = new object(curr_lineno(), e); :}
+	| LBRACE expr:e RBRACE
+	    {: RESULT = e; :}
+	/* TODO double check I am using the correct type for not and ~ (which are the boolean and int complement) */
+	| NOT expr:e
+	    {: RESULT = new neg(curr_lineno(), e); :}
+	| expr:e1 EQ expr:e2
+	    {: RESULT = new eq(curr_lineno(), e1, e2); :}
+	| expr:e1 LE expr:e2
+	    {: RESULT = new leq(curr_lineno(), e1, e2); :}
+	| expr:e1 LT expr:e2
+	    {: RESULT = new lt(curr_lineno(), e1, e2); :}
+	| NEG expr:e
+	    {: RESULT = new comp(curr_lineno(), e); :}
+	| expr:e1 DIV expr:e2
+	    {: RESULT = new divide(curr_lineno(), e1, e2); :}
+	| expr:e1 MINUS expr:e2
+	    {: RESULT = new sub(curr_lineno(), e1, e2); :}
+	| expr:e1 PLUS expr:e2
+	    {: RESULT = new plus(curr_lineno(), e1, e2); :}
+	| expr:e1 MULT expr:e2
+	    {: RESULT = new mul(curr_lineno(), e1, e2); :}
+	| ISVOID expr:e
+	    {: RESULT = new isvoid(curr_lineno(), e); :}
+	| NEW TYPEID:t
+	    {: RESULT = new new_(curr_lineno(), t); :}
 	| LBRACE block_expr_list:el RBRACE
 	    {: RESULT = new block(curr_lineno(), el); :}
 	;
