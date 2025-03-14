@@ -154,7 +154,7 @@ expr
 	    {: RESULT = new int_const(curr_lineno(), e); :}
 	| OBJECTID:e
 	    {: RESULT = new object(curr_lineno(), e); :}
-	| LBRACE expr:e RBRACE
+	| LPAREN expr:e RPAREN
 	    {: RESULT = e; :}
 	/* TODO double check I am using the correct type for not and ~ (which are the boolean and int complement) */
 	| NOT expr:e
