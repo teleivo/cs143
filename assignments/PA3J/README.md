@@ -9,7 +9,20 @@ building the lexer via `make parser` and then running
 
 ## TODO
 
+* finish method
+* continue with expressions starting with let
+* test all expressions so far once method is in
+
 * think about error handling in constructs I can currently parse
+
+> Your test file bad.cl should have some instances that illustrate the errors from which your parser can
+recover. To receive full credit, your parser should recover in at least the following situations:
+• If there is an error in a class definition but the class is terminated properly and the next class is
+syntactically correct, the parser should be able to restart at the next class definition.
+• Similarly, the parser should recover from errors in features (going on to the next feature), a let binding
+(going on to the next variable), and an expression inside a {...} block.
+
+like this one maybe? if the attribute name is a TYPEID
 
 > Feature names must begin with a lowercase letter. No method name may be defined multiple times in
 a class, and no attribute name may be defined multiple times in a class, but a method and an
