@@ -96,6 +96,7 @@ class
 				   f, curr_filename()); :}
 	| CLASS TYPEID:n INHERITS TYPEID:p LBRACE feature_list:f RBRACE SEMI
 	    {: RESULT = new class_c(curr_lineno(), n, p, f, curr_filename()); :}
+	| CLASS error SEMI
 	;
 
 /* Feature list may be empty, but no empty features in list. */
@@ -116,7 +117,6 @@ feature
 	| OBJECTID:n COLON TYPEID:t ASSIGN expr:e SEMI
 	    {: RESULT = new attr(curr_lineno(), n, t, e); :}
 	;
-	/* TODO add attribute with init expression */
 	/* TODO add method and mix the order in attribute and method */
 	/* TODO error on duplicate attributes/methods? */
 	/* TODO add test for allowing same method name as attribute */
