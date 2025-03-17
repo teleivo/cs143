@@ -25,7 +25,4 @@ comp(first: Int) : Int {
 	~ first
 };
 f: Int <- { 10; 12; 14; };
-precedence(first: Int, second: Int, third: Int) : Int {
-  (first+second)*third/second
-};
 };

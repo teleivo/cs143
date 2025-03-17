@@ -9,9 +9,26 @@ building the lexer via `make parser` and then running
 
 ## TODO
 
-* finish method
-* continue with expressions starting with let
 * test all expressions so far once method is in
+  * make sure precedence and associativity are correct
+
+> The precedence of infix binary and prefix unary operations, from highest to lowest, is given by the
+following table:
+
+.
+@
+~
+isvoid
+* /
++ -
+<= < =
+not
+<-
+
+> All binary operations are left-associative, with the exception of assignment, which is right-associative,
+and the three comparison operations, which do not associate.
+
+* continue with expressions starting with let
 
 * think about error handling in constructs I can currently parse
 

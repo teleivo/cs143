@@ -71,13 +71,23 @@ nonterminal Features features;
 nonterminal Feature feature;
 nonterminal Expression expr;
 nonterminal Expressions block_expr_list;
-nonterminal typcase typecase;
 nonterminal branch branch;
 nonterminal Cases branches;
 nonterminal Formals formals;
 nonterminal formalc formal;
+nonterminal let let;
 
-/* Precedence declarations go here. */
+/* Cool Manual 11.1 Precedence */
+/* TODO Do the prefix unary operations even need associativity? */
+precedence right ASSIGN;
+precedence nonassoc NOT;
+precedence nonassoc LE, LT, EQ;
+precedence left PLUS, MINUS;
+precedence left MULT, DIV;
+precedence nonassoc ISVOID;
+precedence nonassoc NEG;
+precedence nonassoc AT;
+precedence nonassoc DOT;
 
 program
 	::= class_list:cl
@@ -181,12 +191,27 @@ expr
 	    {: RESULT = new new_(curr_lineno(), t); :}
 	| LBRACE block_expr_list:el RBRACE
 	    {: RESULT = new block(curr_lineno(), el); :}
+	| CASE expr:e OF branches:bs ESAC
+	    {: RESULT = new typcase(curr_lineno(), e, bs); :}
+	| LET let:l
+	    {: RESULT = l; :}
 	;
 
-typecase
-	::= CASE expr:e OF branches:bs ESAC
-	    {: RESULT = new typcase(curr_lineno(), e, bs); :}
+let
+	/* let without initializing expression */
+	::= OBJECTID:n COLON TYPEID:t COMMA let:l
+	    {: RESULT = new let(curr_lineno(), n, t, new no_expr(curr_lineno()), l); :}
+	/* let with initializing expression */
+	| OBJECTID:n COLON TYPEID:t ASSIGN expr:i COMMA let:l
+	    {: RESULT = new let(curr_lineno(), n, t, i, l); :}
+	/* final (mandatory) identifier without initializing expression */
+	| OBJECTID:n COLON TYPEID:t IN expr:b
+	    {: RESULT = new let(curr_lineno(), n, t, new no_expr(curr_lineno()), b); :}
+	/* final (mandatory) identifier with initializing expression */
+	| OBJECTID:n COLON TYPEID:t ASSIGN expr:i IN expr:b
+	    {: RESULT = new let(curr_lineno(), n, t, i, b); :}
 	;
+
 branches
 	::= branch:e
 	    {: RESULT = (new Cases(curr_lineno())).appendElement(e); :}
