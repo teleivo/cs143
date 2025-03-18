@@ -9,8 +9,19 @@ building the lexer via `make parser` and then running
 
 ## TODO
 
-* test all expressions so far once method is in
+* implement missing ones
+
+```
+expr ::=
+|expr[@TYPE].ID( [ expr [[, expr]]∗ ] )
+|ID( [ expr [[, expr]]∗ ] )
+```
+
+* make sure I have tests for all of them
   * make sure precedence and associativity are correct
+  * try some invalid programs and see how the parser behaves, compare it to the behavior of the
+  reference parser
+  * run my parser with my lexer, does everything still work?
 
 > The precedence of infix binary and prefix unary operations, from highest to lowest, is given by the
 following table:
@@ -27,8 +38,6 @@ not
 
 > All binary operations are left-associative, with the exception of assignment, which is right-associative,
 and the three comparison operations, which do not associate.
-
-* continue with expressions starting with let
 
 * think about error handling in constructs I can currently parse
 

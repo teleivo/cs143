@@ -195,6 +195,12 @@ expr
 	    {: RESULT = new typcase(curr_lineno(), e, bs); :}
 	| LET let:l
 	    {: RESULT = l; :}
+	| WHILE expr:p LOOP expr:b POOL
+	    {: RESULT = new loop(curr_lineno(), p, b); :}
+	| IF expr:p THEN expr:t ELSE expr:e FI
+	    {: RESULT = new cond(curr_lineno(), p, t, e); :}
+	| OBJECTID:n ASSIGN expr:e
+	    {: RESULT = new assign(curr_lineno(), n, e); :}
 	;
 
 let
