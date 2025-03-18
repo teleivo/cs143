@@ -76,6 +76,7 @@ nonterminal Cases branches;
 nonterminal Formals formals;
 nonterminal formalc formal;
 nonterminal let let;
+nonterminal Expressions actual;
 
 /* Cool Manual 11.1 Precedence */
 /* TODO Do the prefix unary operations even need associativity? */
@@ -199,6 +200,12 @@ expr
 	    {: RESULT = new loop(curr_lineno(), p, b); :}
 	| IF expr:p THEN expr:t ELSE expr:e FI
 	    {: RESULT = new cond(curr_lineno(), p, t, e); :}
+	| expr:e AT TYPEID:t DOT OBJECTID:o LPAREN actual:a RPAREN
+	    {: RESULT = new static_dispatch(curr_lineno(), e, t, o, a); :}
+	| expr:e DOT OBJECTID:o LPAREN actual:a RPAREN
+	    {: RESULT = new dispatch(curr_lineno(), e, o, a); :}
+	| OBJECTID:o LPAREN actual:a RPAREN
+	    {: RESULT = new dispatch(curr_lineno(), new no_expr(curr_lineno()), o, a); :}
 	| OBJECTID:n ASSIGN expr:e
 	    {: RESULT = new assign(curr_lineno(), n, e); :}
 	;
@@ -225,7 +232,7 @@ branches
 	    {: RESULT = el.appendElement(e); :}
 	;
 branch
-	::= OBJECTID:o SEMI TYPEID:t DARROW expr:e SEMI
+	::= OBJECTID:o COLON TYPEID:t DARROW expr:e SEMI
 	    {: RESULT = new branch(curr_lineno(), o, t, e); :}
 	;
 
@@ -236,4 +243,15 @@ block_expr_list
 	/* block with several expressions */
 	| block_expr_list:el expr:e SEMI
 	    {: RESULT = el.appendElement(e); :}
+	;
+
+actual
+	::= /* empty */
+	    {: RESULT = new Expressions(curr_lineno()); :}
+	/* one */
+	| expr:a
+	    {: RESULT = (new Expressions(curr_lineno())).appendElement(a); :}
+	/* many */
+	| actual:al COMMA expr:a
+	    {: RESULT = al.appendElement(a); :}
 	;

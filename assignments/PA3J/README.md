@@ -9,14 +9,6 @@ building the lexer via `make parser` and then running
 
 ## TODO
 
-* implement missing ones
-
-```
-expr ::=
-|expr[@TYPE].ID( [ expr [[, expr]]∗ ] )
-|ID( [ expr [[, expr]]∗ ] )
-```
-
 * make sure I have tests for all of them
   * make sure precedence and associativity are correct
   * try some invalid programs and see how the parser behaves, compare it to the behavior of the
