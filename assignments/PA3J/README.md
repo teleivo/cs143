@@ -4,32 +4,26 @@ This is my implementation of the assignment described in `./README`. The
 [PA2.pdf](https://web.stanford.edu/class/cs143/handouts/PA2.pdf) contains more details.
 
 I ran my parser against all `.cl` files from all assignments. I collected some more test input in
-`./testdata/`. You can run the reference implementation of the parser against mine by first
-building the lexer via `make parser` and then running
+`./testdata-ok/`.
+
+* build my parser using `make parser`
+* run it
+  * against some cool code using `./myparser code.cl`
+  * against my test samples `./test.sh`
+  * against a the course examples `./test.sh ../../examples`
+
+I diffed my lexer in [PA2](../PA2J/) against the reference lexer. I wanted to do the same with my
+parser but the reference implementation hangs forever.
 
 ## TODO
+
+* why can't I run the reference parser?
 
 * make sure I have tests for all of them
   * make sure precedence and associativity are correct
   * try some invalid programs and see how the parser behaves, compare it to the behavior of the
   reference parser
   * run my parser with my lexer, does everything still work?
-
-> The precedence of infix binary and prefix unary operations, from highest to lowest, is given by the
-following table:
-
-.
-@
-~
-isvoid
-* /
-+ -
-<= < =
-not
-<-
-
-> All binary operations are left-associative, with the exception of assignment, which is right-associative,
-and the three comparison operations, which do not associate.
 
 * think about error handling in constructs I can currently parse
 
@@ -45,8 +39,6 @@ like this one maybe? if the attribute name is a TYPEID
 > Feature names must begin with a lowercase letter. No method name may be defined multiple times in
 a class, and no attribute name may be defined multiple times in a class, but a method and an
 attribute may have the same name.
-
-* how to run the reference parser against my testdata? can I diff them? or not due to linenr
 
 * do classes need to end in a SEMI? the current class rule says so but the grammar does not
 > An occasional source of confusion in Cool is the use of semi-colons (“;”). Semi-colons are used
