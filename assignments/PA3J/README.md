@@ -10,7 +10,7 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
 * run it
   * against some cool code using `./myparser code.cl`
   * against my test samples `./test.sh`
-  * against a the course examples `./test.sh ../../examples`
+  * against all the course examples `./test.sh ../../examples`
 
 I diffed my lexer in [PA2](../PA2J/) against the reference lexer. I wanted to do the same with my
 parser but the reference implementation hangs forever.

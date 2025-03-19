@@ -23,3 +23,4 @@ to me via `yyline` which leads me to report an invalid line number compared to t
 implementation. I think this might be due to the Java implementation (jlex?) I rely on. I don't know
 of an easy way to fix this.
 
+You can also run it against all the course examples `./test.sh ../../examples`.
