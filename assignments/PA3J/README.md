@@ -17,13 +17,17 @@ parser but the reference implementation hangs forever.
 
 ## TODO
 
+* run my parser with my lexer, does everything still work?
+  * compare lexers for
+    * ../../examples/graph.cl
+    * ../../examples/lam.cl
+
 * why can't I run the reference parser?
 
 * make sure I have tests for all of them
   * make sure precedence and associativity are correct
   * try some invalid programs and see how the parser behaves, compare it to the behavior of the
   reference parser
-  * run my parser with my lexer, does everything still work?
 
 * think about error handling in constructs I can currently parse
 
