@@ -6,3 +6,7 @@ B: Int;
 a: Int;
 };
 
+class C {
+c: int;
+}
+

@@ -79,7 +79,6 @@ nonterminal let let;
 nonterminal Expressions actual;
 
 /* Cool Manual 11.1 Precedence */
-/* TODO Do the prefix unary operations even need associativity? */
 precedence right ASSIGN;
 precedence nonassoc NOT;
 precedence nonassoc LE, LT, EQ;
@@ -138,7 +137,6 @@ feature
 	| OBJECTID:o LPAREN formals:fs RPAREN COLON TYPEID:t LBRACE expr:e RBRACE SEMI
 	    {: RESULT = new method(curr_lineno(), o, fs, t, e); :}
 	;
-	/* TODO error if attribute and method use TYPEID, recover after SEMI */
 
 formals
 	::= /* empty */
@@ -167,7 +165,6 @@ expr
 	    {: RESULT = new object(curr_lineno(), e); :}
 	| LPAREN expr:e RPAREN
 	    {: RESULT = e; :}
-	/* TODO double check I am using the correct type for not and ~ (which are the boolean and int complement) */
 	| NOT expr:e
 	    {: RESULT = new neg(curr_lineno(), e); :}
 	| expr:e1 EQ expr:e2
@@ -180,22 +177,22 @@ expr
 	    {: RESULT = new comp(curr_lineno(), e); :}
 	| expr:e1 DIV expr:e2
 	    {: RESULT = new divide(curr_lineno(), e1, e2); :}
+	| expr:e1 MULT expr:e2
+	    {: RESULT = new mul(curr_lineno(), e1, e2); :}
 	| expr:e1 MINUS expr:e2
 	    {: RESULT = new sub(curr_lineno(), e1, e2); :}
 	| expr:e1 PLUS expr:e2
 	    {: RESULT = new plus(curr_lineno(), e1, e2); :}
-	| expr:e1 MULT expr:e2
-	    {: RESULT = new mul(curr_lineno(), e1, e2); :}
 	| ISVOID expr:e
 	    {: RESULT = new isvoid(curr_lineno(), e); :}
 	| NEW TYPEID:t
 	    {: RESULT = new new_(curr_lineno(), t); :}
-	| LBRACE block_expr_list:el RBRACE
-	    {: RESULT = new block(curr_lineno(), el); :}
 	| CASE expr:e OF branches:bs ESAC
 	    {: RESULT = new typcase(curr_lineno(), e, bs); :}
 	| LET let:l
 	    {: RESULT = l; :}
+	| LBRACE block_expr_list:el RBRACE
+	    {: RESULT = new block(curr_lineno(), el); :}
 	| WHILE expr:p LOOP expr:b POOL
 	    {: RESULT = new loop(curr_lineno(), p, b); :}
 	| IF expr:p THEN expr:t ELSE expr:e FI
@@ -208,6 +205,17 @@ expr
 	    {: RESULT = new dispatch(curr_lineno(), new no_expr(curr_lineno()), o, a); :}
 	| OBJECTID:n ASSIGN expr:e
 	    {: RESULT = new assign(curr_lineno(), n, e); :}
+	;
+
+branches
+	::= branch:e
+	    {: RESULT = (new Cases(curr_lineno())).appendElement(e); :}
+	| branches:el branch:e
+	    {: RESULT = el.appendElement(e); :}
+	;
+branch
+	::= OBJECTID:o COLON TYPEID:t DARROW expr:e SEMI
+	    {: RESULT = new branch(curr_lineno(), o, t, e); :}
 	;
 
 let
@@ -223,17 +231,6 @@ let
 	/* final (mandatory) identifier with initializing expression */
 	| OBJECTID:n COLON TYPEID:t ASSIGN expr:i IN expr:b
 	    {: RESULT = new let(curr_lineno(), n, t, i, b); :}
-	;
-
-branches
-	::= branch:e
-	    {: RESULT = (new Cases(curr_lineno())).appendElement(e); :}
-	| branches:el branch:e
-	    {: RESULT = el.appendElement(e); :}
-	;
-branch
-	::= OBJECTID:o COLON TYPEID:t DARROW expr:e SEMI
-	    {: RESULT = new branch(curr_lineno(), o, t, e); :}
 	;
 
 block_expr_list
