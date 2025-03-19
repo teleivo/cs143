@@ -149,8 +149,8 @@ class CoolLexer implements java_cup.runtime.Scanner {
 	private final int yy_state_dtrans[] = {
 		0,
 		51,
-		77,
-		81
+		76,
+		80
 	};
 	private void yybegin (int state) {
 		yy_lexical_state = state;
@@ -379,12 +379,12 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 73 */ YY_NO_ANCHOR,
 		/* 74 */ YY_NO_ANCHOR,
 		/* 75 */ YY_NO_ANCHOR,
-		/* 76 */ YY_NO_ANCHOR,
-		/* 77 */ YY_NOT_ACCEPT,
+		/* 76 */ YY_NOT_ACCEPT,
+		/* 77 */ YY_NO_ANCHOR,
 		/* 78 */ YY_NO_ANCHOR,
 		/* 79 */ YY_NO_ANCHOR,
-		/* 80 */ YY_NO_ANCHOR,
-		/* 81 */ YY_NOT_ACCEPT,
+		/* 80 */ YY_NOT_ACCEPT,
+		/* 81 */ YY_NO_ANCHOR,
 		/* 82 */ YY_NO_ANCHOR,
 		/* 83 */ YY_NO_ANCHOR,
 		/* 84 */ YY_NO_ANCHOR,
@@ -475,93 +475,92 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 169 */ YY_NO_ANCHOR,
 		/* 170 */ YY_NO_ANCHOR,
 		/* 171 */ YY_NO_ANCHOR,
-		/* 172 */ YY_NO_ANCHOR,
-		/* 173 */ YY_NO_ANCHOR
+		/* 172 */ YY_NO_ANCHOR
 	};
 	private int yy_cmap[] = unpackFromString(1,130,
 "3:9,4,5,3,4,1,3:18,4,3,48,3:5,6,8,7,51,53,2,52,49,46:10,54,55,58,59,60,3,61" +
-",11,47,9,23,30,14,47,17,13,47:2,31,47,16,22,34,47,18,29,19,27,20,25,47,33,4" +
-"7,3:4,32,3,35,36,37,38,15,28,36,39,40,36:2,10,36,41,42,24,36,43,12,26,44,21" +
-",45,36:3,56,3,57,50,3,0:2")[0];
+",11,47,9,22,29,14,47,17,13,47:2,30,47,16,21,33,47,18,28,19,26,20,24,47,32,4" +
+"7,3:4,31,3,34,35,36,37,15,27,35,38,39,35:2,10,35,40,41,23,35,42,12,25,43,44" +
+",45,35:3,56,3,57,50,3,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,174,
+	private int yy_rmap[] = unpackFromString(1,173,
 "0,1:2,2,1:2,3,4,1,5,6,7,1:9,8,9,1:4,10,11,10:2,1:4,12,10:3,12:3,10,12:2,10:" +
-"2,12,10:3,13,1:4,14,12,15,16,12,17,12:2,10,12:3,10:3,12,10,12:4,18,19,20,21" +
-",22,23,24,25,26,27,28,29,30,12,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45" +
-",46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70" +
-",71,12,72,73,74,75,76,77,78,79,10,80,81,82,83,84,85,86,87,88,89,90,91,92,93" +
-",94,95,96,97,98,99,100,101,102,103,10,104,105,106,107,108,109,110")[0];
+"2,12,10:3,13,1:4,14,15,16,12,17,12:2,10,12:3,10:3,12,10,12:4,18,19,20,21,22" +
+",23,24,25,26,27,28,29,30,12,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46" +
+",47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71" +
+",12,72,73,74,75,76,77,78,79,10,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94" +
+",95,96,97,98,99,100,101,102,103,10,104,105,106,107,108,109,110")[0];
 
 	private int yy_nxt[][] = unpackFromString(111,62,
-"1,2,3,4,2,5,6,7,8,9,10,166,132,58,79,138,131,166:2,168,166,57,83,166,140,16" +
-"9,142,166,59,170,171,137,4,166,172,132:2,144,132:2,80,146,84,132:2,148,56,1" +
-"66,11,12,13,14,15,16,17,18,19,20,21,22,4,23,-1:64,24,-1:66,25,-1:62,26,-1:6" +
-"2,166,173,139,166:19,173,141,166:2,139,166:10,141,166,-1:23,132:6,86,132:6," +
-"88,132:7,86,132,90,132:9,88,132:3,90,132,-1:15,11:47,31,11:13,-1:2,32,-1:56" +
-",33,-1:62,34,-1:10,166:23,141,166:13,141,166,-1:23,166:8,156,166:14,141,166" +
-":6,156,166:6,141,166,-1:23,132:23,90,132:13,90,132,-1:14,1,-1,52:3,5,52:56," +
-"-1:46,56,-1:24,166:3,143,166,27,166,28,166:11,27,143,166:2,141,166:8,28,166" +
-":4,141,166,-1:23,132:2,100,132,62,132:18,90,132:2,100,132:4,62,132:5,90,132" +
-",-1:23,132:8,120,132:14,90,132:6,120,132:6,90,132,-1:14,1,-1,53:4,78,82,53:" +
-"54,-1:7,54,-1:63,166:4,29,166:18,141,166:7,29,166:5,141,166,-1:23,132:3,102" +
-",132,60,132,61,132:11,60,102,132:2,90,132:8,61,132:4,90,132,-1:14,1,-1,4:3," +
-"-1,4:56,-1:8,55,-1:62,166:5,30,166:13,30,166:3,141,166:13,141,166,-1:23,132" +
-":5,63,132:13,63,132:3,90,132:13,90,132,-1:23,166:16,36,166:6,141,166:12,36," +
-"141,166,-1:23,132:10,35,132:6,35,132:5,90,132:13,90,132,-1:23,166:10,37,166" +
-":6,37,166:5,141,166:13,141,166,-1:23,132:13,110,132:9,90,132:9,110,132:3,90" +
-",132,-1:23,166:10,64,166:6,64,166:5,141,166:13,141,166,-1:23,166:6,38,166:1" +
-"4,38,166,141,166:13,141,166,-1:23,132:3,112,132:16,112,132:2,90,132:13,90,1" +
-"32,-1:23,166:7,42,166:15,141,166:8,42,166:4,141,166,-1:23,132:2,113,132:20," +
-"90,132:2,113,132:10,90,132,-1:23,166:6,69,166:14,69,166,141,166:13,141,166," +
-"-1:23,132:6,115,132:14,115,132,90,132:13,90,132,-1:23,70,166:22,141,166:4,7" +
-"0,166:8,141,166,-1:23,132:18,116,132:4,90,132:11,116,132,90,132,-1:23,166:1" +
-"5,68,166:7,141,166,68,166:11,141,166,-1:23,132,117,132:20,117,90,132:13,90," +
-"132,-1:23,166,72,166:20,72,141,166:13,141,166,-1:23,132:11,119:2,132:10,90," +
-"132:13,90,132,-1:23,166:3,45,166:16,45,166:2,141,166:13,141,166,-1:23,132:1" +
-"6,65,132:6,90,132:12,65,90,132,-1:23,166:6,46,166:14,46,166,141,166:13,141," +
-"166,-1:23,132:10,66,132:6,66,132:5,90,132:13,90,132,-1:23,166:14,48,166:8,1" +
-"41,166:5,48,166:7,141,166,-1:23,132:4,121,132:18,90,132:7,121,132:5,90,132," +
-"-1:23,166:3,49,166:16,49,166:2,141,166:13,141,166,-1:23,132:15,39,132:7,90," +
-"132,39,132:11,90,132,-1:23,166:21,50,166,141,166:13,141,166,-1:23,132:6,40," +
-"132:14,40,132,90,132:13,90,132,-1:23,41,132:22,90,132:4,41,132:8,90,132,-1:" +
-"23,132,43,132:20,43,90,132:13,90,132,-1:23,132:7,71,132:15,90,132:8,71,132:" +
-"4,90,132,-1:23,132:6,44,132:14,44,132,90,132:13,90,132,-1:23,132:3,122,132:" +
-"16,122,132:2,90,132:13,90,132,-1:23,132:6,67,132:14,67,132,90,132:13,90,132" +
-",-1:23,132:13,124,132:9,90,132:9,124,132:3,90,132,-1:23,132:6,125,132:14,12" +
-"5,132,90,132:13,90,132,-1:23,132,126,132:20,126,90,132:13,90,132,-1:23,132:" +
-"6,47,132:14,47,132,90,132:13,90,132,-1:23,132:3,73,132:16,73,132:2,90,132:1" +
-"3,90,132,-1:23,132:4,127,132:18,90,132:7,127,132:5,90,132,-1:23,132:9,128,1" +
-"32:13,90,132:10,128,132:2,90,132,-1:23,132:6,74,132:14,74,132,90,132:13,90," +
-"132,-1:23,132:14,75,132:8,90,132:5,75,132:7,90,132,-1:23,132:4,129,132:18,9" +
-"0,132:7,129,132:5,90,132,-1:23,132:10,130,132:6,130,132:5,90,132:13,90,132," +
-"-1:23,132:3,76,132:16,76,132:2,90,132:13,90,132,-1:23,166:6,85,166:6,87,166" +
-":7,85,166,141,166:9,87,166:3,141,166,-1:23,132:13,114,132:9,90,132:9,114,13" +
-"2:3,90,132,-1:23,132:3,118,132:16,118,132:2,90,132:13,90,132,-1:23,132:2,13" +
-"6,132:20,90,132:2,136,132:10,90,132,-1:23,132:3,123,132:16,123,132:2,90,132" +
-":13,90,132,-1:23,166:6,89,166:6,152,166:7,89,166,141,166:9,152,166:3,141,16" +
-"6,-1:23,132,92,132,94,132:16,94,132,92,90,132:13,90,132,-1:23,166:3,91,166:" +
-"16,91,166:2,141,166:13,141,166,-1:23,132:13,133,132:9,90,132:9,133,132:3,90" +
-",132,-1:23,132:8,96,98,132:13,90,132:6,96,132:3,98,132:2,90,132,-1:23,166:1" +
-"1,155:2,166:10,141,166:13,141,166,-1:23,132,135,134,132:19,135,90,132:2,134" +
-",132:10,90,132,-1:23,166:6,93,166:14,93,166,141,166:13,141,166,-1:23,132:6," +
-"104,132:6,106,132:7,104,132,90,132:9,106,132:3,90,132,-1:23,166:4,157,166:1" +
-"8,141,166:7,157,166:5,141,166,-1:23,132:8,108,132:14,90,132:6,108,132:6,90," +
-"132,-1:23,166:22,158,141,166:13,141,166,-1:23,166:3,95,166:16,95,166:2,141," +
-"166:13,141,166,-1:23,166:2,97,166:20,141,166:2,97,166:10,141,166,-1:23,166:" +
-"13,99,166:9,141,166:9,99,166:3,141,166,-1:23,166:13,101,166:9,141,166:9,101" +
-",166:3,141,166,-1:23,166:3,103,166:16,103,166:2,141,166:13,141,166,-1:23,16" +
-"6:13,159,166:9,141,166:9,159,166:3,141,166,-1:23,166:6,160,166:14,160,166,1" +
-"41,166:13,141,166,-1:23,166,105,166:20,105,141,166:13,141,166,-1:23,166:5,1" +
-"67,166:17,141,166:13,141,166,-1:23,166:4,107,166:18,141,166:7,107,166:5,141" +
-",166,-1:23,166:9,161,166:13,141,166:10,161,166:2,141,166,-1:23,166:4,163,16" +
-"6:18,141,166:7,163,166:5,141,166,-1:23,166:10,164,166:12,141,166:13,141,166" +
-",-1:23,166:10,109,166:6,109,166:5,141,166:13,141,166,-1:23,166:23,141,165,1" +
-"66:12,141,166,-1:23,166:23,141,166,111,166:11,141,166,-1:23,166:23,162,166:" +
-"13,141,166,-1:23,166:8,145,166:14,141,166:6,145,166:6,141,166,-1:23,166:8,1" +
-"47,166:14,141,166:6,147,166:6,141,166,-1:23,166:21,149,166,141,166:13,141,1" +
-"66,-1:23,166,150,166,151,166:16,151,166,150,141,166:13,141,166,-1:23,166:13" +
-",153,166:9,141,166:9,153,166:3,141,166,-1:23,166:2,154,166:20,141,166:2,154" +
-",166:10,141,166,-1:14");
+"1,2,3,4,2,5,6,7,8,9,10,165,131,57,78,137,130,165:2,167,165,82,165,139,168,1" +
+"41,165,58,169,170,136,4,165,171,131:2,143,131:2,79,145,83,131:3,147,56,165," +
+"11,12,13,14,15,16,17,18,19,20,21,22,4,23,-1:64,24,-1:66,25,-1:62,26,-1:62,1" +
+"65,172,138,165:18,172,140,165:2,138,165:11,140,165,-1:23,131:6,85,131:5,87," +
+"131:7,85,131,89,131:9,87,131:4,89,131,-1:15,11:47,31,11:13,-1:2,32,-1:56,33" +
+",-1:62,34,-1:10,165:22,140,165:14,140,165,-1:23,165:8,155,165:13,140,165:6," +
+"155,165:7,140,165,-1:23,131:22,89,131:14,89,131,-1:14,1,-1,52:3,5,52:56,-1:" +
+"46,56,-1:24,165:3,142,165,27,165,28,165:10,27,142,165:2,140,165:8,28,165:5," +
+"140,165,-1:23,131:2,99,131,61,131:17,89,131:2,99,131:4,61,131:6,89,131,-1:2" +
+"3,131:8,119,131:13,89,131:6,119,131:7,89,131,-1:14,1,-1,53:4,77,81,53:54,-1" +
+":7,54,-1:63,165:4,29,165:17,140,165:7,29,165:6,140,165,-1:23,131:3,101,131," +
+"59,131,60,131:10,59,101,131:2,89,131:8,60,131:5,89,131,-1:14,1,-1,4:3,-1,4:" +
+"56,-1:8,55,-1:62,165:5,30,165:12,30,165:3,140,165:14,140,165,-1:23,131:5,62" +
+",131:12,62,131:3,89,131:14,89,131,-1:23,165:15,36,165:6,140,165:13,36,140,1" +
+"65,-1:23,131:10,35,131:5,35,131:5,89,131:14,89,131,-1:23,165:10,37,165:5,37" +
+",165:5,140,165:14,140,165,-1:23,131:12,109,131:9,89,131:9,109,131:4,89,131," +
+"-1:23,165:10,63,165:5,63,165:5,140,165:14,140,165,-1:23,165:6,38,165:13,38," +
+"165,140,165:14,140,165,-1:23,131:3,111,131:15,111,131:2,89,131:14,89,131,-1" +
+":23,165:7,42,165:14,140,165:8,42,165:5,140,165,-1:23,131:2,112,131:19,89,13" +
+"1:2,112,131:11,89,131,-1:23,165:6,68,165:13,68,165,140,165:14,140,165,-1:23" +
+",131:6,114,131:13,114,131,89,131:14,89,131,-1:23,69,165:21,140,165:4,69,165" +
+":9,140,165,-1:23,131:17,115,131:4,89,131:11,115,131:2,89,131,-1:23,165:14,6" +
+"7,165:7,140,165,67,165:12,140,165,-1:23,131,116,131:19,116,89,131:14,89,131" +
+",-1:23,165,71,165:19,71,140,165:14,140,165,-1:23,131:11,118,131:10,89,131:1" +
+"2,118,131,89,131,-1:23,165:3,45,165:15,45,165:2,140,165:14,140,165,-1:23,13" +
+"1:15,64,131:6,89,131:13,64,89,131,-1:23,165:6,46,165:13,46,165,140,165:14,1" +
+"40,165,-1:23,131:10,65,131:5,65,131:5,89,131:14,89,131,-1:23,165:13,48,165:" +
+"8,140,165:5,48,165:8,140,165,-1:23,131:4,120,131:17,89,131:7,120,131:6,89,1" +
+"31,-1:23,165:3,49,165:15,49,165:2,140,165:14,140,165,-1:23,131:14,39,131:7," +
+"89,131,39,131:12,89,131,-1:23,165:20,50,165,140,165:14,140,165,-1:23,131:6," +
+"40,131:13,40,131,89,131:14,89,131,-1:23,41,131:21,89,131:4,41,131:9,89,131," +
+"-1:23,131,43,131:19,43,89,131:14,89,131,-1:23,131:7,70,131:14,89,131:8,70,1" +
+"31:5,89,131,-1:23,131:6,44,131:13,44,131,89,131:14,89,131,-1:23,131:3,121,1" +
+"31:15,121,131:2,89,131:14,89,131,-1:23,131:6,66,131:13,66,131,89,131:14,89," +
+"131,-1:23,131:12,123,131:9,89,131:9,123,131:4,89,131,-1:23,131:6,124,131:13" +
+",124,131,89,131:14,89,131,-1:23,131,125,131:19,125,89,131:14,89,131,-1:23,1" +
+"31:6,47,131:13,47,131,89,131:14,89,131,-1:23,131:3,72,131:15,72,131:2,89,13" +
+"1:14,89,131,-1:23,131:4,126,131:17,89,131:7,126,131:6,89,131,-1:23,131:9,12" +
+"7,131:12,89,131:10,127,131:3,89,131,-1:23,131:6,73,131:13,73,131,89,131:14," +
+"89,131,-1:23,131:13,74,131:8,89,131:5,74,131:8,89,131,-1:23,131:4,128,131:1" +
+"7,89,131:7,128,131:6,89,131,-1:23,131:10,129,131:5,129,131:5,89,131:14,89,1" +
+"31,-1:23,131:3,75,131:15,75,131:2,89,131:14,89,131,-1:23,165:6,84,165:5,86," +
+"165:7,84,165,140,165:9,86,165:4,140,165,-1:23,131:12,113,131:9,89,131:9,113" +
+",131:4,89,131,-1:23,131:3,117,131:15,117,131:2,89,131:14,89,131,-1:23,131:2" +
+",135,131:19,89,131:2,135,131:11,89,131,-1:23,131:3,122,131:15,122,131:2,89," +
+"131:14,89,131,-1:23,165:6,88,165:5,151,165:7,88,165,140,165:9,151,165:4,140" +
+",165,-1:23,131,91,131,93,131:15,93,131,91,89,131:14,89,131,-1:23,165:3,90,1" +
+"65:15,90,165:2,140,165:14,140,165,-1:23,131:12,132,131:9,89,131:9,132,131:4" +
+",89,131,-1:23,131:8,95,97,131:12,89,131:6,95,131:3,97,131:3,89,131,-1:23,16" +
+"5:11,154,165:10,140,165:12,154,165,140,165,-1:23,131,134,133,131:18,134,89," +
+"131:2,133,131:11,89,131,-1:23,165:6,92,165:13,92,165,140,165:14,140,165,-1:" +
+"23,131:6,103,131:5,105,131:7,103,131,89,131:9,105,131:4,89,131,-1:23,165:4," +
+"156,165:17,140,165:7,156,165:6,140,165,-1:23,131:8,107,131:13,89,131:6,107," +
+"131:7,89,131,-1:23,165:21,157,140,165:14,140,165,-1:23,165:3,94,165:15,94,1" +
+"65:2,140,165:14,140,165,-1:23,165:2,96,165:19,140,165:2,96,165:11,140,165,-" +
+"1:23,165:12,98,165:9,140,165:9,98,165:4,140,165,-1:23,165:12,100,165:9,140," +
+"165:9,100,165:4,140,165,-1:23,165:3,102,165:15,102,165:2,140,165:14,140,165" +
+",-1:23,165:12,158,165:9,140,165:9,158,165:4,140,165,-1:23,165:6,159,165:13," +
+"159,165,140,165:14,140,165,-1:23,165,104,165:19,104,140,165:14,140,165,-1:2" +
+"3,165:5,166,165:16,140,165:14,140,165,-1:23,165:4,106,165:17,140,165:7,106," +
+"165:6,140,165,-1:23,165:9,160,165:12,140,165:10,160,165:3,140,165,-1:23,165" +
+":4,162,165:17,140,165:7,162,165:6,140,165,-1:23,165:10,163,165:11,140,165:1" +
+"4,140,165,-1:23,165:10,108,165:5,108,165:5,140,165:14,140,165,-1:23,165:22," +
+"140,164,165:13,140,165,-1:23,165:22,140,165,110,165:12,140,165,-1:23,165:22" +
+",161,165:14,140,165,-1:23,165:8,144,165:13,140,165:6,144,165:7,140,165,-1:2" +
+"3,165:8,146,165:13,140,165:6,146,165:7,140,165,-1:23,165:20,148,165,140,165" +
+":14,140,165,-1:23,165,149,165,150,165:15,150,165,149,140,165:14,140,165,-1:" +
+"23,165:12,152,165:9,140,165:9,152,165:4,140,165,-1:23,165:2,153,165:19,140," +
+"165:2,153,165:11,140,165,-1:14");
 
 	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
@@ -1027,6 +1026,9 @@ everything not matched by other lexical rules. */
 						break;
 					case 57:
 						{
+    curr_lineno = yyline+1;
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -58:
 						break;
@@ -1034,140 +1036,140 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -59:
 						break;
 					case 59:
 						{
     curr_lineno = yyline+1;
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.IF);
 }
 					case -60:
 						break;
 					case 60:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.IF);
+    return new Symbol(TokenConstants.IN);
 }
 					case -61:
 						break;
 					case 61:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.IN);
+    return new Symbol(TokenConstants.FI);
 }
 					case -62:
 						break;
 					case 62:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.FI);
+    return new Symbol(TokenConstants.OF);
 }
 					case -63:
 						break;
 					case 63:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.OF);
+    return new Symbol(TokenConstants.LET);
 }
 					case -64:
 						break;
 					case 64:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.LET);
+    return new Symbol(TokenConstants.NEW);
 }
 					case -65:
 						break;
 					case 65:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.NEW);
+    return new Symbol(TokenConstants.NOT);
 }
 					case -66:
 						break;
 					case 66:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.NOT);
+    return new Symbol(TokenConstants.CASE);
 }
 					case -67:
 						break;
 					case 67:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.CASE);
+    return new Symbol(TokenConstants.LOOP);
 }
 					case -68:
 						break;
 					case 68:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.LOOP);
+    return new Symbol(TokenConstants.ELSE);
 }
 					case -69:
 						break;
 					case 69:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.ELSE);
+    return new Symbol(TokenConstants.ESAC);
 }
 					case -70:
 						break;
 					case 70:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.ESAC);
+    return new Symbol(TokenConstants.THEN);
 }
 					case -71:
 						break;
 					case 71:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.THEN);
+    return new Symbol(TokenConstants.POOL);
 }
 					case -72:
 						break;
 					case 72:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.POOL);
+    return new Symbol(TokenConstants.CLASS);
 }
 					case -73:
 						break;
 					case 73:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.CLASS);
+    return new Symbol(TokenConstants.WHILE);
 }
 					case -74:
 						break;
 					case 74:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.WHILE);
+    return new Symbol(TokenConstants.ISVOID);
 }
 					case -75:
 						break;
 					case 75:
 						{
     curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.ISVOID);
+    return new Symbol(TokenConstants.INHERITS);
 }
 					case -76:
 						break;
-					case 76:
+					case 77:
 						{
-    curr_lineno = yyline+1;
-    return new Symbol(TokenConstants.INHERITS);
+    // comments are discarded
 }
 					case -77:
 						break;
 					case 78:
 						{
-    // comments are discarded
+    curr_lineno = yyline+1;
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -78:
 						break;
@@ -1175,21 +1177,21 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -79:
 						break;
-					case 80:
+					case 81:
 						{
-    curr_lineno = yyline+1;
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    // comments are discarded
 }
 					case -80:
 						break;
 					case 82:
 						{
-    // comments are discarded
+    curr_lineno = yyline+1;
+    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -81:
 						break;
@@ -1197,7 +1199,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -82:
 						break;
@@ -1205,7 +1207,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -83:
 						break;
@@ -1213,7 +1215,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -84:
 						break;
@@ -1221,7 +1223,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -85:
 						break;
@@ -1229,7 +1231,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -86:
 						break;
@@ -1237,7 +1239,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -87:
 						break;
@@ -1245,7 +1247,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -88:
 						break;
@@ -1253,7 +1255,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -89:
 						break;
@@ -1261,7 +1263,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -90:
 						break;
@@ -1269,7 +1271,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -91:
 						break;
@@ -1277,7 +1279,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -92:
 						break;
@@ -1285,7 +1287,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -93:
 						break;
@@ -1293,7 +1295,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -94:
 						break;
@@ -1301,7 +1303,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -95:
 						break;
@@ -1309,7 +1311,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -96:
 						break;
@@ -1317,7 +1319,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -97:
 						break;
@@ -1325,7 +1327,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -98:
 						break;
@@ -1333,7 +1335,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -99:
 						break;
@@ -1341,7 +1343,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -100:
 						break;
@@ -1349,7 +1351,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -101:
 						break;
@@ -1357,7 +1359,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -102:
 						break;
@@ -1365,7 +1367,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -103:
 						break;
@@ -1373,7 +1375,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -104:
 						break;
@@ -1381,7 +1383,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -105:
 						break;
@@ -1389,7 +1391,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -106:
 						break;
@@ -1397,7 +1399,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -107:
 						break;
@@ -1405,7 +1407,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -108:
 						break;
@@ -1413,7 +1415,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -109:
 						break;
@@ -1421,7 +1423,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -110:
 						break;
@@ -1573,7 +1575,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -129:
 						break;
@@ -1581,7 +1583,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -130:
 						break;
@@ -1621,7 +1623,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -135:
 						break;
@@ -1629,7 +1631,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -136:
 						break;
@@ -1637,7 +1639,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -137:
 						break;
@@ -1645,7 +1647,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -138:
 						break;
@@ -1653,7 +1655,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -139:
 						break;
@@ -1661,7 +1663,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -140:
 						break;
@@ -1669,7 +1671,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -141:
 						break;
@@ -1677,7 +1679,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -142:
 						break;
@@ -1685,7 +1687,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -143:
 						break;
@@ -1693,7 +1695,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -144:
 						break;
@@ -1701,7 +1703,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -145:
 						break;
@@ -1709,7 +1711,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -146:
 						break;
@@ -1717,7 +1719,7 @@ everything not matched by other lexical rules. */
 						{
     curr_lineno = yyline+1;
     AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.OBJECTID, new IdSymbol(id.getString(),id.getString().length(), id.index));
+    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -147:
 						break;
@@ -1912,14 +1914,6 @@ everything not matched by other lexical rules. */
     return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
 }
 					case -171:
-						break;
-					case 173:
-						{
-    curr_lineno = yyline+1;
-    AbstractSymbol id = AbstractTable.idtable.addString(yytext());
-    return new Symbol(TokenConstants.TYPEID, new IdSymbol(id.getString(),id.getString().length(), id.index));
-}
-					case -172:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

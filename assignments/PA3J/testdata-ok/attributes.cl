@@ -1,6 +1,6 @@
 class A {
 a(): Int { 1 };
-b(first: Bool) : Bool {
+b(v : Int) : Bool {
 	not first
 };
 add(first: Int, second: Int) : Int {
