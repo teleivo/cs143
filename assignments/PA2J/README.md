@@ -4,23 +4,27 @@ This is my implementation of the assignment described in `./README`. The
 [PA1.pdf](https://web.stanford.edu/class/cs143/handouts/PA1.pdf) contains more details.
 
 I ran my lexer against all `.cl` files from all assignments. I collected some more test input in
-`./testdata/`. You can run the reference implementation of the scanner against mine by first
-building the lexer via `make lexer` and then running
+`./testdata/`.
 
-```sh
-./test.sh
-```
+* build my lexer using `make lexer`
+* run it
+  * against some cool code using `./lexer code.cl`
+  * against my test samples `./test.sh`
+  * against all the course examples `./test.sh ../../examples`
 
-There are some noticeable differences between my and the reference implementation.
+## Limitations
 
-* `./testdata/strings-eof.cl`: is incorrectly implemented by the reference implementation it returns
-`ERROR "Unterminated string constant"` instead of `ERROR "EOF in string constant"`.
-* `./testdata/strings-unescaped-newline.cl`: the reference implementation does not handle this well
-IMHO. The reference implementation wrongly lexes `OK` as `TYPEID`. I think it does so according to
-the assignment but leads to cascading errors by not consuming the entire string.
-* `./testdata/strings-carriage-return.cl`: the carriage return increases the line number accessible
-to me via `yyline` which leads me to report an invalid line number compared to the reference
-implementation. I think this might be due to the Java implementation (jlex?) I rely on. I don't know
-of an easy way to fix this.
+`./testdata/strings-eof.cl` shows that the reference implementation incorrectly returns `ERROR
+"Unterminated string constant"` instead of `ERROR "EOF in string constant"` as required by
+[PA1.pdf](https://web.stanford.edu/class/cs143/handouts/PA1.pdf) 4.1 Error handling. At first I was
+able to implement this case correctly using a `STRING` state and `%eofval` code. This did however
+cause my implementation to not lex some `../../examples/` correctly. On the one hand I need to match
+unterminated strings only until the end of the line to adhere to
 
-You can also run it against all the course examples `./test.sh ../../examples`.
+> Report only the first string constant error to occur, and then
+resume lexing after the end of the string. The end of the string is defined as either
+1. the beginning of the next line if an unescaped newline occurs at any point in the string;
+
+and not match too greadily. On the other hand I need to detect that there is no next character
+anymore inside of my `lexString` method. I do not know of such a possibility. This might also be why
+the reference implementation behaves in the same way :shrug:.

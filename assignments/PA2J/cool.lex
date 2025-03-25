@@ -66,6 +66,8 @@ import java_cup.runtime.Symbol;
                 return new Symbol(TokenConstants.ERROR, "String contains null character.");
             }
 
+            // Cool Reference Manual 10.2 Strings
+            // > Within a string, a sequence ‘\c’ denotes the character ‘c’, with the exception of the following:
             if (c1 == '\\' && i + 1 < stringText.length()) {
                 char c2 = stringText.charAt(i + 1);
 
@@ -111,7 +113,6 @@ import java_cup.runtime.Symbol;
  *  initialization you want to do should go here.  Don't remove or modify anything that was there
  *  initially. */
 
-    // empty for now
 %init}
 
 %eofval{
@@ -135,12 +136,6 @@ import java_cup.runtime.Symbol;
         curr_lineno = yyline+1;
         yybegin(YYINITIAL);
         return new Symbol(TokenConstants.ERROR, "EOF in comment");
-    case STRING:
-        curr_lineno = yyline+1;
-        yybegin(YYINITIAL);
-        // PA 4.1 Error Handling
-        // The reference implementation returns ERROR "Unterminated string constant"
-        return new Symbol(TokenConstants.ERROR, "EOF in string constant");
     }
 
     return new Symbol(TokenConstants.EOF);
@@ -152,7 +147,6 @@ import java_cup.runtime.Symbol;
 %char
 %state LINE_COMMENT
 %state BLOCK_COMMENT
-%state STRING
 
 CLASS=[Cc][Ll][Aa][Ss][Ss]
 IF=[Ii][Ff]
@@ -311,11 +305,16 @@ WHITESPACE_WITHOUT_NEWLINE=[\ \f\r\t]
     AbstractSymbol number = AbstractTable.inttable.addString(yytext());
     return new Symbol(TokenConstants.INT_CONST, new IdSymbol(number.getString(),number.getString().length(), number.index));
 }
-<YYINITIAL> \"([^\"]|\n)*\" {
+<YYINITIAL> \"([^\n\"]|\\\"|\\\n)*\" {
     return lexString(yytext());
 }
-<YYINITIAL> \"([^\"]|\n)* {
-    yybegin(STRING);
+<YYINITIAL> \"([^\n\"]|\n)*$ {
+/*  PA1 4.1 Error Handling
+    Report only the first string constant error to occur, and then
+    resume lexing after the end of the string. The end of the string is defined as either
+    1. the beginning of the next line if an unescaped newline occurs at any point in the string;
+*/
+    return lexString(yytext());
 }
 <YYINITIAL> "*" {
     curr_lineno = yyline+1;

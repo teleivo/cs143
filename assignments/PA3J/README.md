@@ -19,7 +19,6 @@ parser but the reference implementation hangs forever.
 
 * run my parser with my lexer, does everything still work?
   * compare lexers for
-    * ../../examples/graph.cl
     * ../../examples/lam.cl
 
 * why can't I run the reference parser?
