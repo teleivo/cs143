@@ -1,2 +1,5 @@
 #!/bin/csh -f
+# uncomment to use reference lexer
+# ../../bin/lexer  $* | ./parser $*
+# using my lexer and parser
 ../PA2J/lexer $* | ./parser $*

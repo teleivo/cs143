@@ -10,3 +10,5 @@ Try solving them yourself before you peek :grin:.
 1. https://github.com/afterthat97/cool-compiler helped me in setting up the missing dependencies.
 2. I also had to add `./bin/java_cup` with an absolute path to the CUP library. You will need to
    adjust that path.
+
+TODO mention paths and other issues related to not running this in a VM

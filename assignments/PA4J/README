@@ -52,7 +52,7 @@ Your directory should now contain the following files:
 	file is provided for your reference.  DO NOT MODIFY.
 
         TreeNode.java and ListNode.java contain definitions used by the
-        tree package. DO NOT MODIFY.  
+        tree package. DO NOT MODIFY.
 
         cool-tree.java specifies and gives an implementation of Cool ASTs
         (see the README for PA3 and the "Cool Tour").  In this
@@ -71,7 +71,7 @@ Your directory should now contain the following files:
 
 	ClassTable.java implements a placeholder class for a few useful
 	methods.  Feel free to extend it to implement some real data
-	strucutre.
+	structure.
 
 	TreeConstants.java defined some useful symbol constants.  You
 	may add some of your own, if you wish.
@@ -110,13 +110,13 @@ Instructions
 
 	To compile the example use of the symbol table, type
 
-	% gmake symtab-example
+	% make symtab-example
 
 	This creates a shell script to run the symbol table example.
 
 	To compile your semantic analyzer program type:
 
-	% gmake semant
+	% make semant
 
 	To test your semantic checker, type:
 
@@ -132,7 +132,7 @@ Instructions
 
 	To run your checker on the files good.cl and bad.cl type:
 
-	% gmake dotest
+	% make dotest
 
 	If you think your semantic checker is correct and behaves like
 	the one we wrote, you can try to run mycoolc using your checker,
@@ -143,10 +143,10 @@ Instructions
 
 	If you change architectures you must issue
 
-	% gmake clean
+	% make clean
 
 	when you switch from one type of machine to the other.
-	If at some point you get weird errors from the linker,	
+	If at some point you get weird errors from the linker,
 	you probably forgot this step.
 
 	GOOD LUCK!

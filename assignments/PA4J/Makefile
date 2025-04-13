@@ -1,5 +1,5 @@
 
-ASSN = 5J
+ASSN = 4J
 CLASS= cs143
 CLASSDIR= ../..
 
@@ -16,6 +16,7 @@ CSRC = \
 	IntTable.java \
 	ListNode.java \
 	Cgen.java \
+	Semant.java \
 	StringTable.java \
 	SymbolTable.java \
 	SymtabExample.java \
@@ -25,10 +26,10 @@ CSRC = \
 	Utilities.java
 
 TSRC= mycoolc cool-tree.aps
-CGEN= 
-LIBS= lexer parser semant
+CGEN=
+LIBS= lexer parser
 CFIL= ${CSRC} ${CGEN} CgenClassTable.java CgenNode.java CgenSupport.java TreeConstants.java cool-tree.java IntSymbol.java StringSymbol.java BoolConst.java
-HFIL= 
+HFIL=
 LSRC= Makefile
 CLS= ${CFIL:.java=.class}
 OUTPUT= example.output
@@ -42,7 +43,7 @@ source: ${SRC} ${TSRC} ${LSRC} ${LIBS} ${CSRC}
 
 ${OUTPUT}: cgen
 	@rm -f ${OUTPUT}
-	./mycoolc  example.cl >example.output 2>&1 
+	./mycoolc  example.cl >example.output 2>&1
 
 cgen: Makefile ${CLS}
 	@rm -f cgen
@@ -55,6 +56,12 @@ symtab-example: Makefile ${CLS}
 	echo '#!/bin/sh' >> symtab-example
 	echo 'java -classpath ${CLASSPATH} SymtabExample $$*' >> symtab-example
 	chmod 755 symtab-example
+
+semant: Makefile ${CLS}
+	@rm -f semant
+	echo '#!/bin/sh' >> semant
+	echo 'java -classpath ${CLASSPATH}:`dirname $$0` Semant $$*' >> semant
+	chmod 755 semant
 
 dotest:	cgen example.cl
 	@echo "\nRunning code generator on example.cl\n"
@@ -72,7 +79,7 @@ ${LIBS}:
 # These dependencies allow you to get the starting files for
 # the assignment.  They will not overwrite a file you already have.
 
-${SRC} :								
+${SRC} :
 	-${CLASSDIR}/etc/copy-skel ${ASSN} ${SRC}
 
 ${LSRC} :
@@ -88,7 +95,7 @@ submit-clean: ${OUTPUT}
 	-rm -f *.s core ${CLS} *~ ${CGEN} parser cgen semant lexer symtab-example
 
 clean :
-	-rm -f ${OUTPUT} *.s core ${CLS} ${CGEN} parser cgen semant lexer symtab-example *~ 
+	-rm -f ${OUTPUT} *.s core ${CLS} ${CGEN} parser cgen semant lexer symtab-example *~
 
 
 

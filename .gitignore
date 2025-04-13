@@ -1,4 +1,5 @@
 */*
+*.tar.gz
 /assignments/PA2J/*.class
 /assignments/PA2J/lexer
 !/assignments/PA2J/
@@ -9,4 +10,9 @@
 /assignments/PA3J/parser
 /assignments/PA3J/*.output
 !/assignments/PA3J/
-*.tar.gz
+/assignments/PA4J/*.class
+/assignments/PA4J/lexer
+/assignments/PA4J/cgen
+/assignments/PA4J/semant
+/assignments/PA4J/parser
+!/assignments/PA4J/

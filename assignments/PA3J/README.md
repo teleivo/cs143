@@ -1,7 +1,7 @@
 # Programming Assignment: Parser
 
 This is my implementation of the assignment described in `./README`. The
-[PA2.pdf](https://web.stanford.edu/class/cs143/handouts/PA2.pdf) contains more details.
+[PA3.pdf](https://web.stanford.edu/class/cs143/handouts/PA3.pdf) contains more details.
 
 I ran my parser against all `.cl` files from all assignments. I collected some more test input in
 `./testdata-ok/`.
@@ -13,7 +13,7 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
   * against all the course examples `./test.sh ../../examples`
 
 I diffed my lexer in [PA2](../PA2J/) against the reference lexer. I wanted to do the same with my
-parser but the reference implementation hangs forever.
+parser but the reference implementation parser hangs forever.
 
 ## TODO
 
