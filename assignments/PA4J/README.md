@@ -51,12 +51,6 @@ class). A program is executed by evaluating (new Main).main().
 don't always exist so fail. As they are prefixed with my I guess the intetion is they only use my
 implementations. How to then add the reference impl next to it
 
-Some errors I get from the reference impl
-
-```
-Class Main is not defined
-```
-
 Looks like we cannot inherit from String, Int, Bool but we can inherit from IO and Object
 (explicitly)
 
@@ -75,7 +69,7 @@ Class B cannot inherit class Bool.
 ```
 class B inherits Z {};
 
-estdata/inheritance.cl:3: Class B inherits from an undefined class Z.
+testdata/inheritance.cl:3: Class B inherits from an undefined class Z.
 ```
 
 ```
