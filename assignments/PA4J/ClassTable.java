@@ -203,6 +203,9 @@ class ClassTable {
     declared.add("Object");
     declared.add("IO");
 
+    // TODO(ivo) prevent inheriting from Bool, Int, String
+    // TODO(ivo) prevent declaring Bool, Int, String
+
     // build graph using adjacency list
     Map<String, List<String>> graph = new HashMap<>();
     graph.put("Object", new ArrayList<>(List.of("IO"))); // root of inheritance with builtin child
@@ -224,16 +227,62 @@ class ClassTable {
       return;
     }
 
-    // Set<String> visited = new HashSet<>(graph.size());
-    // for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
-    //     if (!visited.contains(entry.getKey()){
-    //         if
-    //     }
-    // }
+    // using dfs to find cycles, note that I need to do a dfs over all classes as the hierarchy
+    // might not be a single strongly connected component. In fact if a class is part of the
+    // Object hierarchy it is not involved in a cycle. If it is not part of that hierarchy it
+    // forms a cycle inside a separate component.
+    Set<String> cycles = new HashSet<>();
+    Set<String> visited = new HashSet<>(graph.size());
+    for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
+      if (!visited.contains(entry.getKey())) {
+        if (hasCycle(graph, visited, entry.getKey())) {
+          cycles.add(entry.getKey());
+        }
+      }
+    }
+
+    // this is the 3rd iteration over classes which I could optimize to iterating over cycles if
+    // I would collect class_c instead of only class names. I am to lazy to do that :joy:
+    for (Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
+      class_c cl = (class_c) e.nextElement();
+      if (cycles.contains(cl.name.toString())) {
+        this.semantError(cl.filename, cl)
+            .println(
+                "Class "
+                    + cl.name
+                    + ", or an ancestor of "
+                    + cl.name
+                    + ", is involved in an inheritance cycle.");
+      }
+    }
+
+    if (this.semantErrors > 0) {
+      return;
+    }
 
     if (!hasMain) {
       this.semantError().println("Class Main is not defined.");
     }
+  }
+
+  private static boolean hasCycle(
+      Map<String, List<String>> graph, Set<String> visited, String vertex) {
+    // There are only tree and backward edges. Since there are no cross-edges we do not need to keep
+    // track of the recursive stack. TODO(ivo) or do we? the errors should contain all classes
+    // involved in the path, that suggests I do need it.
+    if (visited.contains(vertex)) {
+      return true;
+    }
+
+    visited.add(vertex);
+
+    for (String neighbour : graph.get(vertex)) {
+      if (hasCycle(graph, visited, neighbour)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
