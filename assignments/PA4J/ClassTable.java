@@ -205,6 +205,7 @@ class ClassTable {
 
     // TODO(ivo) prevent inheriting from Bool, Int, String
     // TODO(ivo) prevent declaring Bool, Int, String
+    // TODO(ivo) what if I do A inherits A
 
     // build graph using adjacency list
     Map<String, List<String>> graph = new HashMap<>();
@@ -217,10 +218,12 @@ class ClassTable {
         this.semantError(cl.filename, cl)
             .println("Class " + cl.name + " inherits from an undefined class " + cl.parent);
       } else {
+        graph.putIfAbsent(cl.name.toString(), new ArrayList<>());
         graph.putIfAbsent(cl.parent.toString(), new ArrayList<>());
         graph.get(cl.parent.toString()).add(cl.name.toString());
       }
     }
+    System.out.println("built graph " + graph);
 
     // only detect cycles if we at least know all classes are defined
     if (this.semantErrors > 0) {
@@ -232,12 +235,13 @@ class ClassTable {
     // Object hierarchy it is not involved in a cycle. If it is not part of that hierarchy it
     // forms a cycle inside a separate component.
     Set<String> cycles = new HashSet<>();
-    Set<String> visited = new HashSet<>(graph.size());
+    Set<String> finished = new HashSet<>(graph.size());
     for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
-      if (!visited.contains(entry.getKey())) {
-        if (hasCycle(graph, visited, entry.getKey())) {
-          cycles.add(entry.getKey());
-        }
+      Set<String> visited = new HashSet<>(graph.size());
+      System.out.println("checking " + entry.getKey());
+      if (hasCycle(graph, finished, visited, entry.getKey())) {
+        System.out.println("collected cycle " + visited);
+        cycles.addAll(visited);
       }
     }
 
@@ -265,23 +269,35 @@ class ClassTable {
     }
   }
 
+  /**
+   * Find cycles in graph starting from given vertex. Returns true if cycle is found with vertices
+   * that are part of the cycle collected in visited. The vertices are marked as finished so the
+   * same component/cycle is not revisited.
+   */
   private static boolean hasCycle(
-      Map<String, List<String>> graph, Set<String> visited, String vertex) {
-    // There are only tree and backward edges. Since there are no cross-edges we do not need to keep
-    // track of the recursive stack. TODO(ivo) or do we? the errors should contain all classes
-    // involved in the path, that suggests I do need it.
+      Map<String, List<String>> graph, Set<String> finished, Set<String> visited, String vertex) {
+    if (finished.contains(vertex)) {
+      return false; // already checked this connected component
+    }
+
     if (visited.contains(vertex)) {
-      return true;
+      System.out.println("cycle found " + visited.toString());
+      return true; // found cycle
     }
 
     visited.add(vertex);
 
+    System.out.println(vertex);
     for (String neighbour : graph.get(vertex)) {
-      if (hasCycle(graph, visited, neighbour)) {
+      if (hasCycle(graph, finished, visited, neighbour)) {
+        finished.add(vertex); // finished looking at connected component
         return true;
       }
     }
 
+    visited.remove(vertex);
+    System.out.println("done " + vertex + " " + visited.toString());
+    finished.add(vertex); // finished looking at connected component
     return false;
   }
 
