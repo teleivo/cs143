@@ -223,7 +223,6 @@ class ClassTable {
         graph.get(cl.parent.toString()).add(cl.name.toString());
       }
     }
-    System.out.println("built graph " + graph);
 
     // only detect cycles if we at least know all classes are defined
     if (this.semantErrors > 0) {
@@ -238,11 +237,11 @@ class ClassTable {
     Set<String> finished = new HashSet<>(graph.size());
     for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
       Set<String> visited = new HashSet<>(graph.size());
-      System.out.println("checking " + entry.getKey());
-      if (hasCycle(graph, finished, visited, entry.getKey())) {
-        System.out.println("collected cycle " + visited);
+      String vertex = entry.getKey();
+      if (!finished.contains(vertex) && hasCycle(graph, visited, vertex)) {
         cycles.addAll(visited);
       }
+      finished.add(vertex);
     }
 
     // this is the 3rd iteration over classes which I could optimize to iterating over cycles if
@@ -271,33 +270,22 @@ class ClassTable {
 
   /**
    * Find cycles in graph starting from given vertex. Returns true if cycle is found with vertices
-   * that are part of the cycle collected in visited. The vertices are marked as finished so the
-   * same component/cycle is not revisited.
+   * that are part of the cycle collected in visited.
    */
   private static boolean hasCycle(
-      Map<String, List<String>> graph, Set<String> finished, Set<String> visited, String vertex) {
-    if (finished.contains(vertex)) {
-      return false; // already checked this connected component
-    }
-
+      Map<String, List<String>> graph, Set<String> visited, String vertex) {
     if (visited.contains(vertex)) {
-      System.out.println("cycle found " + visited.toString());
       return true; // found cycle
     }
 
     visited.add(vertex);
 
-    System.out.println(vertex);
     for (String neighbour : graph.get(vertex)) {
-      if (hasCycle(graph, finished, visited, neighbour)) {
-        finished.add(vertex); // finished looking at connected component
+      if (hasCycle(graph, visited, neighbour)) {
         return true;
       }
     }
 
-    visited.remove(vertex);
-    System.out.println("done " + vertex + " " + visited.toString());
-    finished.add(vertex); // finished looking at connected component
     return false;
   }
 
