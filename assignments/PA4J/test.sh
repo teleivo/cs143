@@ -11,14 +11,12 @@ fi
 
 for file in "$TEST_DIR"/*.cl; do
     if [ -f "$file" ]; then
-        # # ignore the first line which contains `#name <input file>`
-        # if ! diff <(../../bin/lexer "$file" | tail -n +2) <(./lexer "$file" | tail -n +2); then
-        #     echo "Testing $file: failed"
-        #     failed=1
-        # else
-        #     echo "Testing $file: ok"
-        # fi
-        ./mysemant "$file"
+        if ! diff <(../../bin/lexer "$file" | ../../bin/parser | ../../bin/semant) <(../../bin/lexer "$file" | ../../bin/parser | ../../bin/semant); then
+            echo "Testing $file: failed"
+            failed=1
+        else
+            echo "Testing $file: ok"
+        fi
     fi
 done
 

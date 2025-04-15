@@ -184,6 +184,7 @@ class ClassTable {
 
     boolean hasMain = false;
     Set<String> declared = new HashSet<String>();
+    Set<String> prohibited = Set.of("String", "Int", "Bool");
 
     for (Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
       class_c cl = (class_c) e.nextElement();
@@ -203,10 +204,6 @@ class ClassTable {
     declared.add("Object");
     declared.add("IO");
 
-    // TODO(ivo) prevent inheriting from Bool, Int, String
-    // TODO(ivo) prevent declaring Bool, Int, String
-    // TODO(ivo) what if I do A inherits A
-
     // build graph using adjacency list
     Map<String, List<String>> graph = new HashMap<>();
     graph.put("Object", new ArrayList<>(List.of("IO"))); // root of inheritance with builtin child
@@ -214,9 +211,12 @@ class ClassTable {
     for (Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
       class_c cl = (class_c) e.nextElement();
 
-      if (!declared.contains(cl.parent.toString())) {
+      if (prohibited.contains(cl.parent.toString())) {
         this.semantError(cl.filename, cl)
-            .println("Class " + cl.name + " inherits from an undefined class " + cl.parent);
+            .println("Class " + cl.name + " cannot inherit class " + cl.parent + ".");
+      } else if (!declared.contains(cl.parent.toString())) {
+        this.semantError(cl.filename, cl)
+            .println("Class " + cl.name + " inherits from an undefined class " + cl.parent + ".");
       } else {
         graph.putIfAbsent(cl.name.toString(), new ArrayList<>());
         graph.putIfAbsent(cl.parent.toString(), new ArrayList<>());
@@ -238,10 +238,9 @@ class ClassTable {
     for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
       Set<String> visited = new HashSet<>(graph.size());
       String vertex = entry.getKey();
-      if (!finished.contains(vertex) && hasCycle(graph, visited, vertex)) {
+      if (hasCycle(graph, finished, visited, vertex)) {
         cycles.addAll(visited);
       }
-      finished.add(vertex);
     }
 
     // this is the 3rd iteration over classes which I could optimize to iterating over cycles if
@@ -270,10 +269,16 @@ class ClassTable {
 
   /**
    * Find cycles in graph starting from given vertex. Returns true if cycle is found with vertices
-   * that are part of the cycle collected in visited.
+   * that are part of the cycle collected in visited. Vertices are marked as finished when a cycle
+   * has been detected or all neighbours have been visited so that we don't revisit the connected
+   * component.
    */
   private static boolean hasCycle(
-      Map<String, List<String>> graph, Set<String> visited, String vertex) {
+      Map<String, List<String>> graph, Set<String> finished, Set<String> visited, String vertex) {
+    if (finished.contains(vertex)) {
+      return false; // processed this component already
+    }
+
     if (visited.contains(vertex)) {
       return true; // found cycle
     }
@@ -281,11 +286,13 @@ class ClassTable {
     visited.add(vertex);
 
     for (String neighbour : graph.get(vertex)) {
-      if (hasCycle(graph, visited, neighbour)) {
+      if (hasCycle(graph, finished, visited, neighbour)) {
+        finished.add(vertex);
         return true;
       }
     }
 
+    finished.add(vertex);
     return false;
   }
 

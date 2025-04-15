@@ -1,11 +1,13 @@
--- cycle one is A -> B -> C -> A
+-- error due to cycle: Z -> Z
+class Z inherits Z {};
+-- error due to cycle: A -> B -> C -> A
 class A inherits B {};
 class B inherits C {};
 class C inherits A {};
 class M inherits IO {};
 class X {};
 class Y inherits Object {};
--- cycle two is E -> F -> H -> J -> K -> G -> E
+-- error due to cycle: E -> F -> H -> J -> K -> G -> E
 class F inherits E {};
 class N inherits IO {};
 class H inherits F {};
