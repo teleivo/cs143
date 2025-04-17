@@ -1,8 +1,11 @@
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,13 +17,15 @@ import java.util.Set;
 class ClassTable {
   private int semantErrors;
   private PrintStream errorStream;
+  Map<String, class_c> classes;
+  List<String> sort;
 
   /**
    * Creates data structures representing basic Cool classes (Object, IO, Int, Bool, String). Please
    * note: as is this method does not do anything useful; you will need to edit it to make if do
    * what you want.
    */
-  private void installBasicClasses() {
+  private static void installBasicClasses(Map<String, class_c> classes) {
     AbstractSymbol filename = AbstractTable.stringtable.addString("<basic class>");
 
     // The following demonstrates how to create dummy parse trees to
@@ -173,9 +178,11 @@ class ClassTable {
                         new no_expr(0))),
             filename);
 
-    /* Do somethind with Object_class, IO_class, Int_class,
-    Bool_class, and Str_class here */
-
+    classes.put("Object", Object_class);
+    classes.put("IO", IO_class);
+    classes.put("Int", Int_class);
+    classes.put("Bool", Bool_class);
+    classes.put("String", Str_class);
   }
 
   public ClassTable(Classes cls) {
@@ -185,6 +192,7 @@ class ClassTable {
     boolean hasMain = false;
     Set<String> declared = new HashSet<String>();
     Set<String> prohibited = Set.of("String", "Int", "Bool");
+    Map<String, class_c> classes = new HashMap<>();
 
     for (Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
       class_c cl = (class_c) e.nextElement();
@@ -194,6 +202,7 @@ class ClassTable {
         this.semantError(cl.filename, cl).println("Class " + cl.name + " was previously defined.");
       } else {
         declared.add(cl.name.toString());
+        classes.put(cl.name.toString(), cl);
       }
 
       if ("Main".equals(cl.name.getString())) {
@@ -231,10 +240,11 @@ class ClassTable {
 
     // using dfs to find cycles, note that I need to do a dfs over all classes as the hierarchy
     // might not be a single strongly connected component. In fact if a class is part of the
-    // Object hierarchy it is not involved in a cycle. If it is not part of that hierarchy it
-    // forms a cycle inside a separate component.
+    // Object hierarchy it is not involved in a cycle. Object being the vertex with no incoming
+    // edge i.e. start vertex in Kahn's algorithm. If it is not part of that hierarchy it forms a
+    // cycle inside a separate component.
     Set<String> cycles = new HashSet<>();
-    Set<String> finished = new HashSet<>(graph.size());
+    HashSet<String> finished = new LinkedHashSet<>(graph.size());
     for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
       Set<String> visited = new HashSet<>(graph.size());
       String vertex = entry.getKey();
@@ -265,6 +275,17 @@ class ClassTable {
     if (!hasMain) {
       this.semantError().println("Class Main is not defined.");
     }
+
+    // I need the reverse order to get a topological sort of classes. Using a LinkedHashSet is
+    // convenient as I can check if the vertex has already been checked and keep the insertion
+    // order. Java 21 has LinkedHashSet.reversed() as its implemented using a doubly-linked list I
+    // would expect the implementation to not add any additional costs in terms of space/time.
+    // I am not on Java 21, am using what's convenient now but not most efficient.
+    List<String> sort = new LinkedList<>(finished);
+    Collections.reverse(sort);
+    this.sort = sort;
+    installBasicClasses(classes);
+    this.classes = classes;
   }
 
   /**
