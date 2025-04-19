@@ -539,7 +539,17 @@ class programc extends Program {
         return;
       }
       checkType(cls, objects, e.expr);
-      if (type != e.expr.get_type()) {}
+      if (type != e.expr.get_type()) {
+        this.semantError(cls.getFilename(), e)
+            .println(
+                "Type "
+                    + e.expr.get_type()
+                    + " of assigned expression does not conform to declared type"
+                    + type
+                    + " of identifier "
+                    + e.name
+                    + ".");
+      }
       e.set_type(e.expr.get_type());
       return;
     }
