@@ -17,8 +17,12 @@ import java.util.Set;
 class ClassTable {
   private int semantErrors;
   private PrintStream errorStream;
+  // bored of Java getters/setters which I would use in real-life though to prevent mutations
   Map<String, class_c> classes;
+  // classes in topological order
   List<String> sort;
+  // global method environment
+  Map<String, Map<String, method>> methods;
 
   /**
    * Creates data structures representing basic Cool classes (Object, IO, Int, Bool, String). Please
@@ -286,6 +290,22 @@ class ClassTable {
     this.sort = sort;
     installBasicClasses(classes);
     this.classes = classes;
+
+    Map<String, Map<String, method>> classMethods = new HashMap<>(this.classes.size());
+    for (String className : sort) {
+      class_c cl = classes.get(className);
+      Map<String, method> methods = new HashMap<>();
+
+      for (Enumeration e = cl.features.getElements(); e.hasMoreElements(); ) {
+        Feature feature = ((Feature) e.nextElement());
+        if (feature instanceof method m) {
+          methods.put(m.name.toString(), m);
+        }
+      }
+
+      classMethods.put(cl.name.toString(), methods);
+    }
+    this.methods = classMethods;
   }
 
   /**

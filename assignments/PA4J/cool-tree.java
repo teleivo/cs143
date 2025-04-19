@@ -279,6 +279,8 @@ class Cases extends ListNode {
  */
 class programc extends Program {
   protected Classes classes;
+  private int semantErrors;
+  private PrintStream errorStream;
 
   /**
    * Creates "programc" AST node.
@@ -329,14 +331,66 @@ class programc extends Program {
    */
   @Override
   public void semant() {
-    /* ClassTable constructor may do some semantic analysis */
     ClassTable classTable = new ClassTable(classes);
-
-    /* some semantic analysis code may go here */
-    // TODO(ivo)
-
     if (classTable.errors()) {
       System.err.println("Compilation halted due to static semantic errors.");
+      System.exit(1);
+    }
+
+    this.errorStream = System.err;
+
+    for (String className : classTable.sort) {
+      class_c cls = classTable.classes.get(className);
+      SymbolTable objects = new SymbolTable();
+      objects.enterScope();
+
+      for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
+        Feature feature = ((Feature) e.nextElement());
+        // TODO(ivo) add fields into objects?
+        if (feature instanceof method m) {
+          objects.enterScope();
+          // TODO(ivo) add formals into objects?
+
+          if (m.expr instanceof dispatch d) {
+            String targetMethodName = d.name.toString();
+            // TODO(ivo) evaluate d.expr to get class; could refer to a symbol I need to lookup in
+            // objects
+            if (d.expr instanceof new_ n) {
+              String targetClass = n.type_name.toString();
+              method target = classTable.methods.get(targetClass).get(targetMethodName);
+              if (target == null) {
+                this.semantError(cls.filename, d)
+                    .println("Dispatch to undefined method " + targetMethodName + ".");
+              }
+              if (target.formals.getLength() != d.actual.getLength()) {
+                this.semantError(cls.filename, d)
+                    .println(
+                        "Method " + targetMethodName + " called with wrong number of arguments.");
+              }
+              for (int i = 0; i < target.formals.getLength(); i++) {
+                formalc t = (formalc) target.formals.getNth(i);
+                // TODO(ivo) I need to evaluate the type of the actual in order to compare it with
+                // the formalc.type_decl
+                Expression a = (Expression) d.actual.getNth(i);
+                if (false) {
+                  this.semantError(cls.filename, d)
+                      .println(
+                          "In call of method "
+                              + targetMethodName
+                              + ", type <todo evaluate> of parameter "
+                              + t.name
+                              + " does not conform to declared type "
+                              + t.type_decl);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (this.errors()) {
+      System.err.println("Compilation halted due to semantic errors.");
       System.exit(1);
     }
   }
@@ -351,6 +405,35 @@ class programc extends Program {
   @Override
   public void cgen(PrintStream s) {
     CgenClassTable codegen_classtable = new CgenClassTable(classes, s);
+  }
+
+  /**
+   * Prints the file name and the line number of the given tree node.
+   *
+   * <p>Also increments semantic error count.
+   *
+   * @param filename the file name
+   * @param t the tree node
+   * @return a print stream to which the rest of the error message is to be printed.
+   */
+  public PrintStream semantError(AbstractSymbol filename, TreeNode t) {
+    errorStream.print(filename + ":" + t.getLineNumber() + ": ");
+    return semantError();
+  }
+
+  /**
+   * Increments semantic error count and returns the print stream for error messages.
+   *
+   * @return a print stream to which the error message is to be printed.
+   */
+  public PrintStream semantError() {
+    semantErrors++;
+    return errorStream;
+  }
+
+  /** Returns true if there are any static semantic errors. */
+  public boolean errors() {
+    return semantErrors != 0;
   }
 }
 
