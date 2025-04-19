@@ -352,15 +352,17 @@ class programc extends Program {
         if (feature instanceof attr a) {
           objects.addId(a.name, a.type_decl);
           // TODO match a.type_decl with init if any
-          if (false) {
+          checkType(cls, objects, a.init);
+          if (!(a.init instanceof no_expr) && a.init.get_type() != a.type_decl) {
             this.semantError(cls.filename, a)
                 .println(
                     "Inferred type "
-                        + "<todo evaluate>"
+                        + a.init.get_type()
                         + " of initialization of attribute "
                         + a.name
                         + " does not conform to declared type "
-                        + a.type_decl);
+                        + a.type_decl
+                        + ".");
           }
 
         } else if (feature instanceof method m) {
@@ -412,7 +414,7 @@ class programc extends Program {
   }
 
   // TODO or setType - could I split annotating and checking? would that make sense
-  private void checkType(Class_ cls, Expression expr) {
+  private void checkType(Class_ cls, SymbolTable objects, Expression expr) {
     if (expr instanceof no_expr) {
       return;
     } else if (expr instanceof int_const) {
@@ -429,10 +431,10 @@ class programc extends Program {
       return;
     } else if (expr instanceof isvoid e) {
       expr.set_type(TreeConstants.Bool);
-      checkType(cls, e.e1);
+      checkType(cls, objects, e.e1);
       return;
     } else if (expr instanceof comp e) {
-      checkType(cls, e.e1);
+      checkType(cls, objects, e.e1);
       if (e.e1.get_type() != TreeConstants.Bool) {
         this.semantError(cls.getFilename(), e)
             .println("Argument of 'not' has type " + e.e1.get_type() + " instead of Bool.");
@@ -440,7 +442,7 @@ class programc extends Program {
       expr.set_type(TreeConstants.Bool);
       return;
     } else if (expr instanceof neg e) {
-      checkType(cls, e.e1);
+      checkType(cls, objects, e.e1);
       if (e.e1.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("Argument of '~' has type " + e.e1.get_type() + " instead of Int.");
@@ -448,8 +450,8 @@ class programc extends Program {
       expr.set_type(TreeConstants.Bool);
       return;
     } else if (expr instanceof lt e) {
-      checkType(cls, e.e1);
-      checkType(cls, e.e2);
+      checkType(cls, objects, e.e1);
+      checkType(cls, objects, e.e2);
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " < " + e.e2.get_type());
@@ -457,8 +459,8 @@ class programc extends Program {
       expr.set_type(TreeConstants.Bool);
       return;
     } else if (expr instanceof leq e) {
-      checkType(cls, e.e1);
-      checkType(cls, e.e2);
+      checkType(cls, objects, e.e1);
+      checkType(cls, objects, e.e2);
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " <= " + e.e2.get_type());
@@ -466,8 +468,8 @@ class programc extends Program {
       expr.set_type(TreeConstants.Bool);
       return;
     } else if (expr instanceof plus e) {
-      checkType(cls, e.e1);
-      checkType(cls, e.e2);
+      checkType(cls, objects, e.e1);
+      checkType(cls, objects, e.e2);
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " + " + e.e2.get_type());
@@ -475,8 +477,8 @@ class programc extends Program {
       expr.set_type(TreeConstants.Int);
       return;
     } else if (expr instanceof sub e) {
-      checkType(cls, e.e1);
-      checkType(cls, e.e2);
+      checkType(cls, objects, e.e1);
+      checkType(cls, objects, e.e2);
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " - " + e.e2.get_type());
@@ -484,8 +486,8 @@ class programc extends Program {
       expr.set_type(TreeConstants.Int);
       return;
     } else if (expr instanceof mul e) {
-      checkType(cls, e.e1);
-      checkType(cls, e.e2);
+      checkType(cls, objects, e.e1);
+      checkType(cls, objects, e.e2);
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " * " + e.e2.get_type());
@@ -493,8 +495,8 @@ class programc extends Program {
       expr.set_type(TreeConstants.Int);
       return;
     } else if (expr instanceof divide e) {
-      checkType(cls, e.e1);
-      checkType(cls, e.e2);
+      checkType(cls, objects, e.e1);
+      checkType(cls, objects, e.e2);
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " / " + e.e2.get_type());
@@ -502,8 +504,8 @@ class programc extends Program {
       expr.set_type(TreeConstants.Int);
       return;
     } else if (expr instanceof eq e) {
-      checkType(cls, e.e1);
-      checkType(cls, e.e2);
+      checkType(cls, objects, e.e1);
+      checkType(cls, objects, e.e2);
       Set<AbstractSymbol> basicTypes =
           Set.of(TreeConstants.Int, TreeConstants.Str, TreeConstants.Bool);
       boolean isBasic =
@@ -513,11 +515,22 @@ class programc extends Program {
       }
       expr.set_type(TreeConstants.Bool);
       return;
+    } else if (expr instanceof block e) {
+      for (int i = 0; i < e.body.getLength(); i++) {
+        checkType(cls, objects, (Expression) e.body.getNth(i));
+      }
+      // assuming blocks must have at least one expression
+      e.set_type(((Expression) e.body.getNth(e.body.getLength() - 1)).get_type());
+      return;
+    } else if (expr instanceof object e) {
+      AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
+      e.set_type(type);
+    } else if (expr instanceof assign e) {
+      checkType(cls, objects, e);
+      return;
     }
 
     // object
-    // assign
-    // block
     // static_dispatch
     // dispatch
     // cond

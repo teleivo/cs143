@@ -7,7 +7,14 @@ class C {
 	f: Int <- "foo" + true;
 	g: Int <- "foo" - true;
 	h: Int <- "foo" * 2;
-	j: Int <- "foo" / false;
+	i: Int <- "foo" / false;
+	j: Bool <- 1 = true;
+	k: Bool <- "foo" = true;
+	l: Bool <- 1 = "foo";
+	m: Bool <- 1 = 2;
+	n: Bool <- false = true;
+	o: Bool <- "foo" = "foo";
+	p: String;
 };
 
 Class Main {
