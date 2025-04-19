@@ -525,10 +525,22 @@ class programc extends Program {
       return;
     } else if (expr instanceof object e) {
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
+      if (type == null) {
+        this.semantError(cls.getFilename(), e).println("Undeclared identifier " + e.name + ".");
+        return;
+      }
       e.set_type(type);
+      return;
     } else if (expr instanceof assign e) {
-      // TODO read The rule for assignment to a variable is more complex:
-      checkType(cls, objects, e);
+      AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
+      if (type == null) {
+        this.semantError(cls.getFilename(), e)
+            .println("Assignment to undeclared variable " + e.name + ".");
+        return;
+      }
+      checkType(cls, objects, e.expr);
+      if (type != e.expr.get_type()) {}
+      e.set_type(e.expr.get_type());
       return;
     }
 

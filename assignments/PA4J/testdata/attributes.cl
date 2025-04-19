@@ -15,6 +15,11 @@ class C {
 	n: Bool <- false = true;
 	o: Bool <- "foo" = "foo";
 	p: String;
+	q: Int <- {
+		z <- 3;
+		z;
+		1;
+	};
 };
 
 Class Main {
