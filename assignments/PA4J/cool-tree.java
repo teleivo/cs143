@@ -351,7 +351,8 @@ class programc extends Program {
 
         if (feature instanceof attr a) {
           objects.addId(a.name, a.type_decl);
-          // TODO match a.type_decl with init if any
+          // TODO an error in checkType here should short-circuit the next check as this
+          // leads to a cascading error
           checkType(cls, objects, a.init);
           if (!(a.init instanceof no_expr) && a.init.get_type() != a.type_decl) {
             this.semantError(cls.filename, a)
@@ -413,7 +414,6 @@ class programc extends Program {
     }
   }
 
-  // TODO or setType - could I split annotating and checking? would that make sense
   private void checkType(Class_ cls, SymbolTable objects, Expression expr) {
     if (expr instanceof no_expr) {
       return;
@@ -516,6 +516,7 @@ class programc extends Program {
       expr.set_type(TreeConstants.Bool);
       return;
     } else if (expr instanceof block e) {
+      // TODO create new scope?
       for (int i = 0; i < e.body.getLength(); i++) {
         checkType(cls, objects, (Expression) e.body.getNth(i));
       }
@@ -526,17 +527,17 @@ class programc extends Program {
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
       e.set_type(type);
     } else if (expr instanceof assign e) {
+      // TODO read The rule for assignment to a variable is more complex:
       checkType(cls, objects, e);
       return;
     }
 
-    // object
-    // static_dispatch
-    // dispatch
     // cond
     // loop
-    // typcase
     // let
+    // dispatch
+    // static_dispatch
+    // typcase
   }
 
   /**
