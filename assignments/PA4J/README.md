@@ -12,15 +12,13 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
   * against my test samples `./test.sh`
   * against all the course examples `./test.sh ../../examples`
 
-TODO: repeat what I did for the other stages
-I diffed my lexer in [PA2](../PA2J/) against the reference lexer. I wanted to do the same with my
-parser but the reference implementation hangs forever.
-
 ## TODO
+
+* how to start with type checking? should I put the Classes into my simple graph?
 
 * Main:
   * [done] Every program must have a class Main.
-  * Furthermore, the Main class must have a method main that
+  * [do that in ClassTable itself?] Furthermore, the Main class must have a method main that
   takes no formal parameters. The main method must be defined in class Main (not inherited from another
   class). A program is executed by evaluating (new Main).main().
 
@@ -30,3 +28,5 @@ implementations. How to then add the reference impl next to it
 
 * adapt test.sh: either create a test-err.sh or make it work for errors and valid programs. Right
 now I just capture stderr
+
+* should I use AbstractSymbol as my keys for classes?
