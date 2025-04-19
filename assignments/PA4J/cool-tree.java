@@ -8,6 +8,7 @@
 
 import java.io.PrintStream;
 import java.util.Enumeration;
+import java.util.Set;
 import java.util.Vector;
 
 /** Defines simple phylum Program */
@@ -471,7 +472,7 @@ class programc extends Program {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " + " + e.e2.get_type());
       }
-      expr.set_type(TreeConstants.Bool);
+      expr.set_type(TreeConstants.Int);
       return;
     } else if (expr instanceof sub e) {
       checkType(cls, e.e1);
@@ -480,7 +481,7 @@ class programc extends Program {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " - " + e.e2.get_type());
       }
-      expr.set_type(TreeConstants.Bool);
+      expr.set_type(TreeConstants.Int);
       return;
     } else if (expr instanceof mul e) {
       checkType(cls, e.e1);
@@ -489,7 +490,7 @@ class programc extends Program {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " * " + e.e2.get_type());
       }
-      expr.set_type(TreeConstants.Bool);
+      expr.set_type(TreeConstants.Int);
       return;
     } else if (expr instanceof divide e) {
       checkType(cls, e.e1);
@@ -498,11 +499,22 @@ class programc extends Program {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " / " + e.e2.get_type());
       }
+      expr.set_type(TreeConstants.Int);
+      return;
+    } else if (expr instanceof eq e) {
+      checkType(cls, e.e1);
+      checkType(cls, e.e2);
+      Set<AbstractSymbol> basicTypes =
+          Set.of(TreeConstants.Int, TreeConstants.Str, TreeConstants.Bool);
+      boolean isBasic =
+          basicTypes.contains(e.e1.get_type()) || basicTypes.contains(e.e2.get_type());
+      if (isBasic && e.e1.get_type() != e.e2.get_type()) {
+        this.semantError(cls.getFilename(), e).println("Illegal comparison with a basic type.");
+      }
       expr.set_type(TreeConstants.Bool);
       return;
     }
 
-    // eq
     // object
     // assign
     // block
