@@ -8,6 +8,7 @@
 
 import java.io.PrintStream;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
@@ -282,6 +283,7 @@ class programc extends Program {
   protected Classes classes;
   private int semantErrors;
   private PrintStream errorStream;
+  private ClassTable classTable;
 
   /**
    * Creates "programc" AST node.
@@ -339,10 +341,10 @@ class programc extends Program {
     }
 
     this.errorStream = System.err;
+    this.classTable = classTable;
 
     for (String className : classTable.sort) {
       class_c cls = classTable.classes.get(className);
-      // TODO what info do I need to capture? name -> type?
       SymbolTable objects = new SymbolTable();
       objects.enterScope();
 
@@ -354,8 +356,10 @@ class programc extends Program {
           // TODO an error in checkType here should short-circuit the next check as this
           // leads to a cascading error
           checkType(cls, objects, a.init);
+          // TODO double check but I think this is not accurate as conformance means <=
+          // while I am just doing = right now
           if (!(a.init instanceof no_expr) && a.init.get_type() != a.type_decl) {
-            this.semantError(cls.filename, a)
+            this.semantError(cls.getFilename(), a)
                 .println(
                     "Inferred type "
                         + a.init.get_type()
@@ -370,29 +374,45 @@ class programc extends Program {
           objects.enterScope();
           // TODO(ivo) add formals into objects?
 
+          // TODO an error in checkType here should short-circuit the next check as this
+          // leads to a cascading error
+          checkType(cls, objects, m.expr);
+
+          // TODO double-check error message matches reference implementation
+          // TODO double check but I think this is not accurate as conformance means <=
+          // while I am just doing = right now
+          if (m.expr.get_type() != m.return_type) {
+            this.semantError(cls.getFilename(), m)
+                .println(
+                    "Inferred type "
+                        + m.expr.get_type()
+                        + " of method "
+                        + m.name
+                        + " does not conform to declared type "
+                        + m.return_type
+                        + ".");
+          }
+
           if (m.expr instanceof dispatch d) {
             String targetMethodName = d.name.toString();
-            // TODO(ivo) evaluate d.expr to get class; could refer to a symbol I need to lookup in
-            // objects
             if (d.expr instanceof new_ n) {
               String targetClass = n.type_name.toString();
               method target = classTable.methods.get(targetClass).get(targetMethodName);
               if (target == null) {
-                this.semantError(cls.filename, d)
+                this.semantError(cls.getFilename(), d)
                     .println("Dispatch to undefined method " + targetMethodName + ".");
               }
               if (target.formals.getLength() != d.actual.getLength()) {
-                this.semantError(cls.filename, d)
+                this.semantError(cls.getFilename(), d)
                     .println(
                         "Method " + targetMethodName + " called with wrong number of arguments.");
               }
               for (int i = 0; i < target.formals.getLength(); i++) {
                 formalc t = (formalc) target.formals.getNth(i);
-                // TODO(ivo) I need to evaluate the type of the actual in order to compare it with
-                // the formalc.type_decl
+                // TODO(ivo) compare actual types with the formalc.type_decl
                 Expression a = (Expression) d.actual.getNth(i);
                 if (false) {
-                  this.semantError(cls.filename, d)
+                  this.semantError(cls.getFilename(), d)
                       .println(
                           "In call of method "
                               + targetMethodName
@@ -516,7 +536,7 @@ class programc extends Program {
       expr.set_type(TreeConstants.Bool);
       return;
     } else if (expr instanceof block e) {
-      // TODO create new scope?
+      // TODO create new scope? (exit again after if I do)
       for (int i = 0; i < e.body.getLength(); i++) {
         checkType(cls, objects, (Expression) e.body.getNth(i));
       }
@@ -544,7 +564,7 @@ class programc extends Program {
             .println(
                 "Type "
                     + e.expr.get_type()
-                    + " of assigned expression does not conform to declared type"
+                    + " of assigned expression does not conform to declared type "
                     + type
                     + " of identifier "
                     + e.name
@@ -552,14 +572,86 @@ class programc extends Program {
       }
       e.set_type(e.expr.get_type());
       return;
+    } else if (expr instanceof cond e) {
+      checkType(cls, objects, e.pred);
+      if (e.pred.get_type() != TreeConstants.Bool) {
+        this.semantError(cls.getFilename(), e)
+            .println("Predicate of 'if' does not have type Bool.");
+      }
+      checkType(cls, objects, e.then_exp);
+      checkType(cls, objects, e.else_exp);
+      e.set_type(joinTypes(e.then_exp.get_type(), e.else_exp.get_type()));
+      return;
+    } else if (expr instanceof loop e) {
+      checkType(cls, objects, e.pred);
+      if (e.pred.get_type() != TreeConstants.Bool) {
+        this.semantError(cls.getFilename(), e).println("Loop condition does not have type Bool.");
+      }
+      checkType(cls, objects, e.body);
+      e.set_type(TreeConstants.Object_);
+      return;
+    } else if (expr instanceof let e) {
+      checkType(cls, objects, e.init);
+      // TODO test conformance of e.init.get_type() with e.type_decl
+      if (false) {
+        this.semantError(cls.getFilename(), e)
+            .println(
+                "Inferred type "
+                    + e.init.get_type()
+                    + " of initialization of "
+                    + e.identifier
+                    + " does not conform to identifier's declared type "
+                    + e.type_decl
+                    + ".");
+      }
+      objects.enterScope();
+      // TODO test I handle type_decl being SELF_TYPE correctly
+      if (e.type_decl == TreeConstants.SELF_TYPE) {
+        objects.addId(e.identifier, cls.getName());
+      } else {
+        objects.addId(e.identifier, e.type_decl);
+      }
+      checkType(cls, objects, e.body);
+      objects.exitScope();
+      e.set_type(e.body.get_type());
+      return;
+    } else if (expr instanceof typcase e) {
+      checkType(cls, objects, e.expr);
+
+      Set<AbstractSymbol> branchTypes = new HashSet<>();
+      Set<branch> duplicateBranches = new HashSet<>();
+      for (Enumeration c = e.cases.getElements(); c.hasMoreElements(); ) {
+        branch b = (branch) c.nextElement();
+        if (branchTypes.contains(b.type_decl)) {
+          duplicateBranches.add(b);
+        }
+        branchTypes.add(b.type_decl);
+
+        if (!this.classTable.classes.containsKey(b.type_decl.toString())) {
+          this.semantError(cls.getFilename(), b)
+              .println("Class " + b.type_decl + " of case branch is undefined.");
+        }
+      }
+
+      for (branch b : duplicateBranches) {
+        this.semantError(cls.getFilename(), b)
+            .println("Duplicate branch " + b.type_decl + " in case statement.");
+      }
+
+      return;
     }
 
-    // cond
-    // loop
-    // let
     // dispatch
     // static_dispatch
-    // typcase
+  }
+
+  private AbstractSymbol joinTypes(AbstractSymbol a, AbstractSymbol b) {
+    if (a == b) {
+      return a;
+    }
+
+    // TODO implement finding the least common ancestor
+    return a;
   }
 
   /**

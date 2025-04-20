@@ -19,6 +19,26 @@ class C {
 		z <- 3;
 		z;
 		b <- 2;
+		if 1 then
+			"what?"
+		else
+			true
+		fi;
+		while "me?" loop
+			"yes"
+		pool;
+		let x : Int in true;
+		let x : Int <- "wrong" in true;
+		case var of
+			a : Int => "must have distinct types";
+			b : Int => "must have distinct types";
+			c : Bool => "must have distinct types";
+			d : Bool => "must have distinct types";
+			d : Bool => "must have distinct types";
+			d : Str => "class is undefined but var name can be reused";
+			d : Str => "class is undefined but var name can be reused";
+			o : Object => "default";
+		esac;
 		1;
 	};
 };
