@@ -14,13 +14,15 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
 
 ## TODO
 
-* how to start with type checking? should I put the Classes into my simple graph?
-
 * Main:
-  * [done] Every program must have a class Main.
-  * [do that in ClassTable itself?] Furthermore, the Main class must have a method main that
+  * [do that in ClassTable itself, or now in programc.semant?] Furthermore, the Main class must have a method main that
   takes no formal parameters. The main method must be defined in class Main (not inherited from another
   class). A program is executed by evaluating (new Main).main().
+
+* should I use AbstractSymbol as my keys for classes?
+
+* run test.sh against examples comparing the dump types output
+* test scope in its own .cl test class
 
 * fix the symbolic links in each assignment. The mycoolc, my... use `./lexer` and so forth which
 don't always exist so fail. As they are prefixed with my I guess the intetion is they only use my
@@ -29,4 +31,3 @@ implementations. How to then add the reference impl next to it
 * adapt test.sh: either create a test-err.sh or make it work for errors and valid programs. Right
 now I just capture stderr
 
-* should I use AbstractSymbol as my keys for classes?

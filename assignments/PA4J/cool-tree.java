@@ -392,38 +392,6 @@ class programc extends Program {
                         + m.return_type
                         + ".");
           }
-
-          if (m.expr instanceof dispatch d) {
-            String targetMethodName = d.name.toString();
-            if (d.expr instanceof new_ n) {
-              String targetClass = n.type_name.toString();
-              method target = classTable.methods.get(targetClass).get(targetMethodName);
-              if (target == null) {
-                this.semantError(cls.getFilename(), d)
-                    .println("Dispatch to undefined method " + targetMethodName + ".");
-              }
-              if (target.formals.getLength() != d.actual.getLength()) {
-                this.semantError(cls.getFilename(), d)
-                    .println(
-                        "Method " + targetMethodName + " called with wrong number of arguments.");
-              }
-              for (int i = 0; i < target.formals.getLength(); i++) {
-                formalc t = (formalc) target.formals.getNth(i);
-                // TODO(ivo) compare actual types with the formalc.type_decl
-                Expression a = (Expression) d.actual.getNth(i);
-                if (false) {
-                  this.semantError(cls.getFilename(), d)
-                      .println(
-                          "In call of method "
-                              + targetMethodName
-                              + ", type <todo evaluate> of parameter "
-                              + t.name
-                              + " does not conform to declared type "
-                              + t.type_decl);
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -631,6 +599,11 @@ class programc extends Program {
           this.semantError(cls.getFilename(), b)
               .println("Class " + b.type_decl + " of case branch is undefined.");
         }
+
+        objects.enterScope();
+        objects.addId(b.name, b.type_decl);
+        checkType(cls, objects, b.expr);
+        objects.exitScope();
       }
 
       for (branch b : duplicateBranches) {
@@ -638,10 +611,39 @@ class programc extends Program {
             .println("Duplicate branch " + b.type_decl + " in case statement.");
       }
 
+      // TODO set type to join of all branches?
       return;
+    } else if (expr instanceof dispatch d) {
+      String targetMethodName = d.name.toString();
+      if (d.expr instanceof new_ n) {
+        String targetClass = n.type_name.toString();
+        method target = this.classTable.methods.get(targetClass).get(targetMethodName);
+        if (target == null) {
+          this.semantError(cls.getFilename(), d)
+              .println("Dispatch to undefined method " + targetMethodName + ".");
+        }
+        if (target.formals.getLength() != d.actual.getLength()) {
+          this.semantError(cls.getFilename(), d)
+              .println("Method " + targetMethodName + " called with wrong number of arguments.");
+        }
+        for (int i = 0; i < target.formals.getLength(); i++) {
+          formalc t = (formalc) target.formals.getNth(i);
+          // TODO(ivo) compare actual types with the formalc.type_decl
+          Expression a = (Expression) d.actual.getNth(i);
+          if (false) {
+            this.semantError(cls.getFilename(), d)
+                .println(
+                    "In call of method "
+                        + targetMethodName
+                        + ", type <todo evaluate> of parameter "
+                        + t.name
+                        + " does not conform to declared type "
+                        + t.type_decl);
+          }
+        }
+      }
     }
 
-    // dispatch
     // static_dispatch
   }
 
