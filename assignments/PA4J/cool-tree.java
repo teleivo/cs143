@@ -7,8 +7,10 @@
 //////////////////////////////////////////////////////////
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -586,6 +588,7 @@ class programc extends Program {
     } else if (expr instanceof typcase e) {
       checkType(cls, objects, e.expr);
 
+      boolean skipJoin;
       Set<AbstractSymbol> branchTypes = new HashSet<>();
       Set<branch> duplicateBranches = new HashSet<>();
       for (Enumeration c = e.cases.getElements(); c.hasMoreElements(); ) {
@@ -596,6 +599,7 @@ class programc extends Program {
         branchTypes.add(b.type_decl);
 
         if (!this.classTable.classes.containsKey(b.type_decl.toString())) {
+          skipJoin = true;
           this.semantError(cls.getFilename(), b)
               .println("Class " + b.type_decl + " of case branch is undefined.");
         }
@@ -611,7 +615,11 @@ class programc extends Program {
             .println("Duplicate branch " + b.type_decl + " in case statement.");
       }
 
-      // TODO set type to join of all branches?
+      // join types unless one of the branches refers to an undeclared class
+      if (skipJoin) return;
+
+      // TODO set type to join of all branches
+      e.set_type(joinTypes(branchTypes));
       return;
     } else if (expr instanceof dispatch d) {
       String targetMethodName = d.name.toString();
@@ -647,13 +655,42 @@ class programc extends Program {
     // static_dispatch
   }
 
-  private AbstractSymbol joinTypes(AbstractSymbol a, AbstractSymbol b) {
-    if (a == b) {
-      return a;
+  private AbstractSymbol joinTypes(Set<AbstractSymbol> types) {
+    AbstractSymbol common;
+    for (int i = 1; i < types.size(); i++) {
+      common = joinTypes(types.get(i - 1), types.get(i));
     }
+  }
 
-    // TODO implement finding the least common ancestor
-    return a;
+  // TODO how to thorougly test?
+  private AbstractSymbol joinTypes(AbstractSymbol a, AbstractSymbol b) {
+    List<AbstractSymbol> pathA = root(a);
+    List<AbstractSymbol> pathB = root(b);
+    int i = pathA.size() - 1;
+    int j = pathB.size() - 1;
+    AbstractSymbol common;
+    while (pathA.get(i) == pathB.get(j) && i >= 0 && j >= 0) {
+      common = pathA.get(i);
+      i--;
+      j--;
+    }
+    return common;
+  }
+
+  private List<AbstractSymbol> root(AbstractSymbol a) {
+    List<AbstractSymbol> path = new ArrayList<>();
+    root(a, path);
+    return path;
+  }
+
+  private void root(AbstractSymbol a, List<AbstractSymbol> result) {
+    result.add(a);
+
+    if (a == TreeConstants.Object_) {
+      return;
+    }
+    class_c cls = this.classTable.classes.get(a.toString());
+    root(cls.parent, result);
   }
 
   /**
