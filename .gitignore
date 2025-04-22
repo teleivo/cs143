@@ -1,5 +1,6 @@
 */*
 *.tar.gz
+*.s
 /assignments/PA2J/*.class
 /assignments/PA2J/lexer
 !/assignments/PA2J/

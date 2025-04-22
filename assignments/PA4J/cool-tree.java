@@ -588,7 +588,7 @@ class programc extends Program {
     } else if (expr instanceof typcase e) {
       checkType(cls, objects, e.expr);
 
-      boolean skipJoin;
+      boolean skipJoin = false;
       Set<AbstractSymbol> branchTypes = new HashSet<>();
       Set<branch> duplicateBranches = new HashSet<>();
       for (Enumeration c = e.cases.getElements(); c.hasMoreElements(); ) {
@@ -656,19 +656,32 @@ class programc extends Program {
   }
 
   private AbstractSymbol joinTypes(Set<AbstractSymbol> types) {
-    AbstractSymbol common;
-    for (int i = 1; i < types.size(); i++) {
-      common = joinTypes(types.get(i - 1), types.get(i));
+    boolean first = true;
+    AbstractSymbol common = null;
+    for (AbstractSymbol a : types) {
+      if (first) {
+        common = a;
+        first = false;
+      } else {
+        common = joinTypes(common, a);
+      }
+
+      // no need to join more types if two of them only have Object as their least common
+      // ancestor
+      if (common == TreeConstants.Object_) {
+        return common;
+      }
     }
+    return common;
   }
 
-  // TODO how to thorougly test?
+  // TODO handle self-type
   private AbstractSymbol joinTypes(AbstractSymbol a, AbstractSymbol b) {
     List<AbstractSymbol> pathA = root(a);
     List<AbstractSymbol> pathB = root(b);
     int i = pathA.size() - 1;
     int j = pathB.size() - 1;
-    AbstractSymbol common;
+    AbstractSymbol common = null;
     while (pathA.get(i) == pathB.get(j) && i >= 0 && j >= 0) {
       common = pathA.get(i);
       i--;
