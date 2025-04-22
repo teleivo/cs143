@@ -32,8 +32,7 @@ class Semant {
       ASTParser parser = new ASTParser(lexer);
       Object result = parser.parse().value;
       ((Program) result).semant();
-      // TODO(ivo) uncomment when done
-      // ((Program)result).dump_with_types(System.out, 0);
+      ((Program) result).dump_with_types(System.out, 0);
     } catch (Exception ex) {
       ex.printStackTrace(System.err);
     }

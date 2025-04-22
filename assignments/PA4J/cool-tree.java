@@ -337,6 +337,7 @@ class programc extends Program {
   @Override
   public void semant() {
     ClassTable classTable = new ClassTable(classes);
+    Set<String> baseClasses = Set.of("Object", "IO", "Int", "Bool", "String");
     if (classTable.errors()) {
       System.err.println("Compilation halted due to static semantic errors.");
       System.exit(1);
@@ -346,6 +347,11 @@ class programc extends Program {
     this.classTable = classTable;
 
     for (String className : classTable.sort) {
+      // don't type check base classes which have no method bodies
+      if (baseClasses.contains(className)) {
+        continue;
+      }
+
       class_c cls = classTable.classes.get(className);
       SymbolTable objects = new SymbolTable();
       objects.enterScope();
@@ -417,7 +423,7 @@ class programc extends Program {
       expr.set_type(TreeConstants.Str);
       return;
     } else if (expr instanceof new_ e) {
-      expr.set_type(e.type_name);
+      e.set_type(e.type_name);
       return;
     } else if (expr instanceof isvoid e) {
       expr.set_type(TreeConstants.Bool);
@@ -676,13 +682,18 @@ class programc extends Program {
   }
 
   // TODO handle self-type
+  /*
+   * Join static types by walking the paths from the Object root until their nodes differ.
+   * See Cool Manual 7.5 Conditionals.
+   *
+   **/
   private AbstractSymbol joinTypes(AbstractSymbol a, AbstractSymbol b) {
     List<AbstractSymbol> pathA = root(a);
     List<AbstractSymbol> pathB = root(b);
     int i = pathA.size() - 1;
     int j = pathB.size() - 1;
     AbstractSymbol common = null;
-    while (pathA.get(i) == pathB.get(j) && i >= 0 && j >= 0) {
+    while (i >= 0 && j >= 0 && pathA.get(i) == pathB.get(j)) {
       common = pathA.get(i);
       i--;
       j--;
