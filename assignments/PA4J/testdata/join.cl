@@ -41,6 +41,21 @@ class Main {
 			else
 				new X
 			fi;
+			let x : Int <- 10 in
+			case x of
+				a : Int => "a";
+				b : Bool => "b";
+				c : String => 1;
+				d : X => "d";
+				o : Object => "default";
+			esac;
+			let x : Int <- 10 in
+			case x of
+				a : Int => new D;
+				b : Bool => new C;
+				c : String => new E;
+				d : X => new F;
+			esac;
 			1;
 		}
 	};

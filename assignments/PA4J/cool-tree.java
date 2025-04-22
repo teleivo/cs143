@@ -596,6 +596,7 @@ class programc extends Program {
 
       boolean skipJoin = false;
       Set<AbstractSymbol> branchTypes = new HashSet<>();
+      Set<AbstractSymbol> branchExprTypes = new HashSet<>();
       Set<branch> duplicateBranches = new HashSet<>();
       for (Enumeration c = e.cases.getElements(); c.hasMoreElements(); ) {
         branch b = (branch) c.nextElement();
@@ -613,6 +614,7 @@ class programc extends Program {
         objects.enterScope();
         objects.addId(b.name, b.type_decl);
         checkType(cls, objects, b.expr);
+        branchExprTypes.add(b.expr.get_type());
         objects.exitScope();
       }
 
@@ -624,8 +626,7 @@ class programc extends Program {
       // join types unless one of the branches refers to an undeclared class
       if (skipJoin) return;
 
-      // TODO set type to join of all branches
-      e.set_type(joinTypes(branchTypes));
+      e.set_type(joinTypes(branchExprTypes));
       return;
     } else if (expr instanceof dispatch d) {
       String targetMethodName = d.name.toString();
