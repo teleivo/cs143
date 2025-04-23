@@ -6,6 +6,6 @@ class C {
 
 Class Main {
 	main(): Int {
-	  (new C).init("foo",1)
+	  (new C).init("foo", 1)
 	};
 };

@@ -14,20 +14,23 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
 
 ## TODO
 
+* implement No_type logic to avoid cascading errors
+* support SELF_TYPE
+  * handle self in object expression?
+  * check I support all places where its allowed
+  * test what happens if I use it in an illegal place
 * Main:
   * [do that in ClassTable itself, or now in programc.semant?] Furthermore, the Main class must have a method main that
   takes no formal parameters. The main method must be defined in class Main (not inherited from another
   class). A program is executed by evaluating (new Main).main().
-
-* should I use AbstractSymbol as my keys for classes?
+* fix remaining todos
 
 * run test.sh against examples comparing the dump types output
 * test scope in its own .cl test class
 
+* should I use AbstractSymbol as my keys for classes?
+  * it does not implement hashCode
 * fix the symbolic links in each assignment. The mycoolc, my... use `./lexer` and so forth which
 don't always exist so fail. As they are prefixed with my I guess the intetion is they only use my
 implementations. How to then add the reference impl next to it
-
-* adapt test.sh: either create a test-err.sh or make it work for errors and valid programs. Right
-now I just capture stderr
 

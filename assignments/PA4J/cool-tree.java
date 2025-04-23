@@ -361,12 +361,9 @@ class programc extends Program {
 
         if (feature instanceof attr a) {
           objects.addId(a.name, a.type_decl);
-          // TODO an error in checkType here should short-circuit the next check as this
-          // leads to a cascading error
           checkType(cls, objects, a.init);
-          // TODO double check but I think this is not accurate as conformance means <=
-          // while I am just doing = right now
-          if (!(a.init instanceof no_expr) && a.init.get_type() != a.type_decl) {
+          // TODO double-check I have a test for this conformance case
+          if (!(a.init instanceof no_expr) && !conforms(a.init.get_type(), a.type_decl)) {
             this.semantError(cls.getFilename(), a)
                 .println(
                     "Inferred type "
@@ -380,16 +377,15 @@ class programc extends Program {
 
         } else if (feature instanceof method m) {
           objects.enterScope();
-          // TODO(ivo) add formals into objects?
+          for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
+            formalc f = (formalc) c.nextElement();
+            objects.addId(f.name, f.type_decl);
+          }
 
-          // TODO an error in checkType here should short-circuit the next check as this
-          // leads to a cascading error
           checkType(cls, objects, m.expr);
 
-          // TODO double-check error message matches reference implementation
-          // TODO double check but I think this is not accurate as conformance means <=
-          // while I am just doing = right now
-          if (m.expr.get_type() != m.return_type) {
+          // TODO double-check I have a test for this conformance case
+          if (!conforms(m.expr.get_type(), m.return_type)) {
             this.semantError(cls.getFilename(), m)
                 .println(
                     "Inferred type "
@@ -400,12 +396,13 @@ class programc extends Program {
                         + m.return_type
                         + ".");
           }
+          objects.exitScope();
         }
       }
     }
 
     if (this.errors()) {
-      System.err.println("Compilation halted due to semantic errors.");
+      System.err.println("Compilation halted due to static semantic errors.");
       System.exit(1);
     }
   }
@@ -423,7 +420,11 @@ class programc extends Program {
       expr.set_type(TreeConstants.Str);
       return;
     } else if (expr instanceof new_ e) {
-      e.set_type(e.type_name);
+      if (e.type_name == TreeConstants.SELF_TYPE) {
+        e.set_type(cls.getName());
+      } else {
+        e.set_type(e.type_name);
+      }
       return;
     } else if (expr instanceof isvoid e) {
       expr.set_type(TreeConstants.Bool);
@@ -434,6 +435,8 @@ class programc extends Program {
       if (e.e1.get_type() != TreeConstants.Bool) {
         this.semantError(cls.getFilename(), e)
             .println("Argument of 'not' has type " + e.e1.get_type() + " instead of Bool.");
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       expr.set_type(TreeConstants.Bool);
       return;
@@ -442,6 +445,8 @@ class programc extends Program {
       if (e.e1.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("Argument of '~' has type " + e.e1.get_type() + " instead of Int.");
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       expr.set_type(TreeConstants.Bool);
       return;
@@ -451,6 +456,8 @@ class programc extends Program {
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " < " + e.e2.get_type());
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       expr.set_type(TreeConstants.Bool);
       return;
@@ -460,6 +467,8 @@ class programc extends Program {
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " <= " + e.e2.get_type());
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       expr.set_type(TreeConstants.Bool);
       return;
@@ -469,6 +478,8 @@ class programc extends Program {
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " + " + e.e2.get_type());
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       expr.set_type(TreeConstants.Int);
       return;
@@ -478,6 +489,8 @@ class programc extends Program {
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " - " + e.e2.get_type());
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       expr.set_type(TreeConstants.Int);
       return;
@@ -496,6 +509,8 @@ class programc extends Program {
       if (e.e1.get_type() != TreeConstants.Int || e.e2.get_type() != TreeConstants.Int) {
         this.semantError(cls.getFilename(), e)
             .println("non-Int arguments: " + e.e1.get_type() + " / " + e.e2.get_type());
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       expr.set_type(TreeConstants.Int);
       return;
@@ -508,6 +523,8 @@ class programc extends Program {
           basicTypes.contains(e.e1.get_type()) || basicTypes.contains(e.e2.get_type());
       if (isBasic && e.e1.get_type() != e.e2.get_type()) {
         this.semantError(cls.getFilename(), e).println("Illegal comparison with a basic type.");
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       expr.set_type(TreeConstants.Bool);
       return;
@@ -520,9 +537,11 @@ class programc extends Program {
       e.set_type(((Expression) e.body.getNth(e.body.getLength() - 1)).get_type());
       return;
     } else if (expr instanceof object e) {
+      // TODO self: is that "simply" the cls.getName()?
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
       if (type == null) {
         this.semantError(cls.getFilename(), e).println("Undeclared identifier " + e.name + ".");
+        expr.set_type(TreeConstants.No_type);
         return;
       }
       e.set_type(type);
@@ -532,10 +551,11 @@ class programc extends Program {
       if (type == null) {
         this.semantError(cls.getFilename(), e)
             .println("Assignment to undeclared variable " + e.name + ".");
+        expr.set_type(TreeConstants.No_type);
         return;
       }
       checkType(cls, objects, e.expr);
-      if (type != e.expr.get_type()) {
+      if (!conforms(e.expr.get_type(), type)) {
         this.semantError(cls.getFilename(), e)
             .println(
                 "Type "
@@ -545,6 +565,8 @@ class programc extends Program {
                     + " of identifier "
                     + e.name
                     + ".");
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       e.set_type(e.expr.get_type());
       return;
@@ -553,6 +575,8 @@ class programc extends Program {
       if (e.pred.get_type() != TreeConstants.Bool) {
         this.semantError(cls.getFilename(), e)
             .println("Predicate of 'if' does not have type Bool.");
+        expr.set_type(TreeConstants.No_type);
+        return;
       }
       checkType(cls, objects, e.then_exp);
       checkType(cls, objects, e.else_exp);
@@ -562,23 +586,27 @@ class programc extends Program {
       checkType(cls, objects, e.pred);
       if (e.pred.get_type() != TreeConstants.Bool) {
         this.semantError(cls.getFilename(), e).println("Loop condition does not have type Bool.");
+        // I assume that we can still type check the body regardless of ill-typed predicates
       }
       checkType(cls, objects, e.body);
       e.set_type(TreeConstants.Object_);
       return;
     } else if (expr instanceof let e) {
-      checkType(cls, objects, e.init);
-      // TODO test conformance of e.init.get_type() with e.type_decl
-      if (false) {
-        this.semantError(cls.getFilename(), e)
-            .println(
-                "Inferred type "
-                    + e.init.get_type()
-                    + " of initialization of "
-                    + e.identifier
-                    + " does not conform to identifier's declared type "
-                    + e.type_decl
-                    + ".");
+      if (!(e.init instanceof no_expr)) { // initialization expression is optional
+        checkType(cls, objects, e.init);
+        if (!conforms(e.init.get_type(), e.type_decl)) {
+          this.semantError(cls.getFilename(), e)
+              .println(
+                  "Inferred type "
+                      + e.init.get_type()
+                      + " of initialization of "
+                      + e.identifier
+                      + " does not conform to identifier's declared type "
+                      + e.type_decl
+                      + ".");
+          expr.set_type(TreeConstants.No_type);
+          return;
+        }
       }
       objects.enterScope();
       // TODO test I handle type_decl being SELF_TYPE correctly
@@ -630,36 +658,63 @@ class programc extends Program {
       return;
     } else if (expr instanceof dispatch d) {
       String targetMethodName = d.name.toString();
-      if (d.expr instanceof new_ n) {
-        String targetClass = n.type_name.toString();
-        method target = this.classTable.methods.get(targetClass).get(targetMethodName);
-        if (target == null) {
+      checkType(cls, objects, d.expr);
+
+      String targetClass = d.expr.get_type().toString();
+      method target = this.classTable.methods.get(targetClass).get(targetMethodName);
+      if (target == null) {
+        this.semantError(cls.getFilename(), d)
+            .println("Dispatch to undefined method " + targetMethodName + ".");
+      }
+      d.set_type(target.return_type);
+      if (target.formals.getLength() != d.actual.getLength()) {
+        this.semantError(cls.getFilename(), d)
+            .println("Method " + targetMethodName + " called with wrong number of arguments.");
+      }
+      for (int i = 0; i < target.formals.getLength(); i++) {
+        formalc t = (formalc) target.formals.getNth(i);
+        Expression a = (Expression) d.actual.getNth(i);
+        checkType(cls, objects, a);
+        if (!conforms(a.get_type(), t.type_decl)) {
           this.semantError(cls.getFilename(), d)
-              .println("Dispatch to undefined method " + targetMethodName + ".");
-        }
-        if (target.formals.getLength() != d.actual.getLength()) {
-          this.semantError(cls.getFilename(), d)
-              .println("Method " + targetMethodName + " called with wrong number of arguments.");
-        }
-        for (int i = 0; i < target.formals.getLength(); i++) {
-          formalc t = (formalc) target.formals.getNth(i);
-          // TODO(ivo) compare actual types with the formalc.type_decl
-          Expression a = (Expression) d.actual.getNth(i);
-          if (false) {
-            this.semantError(cls.getFilename(), d)
-                .println(
-                    "In call of method "
-                        + targetMethodName
-                        + ", type <todo evaluate> of parameter "
-                        + t.name
-                        + " does not conform to declared type "
-                        + t.type_decl);
-          }
+              .println(
+                  "In call of method "
+                      + targetMethodName
+                      + ", type "
+                      + a.get_type()
+                      + " of parameter "
+                      + t.name
+                      + " does not conform to declared type "
+                      + t.type_decl
+                      + ".");
         }
       }
     }
 
     // static_dispatch
+  }
+
+  // TODO does SELF_TYPE influence the conformance method? or should the type already have been
+  // resolved at this point
+  /*
+   * Indicates if class a <= ancestor.
+   * See Cool Manual Definition 4.1 (Conformance).
+   * In addition, No_type which is assigned to ill-typed expressions conforms to any class to
+   * prevent cascading errors.
+   **/
+  private boolean conforms(AbstractSymbol a, AbstractSymbol ancestor) {
+    if (ancestor == a) {
+      return true;
+    }
+    if (a == TreeConstants.No_type) {
+      return true;
+    }
+    if (a == TreeConstants.Object_) {
+      return false;
+    }
+
+    class_c cls = this.classTable.classes.get(a.toString());
+    return conforms(cls.parent, ancestor);
   }
 
   private AbstractSymbol joinTypes(Set<AbstractSymbol> types) {
@@ -689,8 +744,8 @@ class programc extends Program {
    *
    **/
   private AbstractSymbol joinTypes(AbstractSymbol a, AbstractSymbol b) {
-    List<AbstractSymbol> pathA = root(a);
-    List<AbstractSymbol> pathB = root(b);
+    List<AbstractSymbol> pathA = rootPath(a);
+    List<AbstractSymbol> pathB = rootPath(b);
     int i = pathA.size() - 1;
     int j = pathB.size() - 1;
     AbstractSymbol common = null;
@@ -702,20 +757,20 @@ class programc extends Program {
     return common;
   }
 
-  private List<AbstractSymbol> root(AbstractSymbol a) {
+  private List<AbstractSymbol> rootPath(AbstractSymbol a) {
     List<AbstractSymbol> path = new ArrayList<>();
-    root(a, path);
+    rootPath(a, path);
     return path;
   }
 
-  private void root(AbstractSymbol a, List<AbstractSymbol> result) {
+  private void rootPath(AbstractSymbol a, List<AbstractSymbol> result) {
     result.add(a);
 
     if (a == TreeConstants.Object_) {
       return;
     }
     class_c cls = this.classTable.classes.get(a.toString());
-    root(cls.parent, result);
+    rootPath(cls.parent, result);
   }
 
   /**
