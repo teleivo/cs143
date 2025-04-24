@@ -406,6 +406,7 @@ class programc extends Program {
 
   private void checkType(Class_ cls, SymbolTable objects, Expression expr) {
     if (expr instanceof no_expr) {
+      expr.set_type(TreeConstants.No_type);
       return;
     } else if (expr instanceof int_const) {
       expr.set_type(TreeConstants.Int);
@@ -535,6 +536,11 @@ class programc extends Program {
       return;
     } else if (expr instanceof object e) {
       // TODO self: is that "simply" the cls.getName()?
+            // do I need to set the cls on call to checkTypes to a different one on dispatch? 
+      if (e.name == TreeConstants.self) {
+        expr.set_type(cls.getName());
+        return;
+      }
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
       if (type == null) {
         this.semantError(cls.getFilename(), e).println("Undeclared identifier " + e.name + ".");
@@ -590,6 +596,7 @@ class programc extends Program {
     } else if (expr instanceof let e) {
       if (!(e.init instanceof no_expr)) { // initialization expression is optional
         checkType(cls, objects, e.init);
+        System.out.println("let " + e.init.get_type());
         if (!conforms(e.init.get_type(), e.type_decl)) {
           this.semantError(cls.getFilename(), e)
               .println(
@@ -647,27 +654,34 @@ class programc extends Program {
 
       e.set_type(joinTypes(branchExprTypes));
       return;
-    } else if (expr instanceof dispatch d) {
-      String targetMethodName = d.name.toString();
-      checkType(cls, objects, d.expr);
+    } else if (expr instanceof dispatch e) {
+      AbstractSymbol targetMethodName = e.name;
+      checkType(cls, objects, e.expr);
 
-      String targetClass = d.expr.get_type().toString();
-      method target = this.classTable.methods.get(targetClass).get(targetMethodName);
+      method target = lookupMethod(e.expr.get_type(), targetMethodName);
       if (target == null) {
-        this.semantError(cls.getFilename(), d)
+        this.semantError(cls.getFilename(), e)
             .println("Dispatch to undefined method " + targetMethodName + ".");
+        e.set_type(TreeConstants.No_type);
+        return;
       }
-      d.set_type(target.return_type);
-      if (target.formals.getLength() != d.actual.getLength()) {
-        this.semantError(cls.getFilename(), d)
+      if (target.return_type == TreeConstants.SELF_TYPE) {
+        e.set_type(e.expr.get_type());
+      } else {
+        e.set_type(target.return_type);
+      }
+
+      if (target.formals.getLength() != e.actual.getLength()) {
+        this.semantError(cls.getFilename(), e)
             .println("Method " + targetMethodName + " called with wrong number of arguments.");
+        return;
       }
       for (int i = 0; i < target.formals.getLength(); i++) {
         formalc t = (formalc) target.formals.getNth(i);
-        Expression a = (Expression) d.actual.getNth(i);
+        Expression a = (Expression) e.actual.getNth(i);
         checkType(cls, objects, a);
         if (!conforms(a.get_type(), t.type_decl)) {
-          this.semantError(cls.getFilename(), d)
+          this.semantError(cls.getFilename(), e)
               .println(
                   "In call of method "
                       + targetMethodName
@@ -687,6 +701,7 @@ class programc extends Program {
 
   // TODO does SELF_TYPE influence the conformance method? or should the type already have been
   // resolved at this point
+  // lecture 10 says yes: Extending ≤
   /*
    * Indicates if class a <= ancestor.
    * See Cool Manual Definition 4.1 (Conformance).
@@ -704,6 +719,7 @@ class programc extends Program {
       return false;
     }
 
+    // TODO NPE a is SELF_TYPE so does not exist, I think this should be resolved before
     class_c cls = this.classTable.classes.get(a.toString());
     return conforms(cls.parent, ancestor);
   }
@@ -728,7 +744,8 @@ class programc extends Program {
     return common;
   }
 
-  // TODO handle self-type
+  // TODO handle SELF-TYPE
+  // Lecture 10
   /*
    * Join static types by walking the paths from the Object root until their nodes differ.
    * See Cool Manual 7.5 Conditionals.
@@ -770,6 +787,23 @@ class programc extends Program {
     }
     class_c cls = this.classTable.classes.get(a.toString());
     rootPath(cls.parent, result);
+  }
+
+  private method lookupMethod(AbstractSymbol className, AbstractSymbol methodName) {
+    if (className == TreeConstants.No_type) {
+      return null;
+    }
+    // assuming the class exists
+    method m = this.classTable.methods.get(className.toString()).get(methodName.toString());
+    if (m != null) {
+      return m;
+    }
+    // method does not exist if not found in Object
+    if (className == TreeConstants.Object_) {
+      return null;
+    }
+
+    return lookupMethod(this.classTable.classes.get(className.toString()).parent, methodName);
   }
 
   /**
