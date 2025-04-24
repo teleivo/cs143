@@ -362,7 +362,6 @@ class programc extends Program {
         if (feature instanceof attr a) {
           objects.addId(a.name, a.type_decl);
           checkType(cls, objects, a.init);
-          // TODO double-check I have a test for this conformance case
           if (!(a.init instanceof no_expr) && !conforms(a.init.get_type(), a.type_decl)) {
             this.semantError(cls.getFilename(), a)
                 .println(
@@ -374,7 +373,6 @@ class programc extends Program {
                         + a.type_decl
                         + ".");
           }
-
         } else if (feature instanceof method m) {
           objects.enterScope();
           for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
@@ -384,15 +382,14 @@ class programc extends Program {
 
           checkType(cls, objects, m.expr);
 
-          // TODO double-check I have a test for this conformance case
           if (!conforms(m.expr.get_type(), m.return_type)) {
             this.semantError(cls.getFilename(), m)
                 .println(
-                    "Inferred type "
+                    "Inferred return type "
                         + m.expr.get_type()
                         + " of method "
                         + m.name
-                        + " does not conform to declared type "
+                        + " does not conform to declared return type "
                         + m.return_type
                         + ".");
           }
