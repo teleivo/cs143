@@ -572,8 +572,7 @@ class programc extends Program {
       if (e.pred.get_type() != TreeConstants.Bool) {
         this.semantError(cls.getFilename(), e)
             .println("Predicate of 'if' does not have type Bool.");
-        expr.set_type(TreeConstants.No_type);
-        return;
+        // I assume that we can still type check the body regardless of ill-typed predicates
       }
       checkType(cls, objects, e.then_exp);
       checkType(cls, objects, e.else_exp);
@@ -619,7 +618,6 @@ class programc extends Program {
     } else if (expr instanceof typcase e) {
       checkType(cls, objects, e.expr);
 
-      boolean skipJoin = false;
       Set<AbstractSymbol> branchTypes = new HashSet<>();
       Set<AbstractSymbol> branchExprTypes = new HashSet<>();
       Set<branch> duplicateBranches = new HashSet<>();
@@ -631,7 +629,6 @@ class programc extends Program {
         branchTypes.add(b.type_decl);
 
         if (!this.classTable.classes.containsKey(b.type_decl.toString())) {
-          skipJoin = true;
           this.semantError(cls.getFilename(), b)
               .println("Class " + b.type_decl + " of case branch is undefined.");
         }
@@ -647,9 +644,6 @@ class programc extends Program {
         this.semantError(cls.getFilename(), b)
             .println("Duplicate branch " + b.type_decl + " in case statement.");
       }
-
-      // join types unless one of the branches refers to an undeclared class
-      if (skipJoin) return;
 
       e.set_type(joinTypes(branchExprTypes));
       return;
@@ -741,6 +735,14 @@ class programc extends Program {
    *
    **/
   private AbstractSymbol joinTypes(AbstractSymbol a, AbstractSymbol b) {
+    // No_type ≤ C for all types C
+    if (a == TreeConstants.No_type) {
+      return b;
+    }
+    if (b == TreeConstants.No_type) {
+      return a;
+    }
+
     List<AbstractSymbol> pathA = rootPath(a);
     List<AbstractSymbol> pathB = rootPath(b);
     int i = pathA.size() - 1;
