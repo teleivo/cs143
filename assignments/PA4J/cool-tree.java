@@ -527,16 +527,16 @@ class programc extends Program {
       expr.set_type(TreeConstants.Bool);
       return;
     } else if (expr instanceof block e) {
-      // TODO create new scope? (exit again after if I do)
+      // blocks do not seem to create new scopes
       for (int i = 0; i < e.body.getLength(); i++) {
         checkType(cls, objects, (Expression) e.body.getNth(i));
       }
-      // assuming blocks must have at least one expression
+      // blocks must have at least one expression which is enforced by the parser
       e.set_type(((Expression) e.body.getNth(e.body.getLength() - 1)).get_type());
       return;
     } else if (expr instanceof object e) {
-      // TODO self: is that "simply" the cls.getName()?
-            // do I need to set the cls on call to checkTypes to a different one on dispatch? 
+      // TODO add test to check if self is really "simply" the cls.getName()?
+      // do I need to set the cls on call to checkTypes to a different one on dispatch?
       if (e.name == TreeConstants.self) {
         expr.set_type(cls.getName());
         return;
@@ -594,10 +594,15 @@ class programc extends Program {
       e.set_type(TreeConstants.Object_);
       return;
     } else if (expr instanceof let e) {
-      if (!(e.init instanceof no_expr)) { // initialization expression is optional
+      // TODO add test to check I handle type_decl being SELF_TYPE correctly
+      AbstractSymbol t0 = e.type_decl;
+      if (e.type_decl == TreeConstants.SELF_TYPE) {
+        t0 = cls.getName();
+      }
+
+      if (e.init != null) { // initialization expression is optional
         checkType(cls, objects, e.init);
-        System.out.println("let " + e.init.get_type());
-        if (!conforms(e.init.get_type(), e.type_decl)) {
+        if (!conforms(e.init.get_type(), t0)) {
           this.semantError(cls.getFilename(), e)
               .println(
                   "Inferred type "
@@ -611,13 +616,9 @@ class programc extends Program {
           return;
         }
       }
+
       objects.enterScope();
-      // TODO test I handle type_decl being SELF_TYPE correctly
-      if (e.type_decl == TreeConstants.SELF_TYPE) {
-        objects.addId(e.identifier, cls.getName());
-      } else {
-        objects.addId(e.identifier, e.type_decl);
-      }
+      objects.addId(e.identifier, t0);
       checkType(cls, objects, e.body);
       objects.exitScope();
       e.set_type(e.body.get_type());
@@ -655,9 +656,13 @@ class programc extends Program {
       e.set_type(joinTypes(branchExprTypes));
       return;
     } else if (expr instanceof dispatch e) {
-      AbstractSymbol targetMethodName = e.name;
       checkType(cls, objects, e.expr);
 
+      AbstractSymbol targetClass = e.expr.get_type();
+      if (e.expr.get_type() == TreeConstants.SELF_TYPE) {
+        targetClass = cls.getName();
+      }
+      AbstractSymbol targetMethodName = e.name;
       method target = lookupMethod(e.expr.get_type(), targetMethodName);
       if (target == null) {
         this.semantError(cls.getFilename(), e)
@@ -665,6 +670,7 @@ class programc extends Program {
         e.set_type(TreeConstants.No_type);
         return;
       }
+
       if (target.return_type == TreeConstants.SELF_TYPE) {
         e.set_type(e.expr.get_type());
       } else {
@@ -696,7 +702,8 @@ class programc extends Program {
       }
     }
 
-    // static_dispatch
+    // TODO static_dispatch
+    // m@T(E1,…,En) - T cannot be SELF_TYPE
   }
 
   // TODO does SELF_TYPE influence the conformance method? or should the type already have been

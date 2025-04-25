@@ -195,7 +195,12 @@ class ClassTable {
 
     boolean hasMain = false;
     Set<String> declared = new HashSet<String>();
-    Set<String> prohibited = Set.of("String", "Int", "Bool");
+    Set<String> prohibited =
+        Set.of(
+            TreeConstants.Str.toString(),
+            TreeConstants.Int.toString(),
+            TreeConstants.Bool.toString(),
+            TreeConstants.SELF_TYPE.toString());
     Map<String, class_c> classes = new HashMap<>();
 
     for (Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
