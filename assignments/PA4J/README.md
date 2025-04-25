@@ -16,6 +16,7 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
 
 * support SELF_TYPE
   * add all illegal places where SELF_TYPE cannot be used to ./testdata-err/self-type.cl
+    * add static dispatch to disallowed test
   * handle self in object expression?
   * check I support all places where its allowed
 

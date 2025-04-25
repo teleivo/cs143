@@ -377,6 +377,17 @@ class programc extends Program {
           objects.enterScope();
           for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
             formalc f = (formalc) c.nextElement();
+
+            if (f.type_decl == TreeConstants.SELF_TYPE) {
+              this.semantError(cls.getFilename(), m)
+                  .println(
+                      "Formal parameter "
+                          + f.name
+                          + " cannot have type "
+                          + TreeConstants.SELF_TYPE
+                          + ".");
+            }
+
             objects.addId(f.name, f.type_decl);
           }
 

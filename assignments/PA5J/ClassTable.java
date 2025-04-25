@@ -206,7 +206,6 @@ class ClassTable {
     semantErrors = 0;
     errorStream = System.err;
 
-    // TODO(ivo) build class hierarchy and detect cycles
     for (Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
       class_c cl = (class_c) e.nextElement();
       System.out.println(cl.name + " inherits " + cl.parent);
