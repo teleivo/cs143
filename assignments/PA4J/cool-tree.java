@@ -345,6 +345,8 @@ class programc extends Program {
 
     this.errorStream = System.err;
     this.classTable = classTable;
+    Class_ main = null;
+    boolean hasMainMethod = false;
 
     for (String className : classTable.sort) {
       // don't type check base classes which have no method bodies
@@ -356,13 +358,16 @@ class programc extends Program {
       SymbolTable objects = new SymbolTable();
       objects.enterScope();
 
+      if (cls.name == TreeConstants.Main) {
+        main = cls;
+      }
+
       for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
         Feature feature = ((Feature) e.nextElement());
-
         if (feature instanceof attr a) {
           objects.addId(a.name, a.type_decl);
           checkType(cls, objects, a.init);
-          if (!(a.init instanceof no_expr) && !conforms(a.init.get_type(), a.type_decl)) {
+          if (!(a.init instanceof no_expr) && !conforms(cls, a.init.get_type(), a.type_decl)) {
             this.semantError(cls.getFilename(), a)
                 .println(
                     "Inferred type "
@@ -374,6 +379,16 @@ class programc extends Program {
                         + ".");
           }
         } else if (feature instanceof method m) {
+          if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
+            hasMainMethod = true;
+          }
+          if (cls.name == TreeConstants.Main
+              && m.name == TreeConstants.main_meth
+              && m.formals.getElements().hasMoreElements()) {
+            this.semantError(cls.getFilename(), cls)
+                .println("'main' method in class Main should have no arguments.");
+          }
+
           objects.enterScope();
           for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
             formalc f = (formalc) c.nextElement();
@@ -392,8 +407,10 @@ class programc extends Program {
           }
 
           checkType(cls, objects, m.expr);
-
-          if (!conforms(m.expr.get_type(), m.return_type)) {
+          if (!conforms(cls, m.expr.get_type(), m.return_type)) {
+            // the docs say T1 ≤ SELF_TYPE_C is always false which is whats happening
+            // here. that is confusing
+            System.out.println("error is here " + cls.getName());
             this.semantError(cls.getFilename(), m)
                 .println(
                     "Inferred return type "
@@ -407,6 +424,12 @@ class programc extends Program {
           objects.exitScope();
         }
       }
+    }
+
+    if (main == null) {
+      this.semantError().println("Class Main is not defined.");
+    } else if (!hasMainMethod) {
+      this.semantError(main.getFilename(), main).println("No 'main' method in class Main.");
     }
 
     if (this.errors()) {
@@ -569,7 +592,7 @@ class programc extends Program {
         return;
       }
       checkType(cls, objects, e.expr);
-      if (!conforms(e.expr.get_type(), type)) {
+      if (!conforms(cls, e.expr.get_type(), type)) {
         this.semantError(cls.getFilename(), e)
             .println(
                 "Type "
@@ -613,7 +636,7 @@ class programc extends Program {
 
       if (e.init != null) { // initialization expression is optional
         checkType(cls, objects, e.init);
-        if (!conforms(e.init.get_type(), t0)) {
+        if (!conforms(cls, e.init.get_type(), t0)) {
           this.semantError(cls.getFilename(), e)
               .println(
                   "Inferred type "
@@ -697,7 +720,7 @@ class programc extends Program {
         formalc t = (formalc) target.formals.getNth(i);
         Expression a = (Expression) e.actual.getNth(i);
         checkType(cls, objects, a);
-        if (!conforms(a.get_type(), t.type_decl)) {
+        if (!conforms(cls, a.get_type(), t.type_decl)) {
           this.semantError(cls.getFilename(), e)
               .println(
                   "In call of method "
@@ -726,8 +749,8 @@ class programc extends Program {
    * In addition, No_type which is assigned to ill-typed expressions conforms to any class to
    * prevent cascading errors.
    **/
-  private boolean conforms(AbstractSymbol a, AbstractSymbol ancestor) {
-    if (ancestor == a) {
+  private boolean conforms(Class_ cls, AbstractSymbol a, AbstractSymbol ancestor) {
+    if (ancestor == a) { // includes SELF_TYPE_C ≤ SELF_TYPE_C
       return true;
     }
     if (a == TreeConstants.No_type) {
@@ -736,10 +759,15 @@ class programc extends Program {
     if (a == TreeConstants.Object_) {
       return false;
     }
+    if (ancestor == TreeConstants.SELF_TYPE) {
+      return false;
+    }
+    if (a == TreeConstants.SELF_TYPE) {
+      return conforms(cls, cls.getName(), ancestor);
+    }
 
-    // TODO NPE a is SELF_TYPE so does not exist, I think this should be resolved before
-    class_c cls = this.classTable.classes.get(a.toString());
-    return conforms(cls.parent, ancestor);
+    class_c aCls = this.classTable.classes.get(a.toString());
+    return conforms(cls, aCls.parent, ancestor);
   }
 
   private AbstractSymbol joinTypes(Set<AbstractSymbol> types) {

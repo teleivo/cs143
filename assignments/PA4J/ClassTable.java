@@ -193,7 +193,6 @@ class ClassTable {
     this.semantErrors = 0;
     this.errorStream = System.err;
 
-    boolean hasMain = false;
     Set<String> declared = new HashSet<String>();
     Set<String> prohibited =
         Set.of(
@@ -212,10 +211,6 @@ class ClassTable {
       } else {
         declared.add(cl.name.toString());
         classes.put(cl.name.toString(), cl);
-      }
-
-      if ("Main".equals(cl.name.getString())) {
-        hasMain = true;
       }
     }
 
@@ -279,10 +274,6 @@ class ClassTable {
 
     if (this.semantErrors > 0) {
       return;
-    }
-
-    if (!hasMain) {
-      this.semantError().println("Class Main is not defined.");
     }
 
     // I need the reverse order to get a topological sort of classes. Using a LinkedHashSet is

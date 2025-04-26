@@ -41,10 +41,13 @@ class C {
 		esac;
 		1;
 	};
+	main(x: Int) : Int {
+		1
+	};
 };
 
 Class Main {
-	main(): Int {
+	main(y : Int, x : SELF_TYPE): Int {
 		1
 	};
 };

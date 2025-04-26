@@ -20,10 +20,13 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
   * handle self in object expression?
   * check I support all places where its allowed
 
-* Main:
-  * [do that in ClassTable itself, or now in programc.semant?] Furthermore, the Main class must have a method main that
-  takes no formal parameters. The main method must be defined in class Main (not inherited from another
-  class). A program is executed by evaluating (new Main).main().
+attention
+> A use of SELF_TYPE always refers to any subtype of the
+current class
+– The exception is the type checking of dispatch. The method return
+type of SELF_TYPE might have nothing to do with the current
+class
+
 * fix remaining todos
 
 * run test.sh against examples comparing the dump types output
