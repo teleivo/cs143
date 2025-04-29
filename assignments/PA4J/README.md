@@ -18,7 +18,17 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
   * add all illegal places where SELF_TYPE cannot be used to ./testdata-err/self-type.cl
     * add static dispatch to disallowed test
   * handle self in object expression?
+  * support SELF_TYPE in join
   * check I support all places where its allowed
+
+> The type SELF TYPE is used to refer to the type of the self variable.
+
+> The exception to this
+rule is the identifier self, which is implicitly bound in every class.
+
+dispatch
+> the method f in class C is invoked, with the value of e0 bound to self in the body
+of f
 
 attention
 > A use of SELF_TYPE always refers to any subtype of the
@@ -26,6 +36,8 @@ current class
 – The exception is the type checking of dispatch. The method return
 type of SELF_TYPE might have nothing to do with the current
 class
+
+* validate self: 7.2 Identifiers
 
 * fix remaining todos
 

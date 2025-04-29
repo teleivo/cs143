@@ -1,7 +1,8 @@
 class A inherits B {};
 class B {
+	-- SELF_TYPE is not allowed as parameter
 	b(x: SELF_TYPE) : SELF_TYPE {
-		self
+		new B
 	};
 };
 -- TODO test: Actual arguments can be SELF_TYPE

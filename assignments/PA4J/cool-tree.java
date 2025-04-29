@@ -362,10 +362,19 @@ class programc extends Program {
         main = cls;
       }
 
+      System.out.println("checking class " + cls.getName());
+
       for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
         Feature feature = ((Feature) e.nextElement());
         if (feature instanceof attr a) {
-          objects.addId(a.name, a.type_decl);
+
+          if (a.name == TreeConstants.self) {
+            this.semantError(cls.getFilename(), a)
+                .println("'" + a.name + "' cannot be the name of an attribute.");
+          } else {
+            objects.addId(a.name, a.type_decl);
+          }
+
           checkType(cls, objects, a.init);
           if (!(a.init instanceof no_expr) && !conforms(cls, a.init.get_type(), a.type_decl)) {
             this.semantError(cls.getFilename(), a)
@@ -406,7 +415,11 @@ class programc extends Program {
             objects.addId(f.name, f.type_decl);
           }
 
+          // TODO do I need to explicitly add self to objects? or do I add self to
+          // conforms/joinTypes
           checkType(cls, objects, m.expr);
+          System.out.println(
+              "conforms(" + cls.getName() + ", " + m.expr.get_type() + ", " + m.return_type + ")");
           if (!conforms(cls, m.expr.get_type(), m.return_type)) {
             // the docs say T1 ≤ SELF_TYPE_C is always false which is whats happening
             // here. that is confusing
@@ -569,12 +582,11 @@ class programc extends Program {
       e.set_type(((Expression) e.body.getNth(e.body.getLength() - 1)).get_type());
       return;
     } else if (expr instanceof object e) {
-      // TODO add test to check if self is really "simply" the cls.getName()?
-      // do I need to set the cls on call to checkTypes to a different one on dispatch?
-      if (e.name == TreeConstants.self) {
-        expr.set_type(cls.getName());
-        return;
-      }
+      // TODO self is not just the enclosing class; how to solve that?
+      // if (e.name == TreeConstants.self) {
+      //   expr.set_type(cls.getName());
+      //   return;
+      // }
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
       if (type == null) {
         this.semantError(cls.getFilename(), e).println("Undeclared identifier " + e.name + ".");
@@ -584,6 +596,12 @@ class programc extends Program {
       e.set_type(type);
       return;
     } else if (expr instanceof assign e) {
+      if (e.name == TreeConstants.self) {
+        this.semantError(cls.getFilename(), e).println("Cannot assign to 'self'.");
+        expr.set_type(TreeConstants.No_type);
+        return;
+      }
+
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
       if (type == null) {
         this.semantError(cls.getFilename(), e)
@@ -628,6 +646,13 @@ class programc extends Program {
       e.set_type(TreeConstants.Object_);
       return;
     } else if (expr instanceof let e) {
+      if (e.identifier == TreeConstants.self) {
+        this.semantError(cls.getFilename(), e)
+            .println("'self' cannot be bound in a 'let' expression.");
+        expr.set_type(TreeConstants.No_type);
+        return;
+      }
+
       // TODO add test to check I handle type_decl being SELF_TYPE correctly
       AbstractSymbol t0 = e.type_decl;
       if (e.type_decl == TreeConstants.SELF_TYPE) {
@@ -676,7 +701,11 @@ class programc extends Program {
         }
 
         objects.enterScope();
-        objects.addId(b.name, b.type_decl);
+        if (b.name == TreeConstants.self) {
+          this.semantError(cls.getFilename(), b).println("'self' bound in 'case'.");
+        } else {
+          objects.addId(b.name, b.type_decl);
+        }
         checkType(cls, objects, b.expr);
         branchExprTypes.add(b.expr.get_type());
         objects.exitScope();
@@ -750,7 +779,7 @@ class programc extends Program {
    * prevent cascading errors.
    **/
   private boolean conforms(Class_ cls, AbstractSymbol a, AbstractSymbol ancestor) {
-    if (ancestor == a) { // includes SELF_TYPE_C ≤ SELF_TYPE_C
+    if (a == ancestor) { // includes SELF_TYPE_C ≤ SELF_TYPE_C
       return true;
     }
     if (a == TreeConstants.No_type) {
@@ -760,11 +789,18 @@ class programc extends Program {
       return false;
     }
     if (ancestor == TreeConstants.SELF_TYPE) {
+      System.out.println("ancestor is SELF_TYPE");
       return false;
     }
     if (a == TreeConstants.SELF_TYPE) {
       return conforms(cls, cls.getName(), ancestor);
     }
+    // if (ancestor == TreeConstants.SELF_TYPE) {
+    //   return false;
+    // }
+    // if (a == TreeConstants.SELF_TYPE) {
+    //   return conforms(cls, cls.getName(), ancestor);
+    // }
 
     class_c aCls = this.classTable.classes.get(a.toString());
     return conforms(cls, aCls.parent, ancestor);
