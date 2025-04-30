@@ -457,8 +457,10 @@ class programc extends Program {
       expr.set_type(TreeConstants.Str);
       return;
     } else if (expr instanceof new_ e) {
+      // TODO this seems incorrect at least when checking against the return type
       if (e.type_name == TreeConstants.SELF_TYPE) {
-        e.set_type(cls.getName());
+        // e.set_type(cls.getName());
+        e.set_type(TreeConstants.SELF_TYPE);
       } else {
         e.set_type(e.type_name);
       }
@@ -636,10 +638,9 @@ class programc extends Program {
             .println("'self' cannot be bound in a 'let' expression.");
       }
 
-      // TODO add test to check I handle type_decl being SELF_TYPE correctly
       AbstractSymbol t0 = e.type_decl;
       if (e.type_decl == TreeConstants.SELF_TYPE) {
-        t0 = cls.getName();
+        t0 = TreeConstants.SELF_TYPE;
       }
 
       if (e.init != null) { // initialization expression is optional
@@ -705,11 +706,11 @@ class programc extends Program {
       checkType(cls, objects, e.expr);
 
       AbstractSymbol targetClass = e.expr.get_type();
-      if (e.expr.get_type() == TreeConstants.SELF_TYPE) {
+      if (targetClass == TreeConstants.SELF_TYPE) {
         targetClass = cls.getName();
       }
       AbstractSymbol targetMethodName = e.name;
-      method target = lookupMethod(e.expr.get_type(), targetMethodName);
+      method target = lookupMethod(targetClass, targetMethodName);
       if (target == null) {
         this.semantError(cls.getFilename(), e)
             .println("Dispatch to undefined method " + targetMethodName + ".");
