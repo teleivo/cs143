@@ -15,10 +15,10 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
 ## TODO
 
 * support SELF_TYPE
+  * SELF_TYPE in dispatch is allowed
   * add all illegal places where SELF_TYPE cannot be used to ./testdata-err/self-type.cl
     * add static dispatch to disallowed test
   * handle self in object expression?
-  * support SELF_TYPE in join
   * check I support all places where its allowed
 
 > The type SELF TYPE is used to refer to the type of the self variable.
@@ -36,8 +36,6 @@ current class
 – The exception is the type checking of dispatch. The method return
 type of SELF_TYPE might have nothing to do with the current
 class
-
-* validate self: 7.2 Identifiers
 
 * fix remaining todos
 

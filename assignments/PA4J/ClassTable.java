@@ -194,6 +194,14 @@ class ClassTable {
     this.errorStream = System.err;
 
     Set<String> declared = new HashSet<String>();
+    Set<String> basicClasses =
+        Set.of(
+            TreeConstants.Object_.toString(),
+            TreeConstants.IO.toString(),
+            TreeConstants.Int.toString(),
+            TreeConstants.Bool.toString(),
+            TreeConstants.Str.toString(),
+            TreeConstants.SELF_TYPE.toString());
     Set<String> prohibited =
         Set.of(
             TreeConstants.Str.toString(),
@@ -206,7 +214,9 @@ class ClassTable {
       class_c cl = (class_c) e.nextElement();
 
       // duplicate class declarations
-      if (declared.contains(cl.name.toString())) {
+      if (basicClasses.contains(cl.name.toString())) {
+        this.semantError(cl.filename, cl).println("Redefinition of basic class " + cl.name + ".");
+      } else if (declared.contains(cl.name.toString())) {
         this.semantError(cl.filename, cl).println("Class " + cl.name + " was previously defined.");
       } else {
         declared.add(cl.name.toString());
