@@ -357,12 +357,11 @@ class programc extends Program {
       class_c cls = classTable.classes.get(className);
       SymbolTable objects = new SymbolTable();
       objects.enterScope();
+      objects.addId(TreeConstants.self, TreeConstants.SELF_TYPE);
 
       if (cls.name == TreeConstants.Main) {
         main = cls;
       }
-
-      System.out.println("checking class " + cls.getName());
 
       for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
         Feature feature = ((Feature) e.nextElement());
@@ -415,15 +414,8 @@ class programc extends Program {
             objects.addId(f.name, f.type_decl);
           }
 
-          // TODO do I need to explicitly add self to objects? or do I add self to
-          // conforms/joinTypes
           checkType(cls, objects, m.expr);
-          System.out.println(
-              "conforms(" + cls.getName() + ", " + m.expr.get_type() + ", " + m.return_type + ")");
           if (!conforms(cls, m.expr.get_type(), m.return_type)) {
-            // the docs say T1 ≤ SELF_TYPE_C is always false which is whats happening
-            // here. that is confusing
-            System.out.println("error is here " + cls.getName());
             this.semantError(cls.getFilename(), m)
                 .println(
                     "Inferred return type "
@@ -582,11 +574,6 @@ class programc extends Program {
       e.set_type(((Expression) e.body.getNth(e.body.getLength() - 1)).get_type());
       return;
     } else if (expr instanceof object e) {
-      // TODO self is not just the enclosing class; how to solve that?
-      // if (e.name == TreeConstants.self) {
-      //   expr.set_type(cls.getName());
-      //   return;
-      // }
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
       if (type == null) {
         this.semantError(cls.getFilename(), e).println("Undeclared identifier " + e.name + ".");
@@ -598,8 +585,6 @@ class programc extends Program {
     } else if (expr instanceof assign e) {
       if (e.name == TreeConstants.self) {
         this.semantError(cls.getFilename(), e).println("Cannot assign to 'self'.");
-        expr.set_type(TreeConstants.No_type);
-        return;
       }
 
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
@@ -634,7 +619,7 @@ class programc extends Program {
       }
       checkType(cls, objects, e.then_exp);
       checkType(cls, objects, e.else_exp);
-      e.set_type(joinTypes(e.then_exp.get_type(), e.else_exp.get_type()));
+      e.set_type(joinTypes(cls, e.then_exp.get_type(), e.else_exp.get_type()));
       return;
     } else if (expr instanceof loop e) {
       checkType(cls, objects, e.pred);
@@ -649,8 +634,6 @@ class programc extends Program {
       if (e.identifier == TreeConstants.self) {
         this.semantError(cls.getFilename(), e)
             .println("'self' cannot be bound in a 'let' expression.");
-        expr.set_type(TreeConstants.No_type);
-        return;
       }
 
       // TODO add test to check I handle type_decl being SELF_TYPE correctly
@@ -716,7 +699,7 @@ class programc extends Program {
             .println("Duplicate branch " + b.type_decl + " in case statement.");
       }
 
-      e.set_type(joinTypes(branchExprTypes));
+      e.set_type(joinTypes(cls, branchExprTypes));
       return;
     } else if (expr instanceof dispatch e) {
       checkType(cls, objects, e.expr);
@@ -769,9 +752,6 @@ class programc extends Program {
     // m@T(E1,…,En) - T cannot be SELF_TYPE
   }
 
-  // TODO does SELF_TYPE influence the conformance method? or should the type already have been
-  // resolved at this point
-  // lecture 10 says yes: Extending ≤
   /*
    * Indicates if class a <= ancestor.
    * See Cool Manual Definition 4.1 (Conformance).
@@ -789,24 +769,17 @@ class programc extends Program {
       return false;
     }
     if (ancestor == TreeConstants.SELF_TYPE) {
-      System.out.println("ancestor is SELF_TYPE");
       return false;
     }
-    if (a == TreeConstants.SELF_TYPE) {
+    if (a == TreeConstants.SELF_TYPE) { // SELF_TYPEC ≤ T1 if C ≤ T1
       return conforms(cls, cls.getName(), ancestor);
     }
-    // if (ancestor == TreeConstants.SELF_TYPE) {
-    //   return false;
-    // }
-    // if (a == TreeConstants.SELF_TYPE) {
-    //   return conforms(cls, cls.getName(), ancestor);
-    // }
 
     class_c aCls = this.classTable.classes.get(a.toString());
     return conforms(cls, aCls.parent, ancestor);
   }
 
-  private AbstractSymbol joinTypes(Set<AbstractSymbol> types) {
+  private AbstractSymbol joinTypes(Class_ cls, Set<AbstractSymbol> types) {
     boolean first = true;
     AbstractSymbol common = null;
     for (AbstractSymbol a : types) {
@@ -814,7 +787,7 @@ class programc extends Program {
         common = a;
         first = false;
       } else {
-        common = joinTypes(common, a);
+        common = joinTypes(cls, common, a);
       }
 
       // no need to join more types if two of them only have Object as their least common
@@ -826,20 +799,27 @@ class programc extends Program {
     return common;
   }
 
-  // TODO handle SELF-TYPE
-  // Lecture 10
   /*
    * Join static types by walking the paths from the Object root until their nodes differ.
    * See Cool Manual 7.5 Conditionals.
    *
    **/
-  private AbstractSymbol joinTypes(AbstractSymbol a, AbstractSymbol b) {
+  private AbstractSymbol joinTypes(Class_ cls, AbstractSymbol a, AbstractSymbol b) {
     // No_type ≤ C for all types C
     if (a == TreeConstants.No_type) {
       return b;
     }
     if (b == TreeConstants.No_type) {
       return a;
+    }
+    if (a == TreeConstants.SELF_TYPE && b == TreeConstants.SELF_TYPE) {
+      return TreeConstants.SELF_TYPE;
+    }
+    if (a == TreeConstants.SELF_TYPE) { // lub(SELF_TYPEC, T1) = lub(C, T1)
+      a = cls.getName();
+    }
+    if (b == TreeConstants.SELF_TYPE) { // lub(T1, SELF_TYPEC) = lub(C, T1)
+      b = cls.getName();
     }
 
     List<AbstractSymbol> pathA = rootPath(a);
