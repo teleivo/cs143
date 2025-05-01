@@ -8,35 +8,14 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
 
 * build my parser using `make semant`
 * run it
-  * against some cool code using `./mysemant code.cl`
-  * against my test samples `./test.sh`
+  * against some Cool code using `./mysemant code.cl`
+  * against my test samples of valid Cool `./test.sh`
+  * against my test samples of invalid Cool `./test-err.sh`
   * against all the course examples `./test.sh ../../examples`
 
 ## TODO
 
-* support SELF_TYPE
-  * SELF_TYPE in dispatch is allowed
-  * add all illegal places where SELF_TYPE cannot be used to ./testdata-err/self-type.cl
-    * add static dispatch to disallowed test
-  * handle self in object expression?
-  * check I support all places where its allowed
-
-> The type SELF TYPE is used to refer to the type of the self variable.
-
-> The exception to this
-rule is the identifier self, which is implicitly bound in every class.
-
-dispatch
-> the method f in class C is invoked, with the value of e0 bound to self in the body
-of f
-
-attention
-> A use of SELF_TYPE always refers to any subtype of the
-current class
-– The exception is the type checking of dispatch. The method return
-type of SELF_TYPE might have nothing to do with the current
-class
-
+* implement static dispatch and test
 * fix remaining todos
 
 * run test.sh against examples comparing the dump types output

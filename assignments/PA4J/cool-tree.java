@@ -457,9 +457,7 @@ class programc extends Program {
       expr.set_type(TreeConstants.Str);
       return;
     } else if (expr instanceof new_ e) {
-      // TODO this seems incorrect at least when checking against the return type
       if (e.type_name == TreeConstants.SELF_TYPE) {
-        // e.set_type(cls.getName());
         e.set_type(TreeConstants.SELF_TYPE);
       } else {
         e.set_type(e.type_name);
@@ -747,10 +745,68 @@ class programc extends Program {
                       + ".");
         }
       }
-    }
+    } else if (expr instanceof static_dispatch e) {
+      checkType(cls, objects, e.expr);
 
-    // TODO static_dispatch
-    // m@T(E1,…,En) - T cannot be SELF_TYPE
+      // m@T(E1,…,En) - T cannot be SELF_TYPE
+      if (e.type_name == TreeConstants.SELF_TYPE) {
+        this.semantError(cls.getFilename(), e).println("Static dispatch to SELF_TYPE.");
+        e.set_type(TreeConstants.No_type);
+        return;
+      }
+
+      if (!conforms(cls, e.expr.get_type(), e.type_name)) {
+        this.semantError(cls.getFilename(), e)
+            .println(
+                "Expression type "
+                    + e.expr.get_type()
+                    + " does not conform to declared static dispatch type "
+                    + e.type_name
+                    + ".");
+        e.set_type(TreeConstants.No_type);
+        return;
+      }
+
+      AbstractSymbol targetClass = e.type_name;
+      AbstractSymbol targetMethodName = e.name;
+      method target = lookupMethod(targetClass, targetMethodName);
+      if (target == null) {
+        this.semantError(cls.getFilename(), e)
+            .println("Dispatch to undefined method " + targetMethodName + ".");
+        e.set_type(TreeConstants.No_type);
+        return;
+      }
+
+      if (target.return_type == TreeConstants.SELF_TYPE) {
+        e.set_type(e.expr.get_type());
+      } else {
+        e.set_type(target.return_type);
+      }
+
+      if (target.formals.getLength() != e.actual.getLength()) {
+        this.semantError(cls.getFilename(), e)
+            .println("Method " + targetMethodName + " called with wrong number of arguments.");
+        return;
+      }
+      for (int i = 0; i < target.formals.getLength(); i++) {
+        formalc t = (formalc) target.formals.getNth(i);
+        Expression a = (Expression) e.actual.getNth(i);
+        checkType(cls, objects, a);
+        if (!conforms(cls, a.get_type(), t.type_decl)) {
+          this.semantError(cls.getFilename(), e)
+              .println(
+                  "In call of method "
+                      + targetMethodName
+                      + ", type "
+                      + a.get_type()
+                      + " of parameter "
+                      + t.name
+                      + " does not conform to declared type "
+                      + t.type_decl
+                      + ".");
+        }
+      }
+    }
   }
 
   /*
