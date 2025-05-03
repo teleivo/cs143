@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -286,6 +287,10 @@ class programc extends Program {
   private int semantErrors;
   private PrintStream errorStream;
   private ClassTable classTable;
+  private final Set<String> baseClasses = Set.of("Object", "IO", "Int", "Bool", "String");
+  private Class_ main;
+  private boolean hasMainMethod;
+  private SymbolTable objects;
 
   /**
    * Creates "programc" AST node.
@@ -337,7 +342,6 @@ class programc extends Program {
   @Override
   public void semant() {
     ClassTable classTable = new ClassTable(classes);
-    Set<String> baseClasses = Set.of("Object", "IO", "Int", "Bool", "String");
     if (classTable.errors()) {
       System.err.println("Compilation halted due to static semantic errors.");
       System.exit(1);
@@ -345,101 +349,107 @@ class programc extends Program {
 
     this.errorStream = System.err;
     this.classTable = classTable;
-    Class_ main = null;
-    boolean hasMainMethod = false;
+    this.objects = new SymbolTable();
 
-    for (String className : classTable.sort) {
-      // don't type check base classes which have no method bodies
-      if (baseClasses.contains(className)) {
-        continue;
-      }
+    checkClasses(classTable.graph, TreeConstants.Object_.toString());
 
-      class_c cls = classTable.classes.get(className);
-      SymbolTable objects = new SymbolTable();
-      objects.enterScope();
-      objects.addId(TreeConstants.self, TreeConstants.SELF_TYPE);
-
-      if (cls.name == TreeConstants.Main) {
-        main = cls;
-      }
-
-      for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
-        Feature feature = ((Feature) e.nextElement());
-        if (feature instanceof attr a) {
-
-          if (a.name == TreeConstants.self) {
-            this.semantError(cls.getFilename(), a)
-                .println("'" + a.name + "' cannot be the name of an attribute.");
-          } else {
-            objects.addId(a.name, a.type_decl);
-          }
-
-          checkType(cls, objects, a.init);
-          if (!(a.init instanceof no_expr) && !conforms(cls, a.init.get_type(), a.type_decl)) {
-            this.semantError(cls.getFilename(), a)
-                .println(
-                    "Inferred type "
-                        + a.init.get_type()
-                        + " of initialization of attribute "
-                        + a.name
-                        + " does not conform to declared type "
-                        + a.type_decl
-                        + ".");
-          }
-        } else if (feature instanceof method m) {
-          if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
-            hasMainMethod = true;
-          }
-          if (cls.name == TreeConstants.Main
-              && m.name == TreeConstants.main_meth
-              && m.formals.getElements().hasMoreElements()) {
-            this.semantError(cls.getFilename(), cls)
-                .println("'main' method in class Main should have no arguments.");
-          }
-
-          objects.enterScope();
-          for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
-            formalc f = (formalc) c.nextElement();
-
-            if (f.type_decl == TreeConstants.SELF_TYPE) {
-              this.semantError(cls.getFilename(), m)
-                  .println(
-                      "Formal parameter "
-                          + f.name
-                          + " cannot have type "
-                          + TreeConstants.SELF_TYPE
-                          + ".");
-            }
-
-            objects.addId(f.name, f.type_decl);
-          }
-
-          checkType(cls, objects, m.expr);
-          if (!conforms(cls, m.expr.get_type(), m.return_type)) {
-            this.semantError(cls.getFilename(), m)
-                .println(
-                    "Inferred return type "
-                        + m.expr.get_type()
-                        + " of method "
-                        + m.name
-                        + " does not conform to declared return type "
-                        + m.return_type
-                        + ".");
-          }
-          objects.exitScope();
-        }
-      }
-    }
-
-    if (main == null) {
+    if (this.main == null) {
       this.semantError().println("Class Main is not defined.");
-    } else if (!hasMainMethod) {
-      this.semantError(main.getFilename(), main).println("No 'main' method in class Main.");
+    } else if (!this.hasMainMethod) {
+      this.semantError(this.main.getFilename(), this.main)
+          .println("No 'main' method in class Main.");
     }
 
     if (this.errors()) {
       System.err.println("Compilation halted due to static semantic errors.");
       System.exit(1);
+    }
+  }
+
+  private void checkClasses(Map<String, List<String>> graph, String className) {
+    class_c cls = classTable.classes.get(className);
+    objects.enterScope();
+    objects.addId(TreeConstants.self, TreeConstants.SELF_TYPE);
+
+    checkClass(cls);
+
+    for (String neighbour : graph.get(className)) {
+      checkClasses(graph, neighbour);
+    }
+
+    objects.exitScope();
+  }
+
+  private void checkClass(class_c cls) {
+    if (cls.name == TreeConstants.Main) {
+      this.main = cls;
+    }
+
+    for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
+      Feature feature = ((Feature) e.nextElement());
+      if (feature instanceof attr a) {
+
+        if (a.name == TreeConstants.self) {
+          this.semantError(cls.getFilename(), a)
+              .println("'" + a.name + "' cannot be the name of an attribute.");
+        } else {
+          objects.addId(a.name, a.type_decl);
+        }
+
+        checkType(cls, objects, a.init);
+        if (!(a.init instanceof no_expr) && !conforms(cls, a.init.get_type(), a.type_decl)) {
+          this.semantError(cls.getFilename(), a)
+              .println(
+                  "Inferred type "
+                      + a.init.get_type()
+                      + " of initialization of attribute "
+                      + a.name
+                      + " does not conform to declared type "
+                      + a.type_decl
+                      + ".");
+        }
+      } else if (feature instanceof method m) {
+        if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
+          this.hasMainMethod = true;
+        }
+        if (cls.name == TreeConstants.Main
+            && m.name == TreeConstants.main_meth
+            && m.formals.getElements().hasMoreElements()) {
+          this.semantError(cls.getFilename(), cls)
+              .println("'main' method in class Main should have no arguments.");
+        }
+
+        objects.enterScope();
+        for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
+          formalc f = (formalc) c.nextElement();
+
+          if (f.type_decl == TreeConstants.SELF_TYPE) {
+            this.semantError(cls.getFilename(), m)
+                .println(
+                    "Formal parameter "
+                        + f.name
+                        + " cannot have type "
+                        + TreeConstants.SELF_TYPE
+                        + ".");
+          }
+
+          objects.addId(f.name, f.type_decl);
+        }
+
+        checkType(cls, objects, m.expr);
+        if (!conforms(cls, m.expr.get_type(), m.return_type)) {
+          this.semantError(cls.getFilename(), m)
+              .println(
+                  "Inferred return type "
+                      + m.expr.get_type()
+                      + " of method "
+                      + m.name
+                      + " does not conform to declared return type "
+                      + m.return_type
+                      + ".");
+        }
+        objects.exitScope();
+      }
     }
   }
 

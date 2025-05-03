@@ -23,6 +23,8 @@ class ClassTable {
   List<String> sort;
   // global method environment
   Map<String, Map<String, method>> methods;
+  // adjacency list of class graph
+  Map<String, List<String>> graph;
 
   /**
    * Creates data structures representing basic Cool classes (Object, IO, Int, Bool, String). Please
@@ -296,6 +298,7 @@ class ClassTable {
     this.sort = sort;
     installBasicClasses(classes);
     this.classes = classes;
+    this.graph = graph;
 
     Map<String, Map<String, method>> classMethods = new HashMap<>(this.classes.size());
     for (String className : sort) {

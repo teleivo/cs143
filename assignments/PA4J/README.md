@@ -15,7 +15,13 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
 
 ## TODO
 
-* implement static dispatch and test
+* lookup of attributes in hierarchy is not correct
+  * do I have a test showing you cannot override an attribute but can override a method?
+
+> In the case that a parent and child both define the same method name, then the definition
+given in the child class takes precedence. It is illegal to redefine attribute names. Furthermore, for type
+safety, it is necessary to place some restrictions on how methods may be redefined (see Section 6).
+
 * fix remaining todos
 
 * run test.sh against examples comparing the dump types output
