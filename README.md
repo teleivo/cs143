@@ -20,5 +20,6 @@ have changed over time.
 
 * try fresh checkout of the project and follow instructions to see if they work
 * add license from course/uni? at least link to it
+* check for any todos
 * make repo public
 * mention paths and other issues related to not running this in a VM
