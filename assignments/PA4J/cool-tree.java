@@ -779,7 +779,6 @@ class programc extends Program {
       // expr is optional - shorthand for self.<id>(<expr>,...,<expr>)
       checkType(cls, objects, e.expr);
       targetClass = e.expr.get_type();
-      // TODO or should lookupMethod support SELF_TYPE
       if (e.expr.get_type() == TreeConstants.SELF_TYPE) {
         targetClass = cls.getName();
       }
@@ -994,10 +993,6 @@ class programc extends Program {
       return null;
     }
 
-    // TODO Bool has no methods so I get an NPE. I think I should add it
-    // assuming the class exists
-    // System.out.println(className + " " + methodName);
-    // System.out.println(this.classTable.methods.get(className.toString()));
     method m = this.classTable.methods.get(className.toString()).get(methodName.toString());
     if (m != null) {
       return m;
