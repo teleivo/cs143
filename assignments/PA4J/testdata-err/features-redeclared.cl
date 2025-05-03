@@ -2,6 +2,12 @@ class A {
 	a: Int;
 	b: Int;
 	b: Int;
+	a() : Int {
+		1
+	};
+	a() : Int {
+		1
+	};
 	c() : Int {
 		1
 	};

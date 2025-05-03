@@ -387,15 +387,14 @@ class programc extends Program {
       this.main = cls;
     }
 
-    Set<String> duplicateAttributes = new HashSet<>();
+    Set<String> classMethods = new HashSet<>();
     for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
       Feature feature = ((Feature) e.nextElement());
       if (feature instanceof attr a) {
-
         if (a.name == TreeConstants.self) {
           this.semantError(cls.getFilename(), a)
               .println("'" + a.name + "' cannot be the name of an attribute.");
-        } else if (duplicateAttributes.contains(a.name.toString())) {
+        } else if (objects.probe(a.name) != null) {
           this.semantError(cls.getFilename(), a)
               .println("Attribute " + a.name + " is multiply defined in class.");
         } else if (objects.lookup(a.name) != null) {
@@ -403,7 +402,6 @@ class programc extends Program {
               .println("Attribute " + a.name + " is an attribute of an inherited class.");
         } else {
           objects.addId(a.name, a.type_decl);
-          duplicateAttributes.add(a.name.toString());
         }
       } else if (feature instanceof method m) {
         if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
@@ -415,7 +413,50 @@ class programc extends Program {
           this.semantError(cls.getFilename(), cls)
               .println("'main' method in class Main should have no arguments.");
         }
-        // TODO add checks for redefined methods
+
+        if (classMethods.contains(m.name.toString())) {
+          this.semantError(cls.getFilename(), m)
+              .println("Method " + m.name + " is multiply defined.");
+        } else {
+          classMethods.add(m.name.toString());
+
+          method parentMethod = lookupMethod(cls.getParent(), m.name);
+          if (parentMethod != null) {
+            if (parentMethod.formals.getLength() != m.formals.getLength()) {
+              this.semantError(cls.getFilename(), m)
+                  .println(
+                      "Incompatible number of formal parameters in redefined method "
+                          + m.name
+                          + ".");
+              continue;
+            }
+            if (m.return_type != parentMethod.return_type) {
+              this.semantError(cls.getFilename(), m)
+                  .println(
+                      "In redefined method "
+                          + m.name
+                          + ", return type "
+                          + m.return_type
+                          + " is different from original return type "
+                          + parentMethod.return_type
+                          + ".");
+            }
+            for (int i = 0; i < parentMethod.formals.getLength(); i++) {
+              formalc p = (formalc) parentMethod.formals.getNth(i);
+              formalc c = (formalc) m.formals.getNth(i);
+              if (c.type_decl != p.type_decl) {
+                this.semantError(cls.getFilename(), m)
+                    .println(
+                        "In redefined method "
+                            + m.name
+                            + ", parameter type "
+                            + c.type_decl
+                            + " is different from original type "
+                            + p.type_decl);
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -947,6 +988,9 @@ class programc extends Program {
 
   private method lookupMethod(AbstractSymbol className, AbstractSymbol methodName) {
     if (className == TreeConstants.No_type) {
+      return null;
+    }
+    if (className == TreeConstants.No_class) {
       return null;
     }
 
