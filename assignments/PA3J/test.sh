@@ -11,15 +11,8 @@ fi
 
 for file in "$TEST_DIR"/*.cl; do
     if [ -f "$file" ]; then
-        # TODO I would like to diff myparser against the reference parser but the reference parser hangs forever
-        # # ignore line numbers: lines that contain only whitespace followed by # and a number
-        # if ! diff <(../../bin/parser "$file" | grep -v '^\s*#[0-9]\+$') <(./myparser "$file" | grep -v '^\s*#[0-9]\+$'); then
-        #     echo "Testing $file: failed"
-        #     failed=1
-        # else
-        #     echo "Testing $file: ok"
-        # fi
-        if ! ./myparser "$file" > /dev/null; then
+        # ignore line numbers: lines that contain only whitespace followed by # and a number
+        if ! diff <(../../bin/lexer "$file" | ../../bin/parser | grep -v '^\s*#[0-9]\+$') <(./myparser "$file" | grep -v '^\s*#[0-9]\+$'); then
             echo "Testing $file: failed"
             failed=1
         else

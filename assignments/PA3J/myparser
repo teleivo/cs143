@@ -1,5 +1,8 @@
 #!/bin/csh -f
-# uncomment to use reference lexer
+# uncomment to use all the reference implementations
+# ../../bin/lexer $* | ../../bin/parser
+# uncomment to use reference implementations with my parser
 # ../../bin/lexer  $* | ./parser $*
-# using my lexer and parser
-../PA2J/lexer $* | ./parser $*
+
+# uncomment to only use my implementations
+../PA2J/lexer $* | ./parser $

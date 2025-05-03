@@ -29,14 +29,6 @@ To try yourself
   * against my test samples of invalid Cool `./test-err.sh`
   * against all the course examples `./test.sh ../../examples`
 
-## TODO
-
-* fix remaining todos
-
-* fix the symbolic links in each assignment. The mycoolc, my... use `./lexer` and so forth which
-don't always exist so fail. As they are prefixed with my I guess the intetion is they only use my
-implementations. How to then add the reference impl next to it
-
 ## Limitations and improvements
 
 I took the course suggestion to heart: don't spend much time on optimizing the amount of passes as

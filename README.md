@@ -11,4 +11,17 @@ Try solving them yourself before you peek :grin:.
 2. I also had to add `./bin/java_cup` with an absolute path to the CUP library. You will need to
    adjust that path.
 
-TODO mention paths and other issues related to not running this in a VM
+## Issues
+
+* The assignment numbers I reference might not match the ones you find online. I think they might
+have changed over time.
+
+## TODO
+
+* fix the symbolic links in each assignment. The mycoolc, my... use `./lexer` and so forth which
+don't always exist so fail. As they are prefixed with my I guess the intetion is they only use my
+implementations. How to then add the reference impl next to it
+
+* how should `mycool` work in each assignment? it uses files that don't exist
+
+* mention paths and other issues related to not running this in a VM

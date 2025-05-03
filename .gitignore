@@ -8,7 +8,7 @@
 /assignments/PA3J/lexer
 /assignments/PA3J/cgen
 /assignments/PA3J/semant
-/assignments/PA3J/parser
+!/assignments/PA3J/parser
 /assignments/PA3J/*.output
 !/assignments/PA3J/
 /assignments/PA4J/*.class

@@ -6,9 +6,11 @@ This is my implementation of the assignment described in `./README`. The
 I ran my lexer against all `.cl` files from all assignments. I collected some more test input in
 `./testdata/`.
 
+To try yourself
+
 * build my lexer using `make lexer`
 * run it
-  * against some cool code using `./lexer code.cl`
+  * against some Cool code using `./lexer code.cl`
   * against my test samples `./test.sh`
   * against all the course examples `./test.sh ../../examples`
 

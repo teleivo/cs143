@@ -166,7 +166,7 @@ expr
 	| LPAREN expr:e RPAREN
 	    {: RESULT = e; :}
 	| NOT expr:e
-	    {: RESULT = new neg(curr_lineno(), e); :}
+	    {: RESULT = new comp(curr_lineno(), e); :}
 	| expr:e1 EQ expr:e2
 	    {: RESULT = new eq(curr_lineno(), e1, e2); :}
 	| expr:e1 LE expr:e2
@@ -174,7 +174,7 @@ expr
 	| expr:e1 LT expr:e2
 	    {: RESULT = new lt(curr_lineno(), e1, e2); :}
 	| NEG expr:e
-	    {: RESULT = new comp(curr_lineno(), e); :}
+	    {: RESULT = new neg(curr_lineno(), e); :}
 	| expr:e1 DIV expr:e2
 	    {: RESULT = new divide(curr_lineno(), e1, e2); :}
 	| expr:e1 MULT expr:e2

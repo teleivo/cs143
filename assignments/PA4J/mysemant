@@ -2,7 +2,7 @@
 # uncomment to use all the reference implementations of the lexer, parser and semantic analyzer
 # ../../bin/lexer $* | ../../bin/parser $* | ../../bin/semant $*
 # uncomment to use the reference lexer, parser and my semantic analyzer
-../../bin/lexer  $* | ../../bin/parser $* | ./semant $*
+# ../../bin/lexer  $* | ../../bin/parser $* | ./semant $*
 
-# uncomment to only use my implementations of the lexer and parser and semantic analyzer
-# ../PA2J/lexer  $* | ../PA3J/parser $* | ./semant $*
+# uncomment to only use my implementations
+../PA2J/lexer  $* | ../PA3J/parser $* | ./semant $*
