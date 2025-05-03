@@ -18,10 +18,7 @@ have changed over time.
 
 ## TODO
 
-* fix the symbolic links in each assignment. The mycoolc, my... use `./lexer` and so forth which
-don't always exist so fail. As they are prefixed with my I guess the intetion is they only use my
-implementations. How to then add the reference impl next to it
-
-* how should `mycool` work in each assignment? it uses files that don't exist
-
+* try fresh checkout of the project and follow instructions to see if they work
+* add license from course/uni? at least link to it
+* make repo public
 * mention paths and other issues related to not running this in a VM
