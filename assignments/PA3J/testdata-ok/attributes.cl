@@ -1,7 +1,7 @@
 class A {
 a(): Int { 1 };
 b(v : Int) : Bool {
-	not first
+	not true
 };
 add(first: Int, second: Int) : Int {
 	(* the last one will be returned *)
@@ -25,4 +25,9 @@ comp(first: Int) : Int {
 	~ first
 };
 f: Int <- { 10; 12; 14; };
+};
+class Main {
+	main() : Int {
+		1
+	};
 };

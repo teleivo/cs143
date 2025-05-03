@@ -17,6 +17,12 @@ class B inherits A {
 	realFun() : A {
 		(new A).fun(new SELF_TYPE)
 	};
+	me() : SELF_TYPE {
+		self
+	};
+	you() : SELF_TYPE {
+		me()
+	};
 };
 class Main {
 	main() : A {
@@ -27,6 +33,7 @@ class Main {
 			(new B).createAgain();
 			(new A).fun(new B);
 			(new B);
+			(new B).me();
 		}
 	};
 };

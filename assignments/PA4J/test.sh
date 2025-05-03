@@ -2,7 +2,7 @@
 
 set -e
 
-TEST_DIR="${1:-./testdata}"
+TEST_DIR="${1:-./testdata-ok}"
 
 if [ ! -d "$TEST_DIR" ]; then
     echo "Error: Directory '$TEST_DIR' does not exist"
@@ -11,14 +11,27 @@ fi
 
 for file in "$TEST_DIR"/*.cl; do
     if [ -f "$file" ]; then
-        output1=$(../../bin/lexer "$file" | ../../bin/parser | ../../bin/semant)
-        output2=$(../../bin/lexer "$file" | ../../bin/parser | ./semant)
+        echo -n "Testing $file: "
 
-        if ! diff <(echo "$output1") <(echo "$output2"); then
-            echo "Testing $file: failed"
+        # Run reference implementation with error handling
+        if ! reference=$(../../bin/lexer "$file" | ../../bin/parser | ../../bin/semant 2>&1); then
+            echo "FAILED (reference implementation)"
+            failed=1
+            continue
+        fi
+
+        # Run my implementation with error handling
+        if ! my=$(../../bin/lexer "$file" | ../../bin/parser | ./semant 2>&1); then
+            echo "FAILED (my implementation)"
+            failed=1
+            continue
+        fi
+
+        if ! diff <(echo "$reference") <(echo "$my"); then
+            echo "FAILED (Outputs differ between implementations)"
             failed=1
         else
-            echo "Testing $file: ok"
+            echo "OK"
         fi
     fi
 done

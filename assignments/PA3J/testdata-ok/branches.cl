@@ -1,5 +1,5 @@
 class A {
-	iter(position : Int, num : Int) : Int {
+	iter(position : Int, num : Int) : Object {
                 while position < num loop
                     {
 			if 10 < num then
@@ -9,5 +9,10 @@ class A {
 			fi;
                     }
                 pool
+	};
+};
+class Main {
+	main() : Int {
+		1
 	};
 };

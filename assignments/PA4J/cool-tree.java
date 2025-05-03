@@ -792,7 +792,6 @@ class programc extends Program {
         return;
       }
 
-      // TODO how does the short-hand notation influence this?
       if (target.return_type == TreeConstants.SELF_TYPE) {
         e.set_type(e.expr.get_type());
       } else {
