@@ -13,6 +13,18 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
   * against my test samples of invalid Cool `./test-err.sh`
   * against all the course examples `./test.sh ../../examples`
 
+Note: you might need to add a `Main` class like this
+
+```
+class Main {
+	main() : Bool {
+		true
+	};
+};
+```
+
+to the example Cool code out there. The semantic analysis fails otherwise.
+
 ## TODO
 
 * lookup of attributes in hierarchy is not correct
@@ -54,3 +66,4 @@ Method a is multiply defined.
 don't always exist so fail. As they are prefixed with my I guess the intetion is they only use my
 implementations. How to then add the reference impl next to it
 
+## Limitations and improvements

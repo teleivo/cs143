@@ -559,7 +559,7 @@ class programc extends Program {
         expr.set_type(TreeConstants.No_type);
         return;
       }
-      expr.set_type(TreeConstants.Bool);
+      expr.set_type(TreeConstants.Int);
       return;
     } else if (expr instanceof lt e) {
       checkType(cls, objects, e.e1);
