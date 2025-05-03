@@ -41,6 +41,8 @@ class C {
 		esac;
 		1;
 	};
+	-- the reference implementation assigns type Object to undeclared identifiers instead of No_type
+	r: Int <- z;
 	main(x: Int) : Int {
 		1
 	};

@@ -406,32 +406,16 @@ class programc extends Program {
           duplicateAttributes.add(a.name.toString());
         }
       } else if (feature instanceof method m) {
-        // if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
-        //   this.hasMainMethod = true;
-        // }
-        // if (cls.name == TreeConstants.Main
-        //     && m.name == TreeConstants.main_meth
-        //     && m.formals.getElements().hasMoreElements()) {
-        //   this.semantError(cls.getFilename(), cls)
-        //       .println("'main' method in class Main should have no arguments.");
-        // }
-        //
-        // objects.enterScope();
-        // for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
-        //   formalc f = (formalc) c.nextElement();
-        //
-        //   if (f.type_decl == TreeConstants.SELF_TYPE) {
-        //     this.semantError(cls.getFilename(), m)
-        //         .println(
-        //             "Formal parameter "
-        //                 + f.name
-        //                 + " cannot have type "
-        //                 + TreeConstants.SELF_TYPE
-        //                 + ".");
-        //   }
-        //
-        //   objects.addId(f.name, f.type_decl);
-        // }
+        if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
+          this.hasMainMethod = true;
+        }
+        if (cls.name == TreeConstants.Main
+            && m.name == TreeConstants.main_meth
+            && m.formals.getElements().hasMoreElements()) {
+          this.semantError(cls.getFilename(), cls)
+              .println("'main' method in class Main should have no arguments.");
+        }
+        // TODO add checks for redefined methods
       }
     }
   }
@@ -457,17 +441,6 @@ class programc extends Program {
                       + ".");
         }
       } else if (feature instanceof method m) {
-        // TODO move this block into declareFeatures?
-        if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
-          this.hasMainMethod = true;
-        }
-        if (cls.name == TreeConstants.Main
-            && m.name == TreeConstants.main_meth
-            && m.formals.getElements().hasMoreElements()) {
-          this.semantError(cls.getFilename(), cls)
-              .println("'main' method in class Main should have no arguments.");
-        }
-
         objects.enterScope();
         for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
           formalc f = (formalc) c.nextElement();
@@ -503,7 +476,8 @@ class programc extends Program {
   }
 
   private void checkType(Class_ cls, SymbolTable objects, Expression expr) {
-    if (expr instanceof no_expr) {
+    // assuming no expression leads to No_type
+    if (expr == null || expr instanceof no_expr) {
       expr.set_type(TreeConstants.No_type);
       return;
     } else if (expr instanceof int_const) {
@@ -636,7 +610,7 @@ class programc extends Program {
       AbstractSymbol type = (AbstractSymbol) objects.lookup(e.name);
       if (type == null) {
         this.semantError(cls.getFilename(), e).println("Undeclared identifier " + e.name + ".");
-        expr.set_type(TreeConstants.No_type);
+        expr.set_type(TreeConstants.Object_);
         return;
       }
       e.set_type(type);
@@ -761,11 +735,12 @@ class programc extends Program {
       return;
     } else if (expr instanceof dispatch e) {
       AbstractSymbol targetClass;
-      if (e.expr != null) { // expr is optional - shorthand for self.<id>(<expr>,...,<expr>)
-        checkType(cls, objects, e.expr);
-        targetClass = e.expr.get_type();
-      } else {
-        targetClass = TreeConstants.SELF_TYPE;
+      // expr is optional - shorthand for self.<id>(<expr>,...,<expr>)
+      checkType(cls, objects, e.expr);
+      targetClass = e.expr.get_type();
+      // TODO or should lookupMethod support SELF_TYPE
+      if (e.expr.get_type() == TreeConstants.SELF_TYPE) {
+        targetClass = cls.getName();
       }
 
       AbstractSymbol targetMethodName = e.name;
@@ -777,6 +752,7 @@ class programc extends Program {
         return;
       }
 
+      // TODO how does the short-hand notation influence this?
       if (target.return_type == TreeConstants.SELF_TYPE) {
         e.set_type(e.expr.get_type());
       } else {
@@ -972,12 +948,6 @@ class programc extends Program {
   private method lookupMethod(AbstractSymbol className, AbstractSymbol methodName) {
     if (className == TreeConstants.No_type) {
       return null;
-    }
-    if (className == TreeConstants.SELF_TYPE) {
-      // targetClass = cls.getName();
-      Object attribute = objects.lookup(methodName);
-      // could be null
-      // could be an attribute, how would I know? do I need two separate symbol tables?
     }
 
     // assuming the class exists
