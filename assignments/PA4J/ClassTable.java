@@ -184,11 +184,11 @@ class ClassTable {
                         new no_expr(0))),
             filename);
 
-    classes.put("Object", Object_class);
-    classes.put("IO", IO_class);
-    classes.put("Int", Int_class);
-    classes.put("Bool", Bool_class);
-    classes.put("String", Str_class);
+    classes.put(TreeConstants.Object_.toString(), Object_class);
+    classes.put(TreeConstants.IO.toString(), IO_class);
+    classes.put(TreeConstants.Int.toString(), Int_class);
+    classes.put(TreeConstants.Bool.toString(), Bool_class);
+    classes.put(TreeConstants.Str.toString(), Str_class);
   }
 
   public ClassTable(Classes cls) {
@@ -226,13 +226,25 @@ class ClassTable {
       }
     }
 
-    declared.add("Object");
-    declared.add("IO");
+    declared.add(TreeConstants.Object_.toString());
+    declared.add(TreeConstants.IO.toString());
 
     // build graph using adjacency list
     Map<String, List<String>> graph = new HashMap<>();
-    graph.put("Object", new ArrayList<>(List.of("IO"))); // root of inheritance with builtin child
-    graph.put("IO", new ArrayList<>()); // only builtin class one can inherit from other than Object
+    // TODO can I improve this? can I add all builtin classes in a way I have less conditions?
+    // I need to add the Str class not because its needed in the graph to check for cycles but
+    // for collecting the methods later on
+    // root of inheritance with builtin children that have methods
+    List<String> foo = new ArrayList<>();
+    foo.add(TreeConstants.IO.toString());
+    foo.add(TreeConstants.Str.toString());
+    foo.add(TreeConstants.Int.toString());
+    foo.add(TreeConstants.Bool.toString());
+    graph.put(TreeConstants.Object_.toString(), foo);
+    graph.put(TreeConstants.IO.toString(), new ArrayList<>());
+    graph.put(TreeConstants.Str.toString(), new ArrayList<>());
+    graph.put(TreeConstants.Int.toString(), new ArrayList<>());
+    graph.put(TreeConstants.Bool.toString(), new ArrayList<>());
     for (Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
       class_c cl = (class_c) e.nextElement();
 

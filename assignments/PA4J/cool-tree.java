@@ -994,7 +994,10 @@ class programc extends Program {
       return null;
     }
 
+    // TODO Bool has no methods so I get an NPE. I think I should add it
     // assuming the class exists
+    // System.out.println(className + " " + methodName);
+    // System.out.println(this.classTable.methods.get(className.toString()));
     method m = this.classTable.methods.get(className.toString()).get(methodName.toString());
     if (m != null) {
       return m;
