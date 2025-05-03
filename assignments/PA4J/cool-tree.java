@@ -369,8 +369,8 @@ class programc extends Program {
   private void checkClasses(Map<String, List<String>> graph, String className) {
     class_c cls = classTable.classes.get(className);
     objects.enterScope();
-    objects.addId(TreeConstants.self, TreeConstants.SELF_TYPE);
 
+    declareFeatures(cls);
     checkClass(cls);
 
     for (String neighbour : graph.get(className)) {
@@ -378,6 +378,62 @@ class programc extends Program {
     }
 
     objects.exitScope();
+  }
+
+  private void declareFeatures(class_c cls) {
+    objects.addId(TreeConstants.self, TreeConstants.SELF_TYPE);
+
+    if (cls.name == TreeConstants.Main) {
+      this.main = cls;
+    }
+
+    Set<String> duplicateAttributes = new HashSet<>();
+    for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
+      Feature feature = ((Feature) e.nextElement());
+      if (feature instanceof attr a) {
+
+        if (a.name == TreeConstants.self) {
+          this.semantError(cls.getFilename(), a)
+              .println("'" + a.name + "' cannot be the name of an attribute.");
+        } else if (duplicateAttributes.contains(a.name.toString())) {
+          this.semantError(cls.getFilename(), a)
+              .println("Attribute " + a.name + " is multiply defined in class.");
+        } else if (objects.lookup(a.name) != null) {
+          this.semantError(cls.getFilename(), a)
+              .println("Attribute " + a.name + " is an attribute of an inherited class.");
+        } else {
+          objects.addId(a.name, a.type_decl);
+          duplicateAttributes.add(a.name.toString());
+        }
+      } else if (feature instanceof method m) {
+        // if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
+        //   this.hasMainMethod = true;
+        // }
+        // if (cls.name == TreeConstants.Main
+        //     && m.name == TreeConstants.main_meth
+        //     && m.formals.getElements().hasMoreElements()) {
+        //   this.semantError(cls.getFilename(), cls)
+        //       .println("'main' method in class Main should have no arguments.");
+        // }
+        //
+        // objects.enterScope();
+        // for (Enumeration c = m.formals.getElements(); c.hasMoreElements(); ) {
+        //   formalc f = (formalc) c.nextElement();
+        //
+        //   if (f.type_decl == TreeConstants.SELF_TYPE) {
+        //     this.semantError(cls.getFilename(), m)
+        //         .println(
+        //             "Formal parameter "
+        //                 + f.name
+        //                 + " cannot have type "
+        //                 + TreeConstants.SELF_TYPE
+        //                 + ".");
+        //   }
+        //
+        //   objects.addId(f.name, f.type_decl);
+        // }
+      }
+    }
   }
 
   private void checkClass(class_c cls) {
@@ -388,14 +444,6 @@ class programc extends Program {
     for (Enumeration e = cls.features.getElements(); e.hasMoreElements(); ) {
       Feature feature = ((Feature) e.nextElement());
       if (feature instanceof attr a) {
-
-        if (a.name == TreeConstants.self) {
-          this.semantError(cls.getFilename(), a)
-              .println("'" + a.name + "' cannot be the name of an attribute.");
-        } else {
-          objects.addId(a.name, a.type_decl);
-        }
-
         checkType(cls, objects, a.init);
         if (!(a.init instanceof no_expr) && !conforms(cls, a.init.get_type(), a.type_decl)) {
           this.semantError(cls.getFilename(), a)
@@ -409,6 +457,7 @@ class programc extends Program {
                       + ".");
         }
       } else if (feature instanceof method m) {
+        // TODO move this block into declareFeatures?
         if (cls.name == TreeConstants.Main && m.name == TreeConstants.main_meth) {
           this.hasMainMethod = true;
         }
@@ -711,12 +760,14 @@ class programc extends Program {
       e.set_type(joinTypes(cls, branchExprTypes));
       return;
     } else if (expr instanceof dispatch e) {
-      checkType(cls, objects, e.expr);
-
-      AbstractSymbol targetClass = e.expr.get_type();
-      if (targetClass == TreeConstants.SELF_TYPE) {
-        targetClass = cls.getName();
+      AbstractSymbol targetClass;
+      if (e.expr != null) { // expr is optional - shorthand for self.<id>(<expr>,...,<expr>)
+        checkType(cls, objects, e.expr);
+        targetClass = e.expr.get_type();
+      } else {
+        targetClass = TreeConstants.SELF_TYPE;
       }
+
       AbstractSymbol targetMethodName = e.name;
       method target = lookupMethod(targetClass, targetMethodName);
       if (target == null) {
@@ -922,6 +973,13 @@ class programc extends Program {
     if (className == TreeConstants.No_type) {
       return null;
     }
+    if (className == TreeConstants.SELF_TYPE) {
+      // targetClass = cls.getName();
+      Object attribute = objects.lookup(methodName);
+      // could be null
+      // could be an attribute, how would I know? do I need two separate symbol tables?
+    }
+
     // assuming the class exists
     method m = this.classTable.methods.get(className.toString()).get(methodName.toString());
     if (m != null) {

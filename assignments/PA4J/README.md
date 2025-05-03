@@ -22,6 +22,29 @@ I ran my parser against all `.cl` files from all assignments. I collected some m
 given in the child class takes precedence. It is illegal to redefine attribute names. Furthermore, for type
 safety, it is necessary to place some restrictions on how methods may be redefined (see Section 6).
 
+  * attributes cannot be redefined in the same class
+
+Attribute a is multiply defined in class.
+
+  * attributes cannot be redefined if already inherited
+
+Attribute a is an attribute of an inherited class.
+
+  * methods cannot be redefined in the same class
+
+Method a is multiply defined.
+
+  * methods can have the same name as attributes in the same class
+  * methods can be redefined in another class
+
+    * must have the same number of formals
+
+      Incompatible number of formal parameters in redefined method e.
+
+    * must have the same formal types
+
+      In redefined method f, parameter type Bool is different from original type Int
+
 * fix remaining todos
 
 * run test.sh against examples comparing the dump types output
