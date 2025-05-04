@@ -11,10 +11,10 @@ Try solving them yourself before you peek :grin:.
 2. I also had to add `./bin/java_cup` with an absolute path to the CUP library. You will need to
    adjust that path.
 
-## Issues
+## Assignment Numbers
 
-* The assignment numbers I reference might not match the ones you find online. I think they might
-have changed over time.
+The assignment numbers are offset by 1. Even though the assignment number might be 4 on the website
+and or PDF, the directory will be named "PA5J".
 
 ## TODO
 
