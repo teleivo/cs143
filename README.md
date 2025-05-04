@@ -19,6 +19,8 @@ have changed over time.
 ## TODO
 
 * try fresh checkout of the project and follow instructions to see if they work
+  * do I only want to include my files? but then I cannot guarantee that I am able to run this in
+  the future
 * add license from course/uni? at least link to it
 * check for any todos
 * make repo public
