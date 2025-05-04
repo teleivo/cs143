@@ -36,6 +36,7 @@ there is plenty of logic to get right 😅. There is definitely lots of room for
 
 I would also put more effort into cleaning the code up for production. For example
 * add `hashCode` to the `AbstractSymbol` for using it in hash based data structures
+* make sure internal state cannot be mutated
 * probably extract some more helpers to add semantic errors
 * try using the `SymbolTable` for methods as well. I felt like I would have to re-run the method
 declaration logic as the `SymbolTable` cannot be copied. Maybe my understanding is wrong of the
