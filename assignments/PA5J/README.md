@@ -32,6 +32,30 @@ To try yourself
   * against my test samples of invalid Cool `./test-err.sh`
   * against all the course examples `./test.sh ../../examples`
 
+## TODO
+
+* start with generating the fixed labels things shown in Figure 3 of runtime
+  * .data section
+  * tags for all classes
+    * _int_tag
+    * _bool_tag
+    * _string_tag
+    * no IO? why?
+  * class_nameTab
+  * bool_const0
+  * _protObj for all classes in the fixed labels table at least
+  * class_objTab refering to _protObj and _init or other methods?
+  * dispatch table for each class
+  * .text section
+    * with init methods
+  * get `small.cl` to compile with my code and run successfully
+* get a function call to compile and run
+* get a recursive call to work that takes input like fact or fibonacci
+* get branches to work
+* look at error handling like in a case statement
+* handle void
+* get a loop to work
+
 ## Limitations and improvements
 
 I took the course suggestion to heart: don't spend much time on optimizing the amount of passes as
