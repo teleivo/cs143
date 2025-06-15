@@ -1,4 +1,6 @@
 */*
+# assembly files
+*.s
 *.tar.gz
 !assignments/PA2J/
 !assignments/PA3J/
