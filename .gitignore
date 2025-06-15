@@ -1,7 +1,11 @@
 */*
 *.tar.gz
-*.s
+!assignments/PA2J/
+!assignments/PA3J/
+!assignments/PA4J/
+!assignments/PA5J/
 /assignments/PA2J/*.class
 /assignments/PA3J/*.class
 /assignments/PA3J/*.output
 /assignments/PA4J/*.class
+/assignments/PA5J/*.class
