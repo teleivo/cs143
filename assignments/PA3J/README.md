@@ -1,7 +1,7 @@
 # Programming Assignment: Parser
 
 This is my implementation of the assignment described in `./README`. The
-[PA3.pdf](https://web.stanford.edu/class/cs143/handouts/PA3.pdf) contains more details.
+[PA2.pdf](https://web.stanford.edu/class/cs143/handouts/PA2.pdf) contains more details.
 
 I ran my parser against
 * all valid Cool `.cl` files from all

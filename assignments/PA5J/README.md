@@ -1,9 +1,12 @@
-# Programming Assignment: Semantic analyzer
+# Programming Assignment: Code generator
 
 This is my implementation of the assignment described in `./README`. The
-[PA3.pdf](https://web.stanford.edu/class/cs143/handouts/PA3.pdf) contains more details.
+[PA5.pdf](https://web.stanford.edu/class/cs143/handouts/PA4.pdf) contains more details.
 
-I ran my semantic analyzer against
+I ran my code generator against
+
+TODO update the following
+
 * all valid Cool `.cl` files from all previous assignments
 * some more test input of valid `./testdata-ok/` and invalid `./testdata-err/` Cool code
 * and the `../../examples/`
@@ -22,9 +25,9 @@ to the example Cool code out there. The semantic analysis will otherwise fail.
 
 To try yourself
 
-* build my semantic analyzer using `make semant`
+* build my semantic analyzer using `make cgen`
 * run it
-  * against some Cool code using `./mysemant code.cl`
+  * against some Cool code using `./mycoolc -o code.s code.cl`
   * against my test samples of valid Cool `./test.sh`
   * against my test samples of invalid Cool `./test-err.sh`
   * against all the course examples `./test.sh ../../examples`
@@ -34,10 +37,3 @@ To try yourself
 I took the course suggestion to heart: don't spend much time on optimizing the amount of passes as
 there is plenty of logic to get right 😅. There is definitely lots of room for improvement!
 
-I would also put more effort into cleaning the code up for production. For example
-* add `hashCode` to the `AbstractSymbol` for using it in hash based data structures
-* make sure internal state cannot be mutated
-* probably extract some more helpers to add semantic errors
-* try using the `SymbolTable` for methods as well. I felt like I would have to re-run the method
-declaration logic as the `SymbolTable` cannot be copied. Maybe my understanding is wrong of the
-method environment. It is global but per class with all class and inherited methods.

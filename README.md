@@ -26,6 +26,11 @@ and or PDF, the directory will be named "PA5J".
 * make repo public
 * mention paths and other issues related to not running this in a VM
 
+## Limitations and improvements
+
+I took the course suggestion to heart: don't spend much time on optimizing the amount of passes as
+there is plenty of logic to get right 😅. There is definitely lots of room for improvement!
+
 ## License
 
 This repo contains my solutions to the [CS143 Compilers](https://web.stanford.edu/class/cs143/)
