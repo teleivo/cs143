@@ -50,7 +50,7 @@ class Classes extends ListNode {
 
   /** Returns class of this lists's elements */
   @Override
-public Class getElementClass() {
+  public Class getElementClass() {
     return elementClass;
   }
 
@@ -70,7 +70,7 @@ public Class getElementClass() {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new Classes(lineNumber, copyElements());
   }
 }
@@ -94,7 +94,7 @@ class Features extends ListNode {
 
   /** Returns class of this lists's elements */
   @Override
-public Class getElementClass() {
+  public Class getElementClass() {
     return elementClass;
   }
 
@@ -114,7 +114,7 @@ public Class getElementClass() {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new Features(lineNumber, copyElements());
   }
 }
@@ -138,7 +138,7 @@ class Formals extends ListNode {
 
   /** Returns class of this lists's elements */
   @Override
-public Class getElementClass() {
+  public Class getElementClass() {
     return elementClass;
   }
 
@@ -158,7 +158,7 @@ public Class getElementClass() {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new Formals(lineNumber, copyElements());
   }
 }
@@ -203,7 +203,7 @@ class Expressions extends ListNode {
 
   /** Returns class of this lists's elements */
   @Override
-public Class getElementClass() {
+  public Class getElementClass() {
     return elementClass;
   }
 
@@ -223,7 +223,7 @@ public Class getElementClass() {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new Expressions(lineNumber, copyElements());
   }
 }
@@ -247,7 +247,7 @@ class Cases extends ListNode {
 
   /** Returns class of this lists's elements */
   @Override
-public Class getElementClass() {
+  public Class getElementClass() {
     return elementClass;
   }
 
@@ -267,7 +267,7 @@ public Class getElementClass() {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new Cases(lineNumber, copyElements());
   }
 }
@@ -292,18 +292,18 @@ class programc extends Program {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new programc(lineNumber, (Classes) classes.copy());
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "programc\n");
     classes.dump(out, n + 2);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_program");
     for (Enumeration e = classes.getElements(); e.hasMoreElements(); ) {
@@ -327,7 +327,7 @@ public void dump_with_types(PrintStream out, int n) {
    * done in a second stage when you want to test the complete compiler.
    */
   @Override
-public void semant() {
+  public void semant() {
     /* ClassTable constructor may do some semantic analysis */
     ClassTable classTable = new ClassTable(classes);
 
@@ -347,7 +347,7 @@ public void semant() {
    * @see CgenClassTable
    */
   @Override
-public void cgen(PrintStream s) {
+  public void cgen(PrintStream s) {
     CgenClassTable codegen_classtable = new CgenClassTable(classes, s);
   }
 }
@@ -382,7 +382,7 @@ class class_c extends Class_ {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new class_c(
         lineNumber,
         copy_AbstractSymbol(name),
@@ -392,7 +392,7 @@ public TreeNode copy() {
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "class_c\n");
     dump_AbstractSymbol(out, n + 2, name);
     dump_AbstractSymbol(out, n + 2, parent);
@@ -401,7 +401,7 @@ public void dump(PrintStream out, int n) {
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_class");
     dump_AbstractSymbol(out, n + 2, name);
@@ -416,22 +416,22 @@ public void dump_with_types(PrintStream out, int n) {
   }
 
   @Override
-public AbstractSymbol getName() {
+  public AbstractSymbol getName() {
     return name;
   }
 
   @Override
-public AbstractSymbol getParent() {
+  public AbstractSymbol getParent() {
     return parent;
   }
 
   @Override
-public AbstractSymbol getFilename() {
+  public AbstractSymbol getFilename() {
     return filename;
   }
 
   @Override
-public Features getFeatures() {
+  public Features getFeatures() {
     return features;
   }
 }
@@ -465,7 +465,7 @@ class method extends Feature {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new method(
         lineNumber,
         copy_AbstractSymbol(name),
@@ -475,7 +475,7 @@ public TreeNode copy() {
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "method\n");
     dump_AbstractSymbol(out, n + 2, name);
     formals.dump(out, n + 2);
@@ -484,7 +484,7 @@ public void dump(PrintStream out, int n) {
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_method");
     dump_AbstractSymbol(out, n + 2, name);
@@ -522,7 +522,7 @@ class attr extends Feature {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new attr(
         lineNumber,
         copy_AbstractSymbol(name),
@@ -531,7 +531,7 @@ public TreeNode copy() {
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "attr\n");
     dump_AbstractSymbol(out, n + 2, name);
     dump_AbstractSymbol(out, n + 2, type_decl);
@@ -539,7 +539,7 @@ public void dump(PrintStream out, int n) {
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_attr");
     dump_AbstractSymbol(out, n + 2, name);
@@ -571,19 +571,19 @@ class formalc extends Formal {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new formalc(lineNumber, copy_AbstractSymbol(name), copy_AbstractSymbol(type_decl));
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "formalc\n");
     dump_AbstractSymbol(out, n + 2, name);
     dump_AbstractSymbol(out, n + 2, type_decl);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_formal");
     dump_AbstractSymbol(out, n + 2, name);
@@ -617,7 +617,7 @@ class branch extends Case {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new branch(
         lineNumber,
         copy_AbstractSymbol(name),
@@ -626,7 +626,7 @@ public TreeNode copy() {
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "branch\n");
     dump_AbstractSymbol(out, n + 2, name);
     dump_AbstractSymbol(out, n + 2, type_decl);
@@ -634,7 +634,7 @@ public void dump(PrintStream out, int n) {
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_branch");
     dump_AbstractSymbol(out, n + 2, name);
@@ -666,19 +666,19 @@ class assign extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new assign(lineNumber, copy_AbstractSymbol(name), (Expression) expr.copy());
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "assign\n");
     dump_AbstractSymbol(out, n + 2, name);
     expr.dump(out, n + 2);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_assign");
     dump_AbstractSymbol(out, n + 2, name);
@@ -693,7 +693,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -726,7 +726,7 @@ class static_dispatch extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new static_dispatch(
         lineNumber,
         (Expression) expr.copy(),
@@ -736,7 +736,7 @@ public TreeNode copy() {
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "static_dispatch\n");
     expr.dump(out, n + 2);
     dump_AbstractSymbol(out, n + 2, type_name);
@@ -745,7 +745,7 @@ public void dump(PrintStream out, int n) {
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_static_dispatch");
     expr.dump_with_types(out, n + 2);
@@ -766,7 +766,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -795,7 +795,7 @@ class dispatch extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new dispatch(
         lineNumber,
         (Expression) expr.copy(),
@@ -804,7 +804,7 @@ public TreeNode copy() {
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "dispatch\n");
     expr.dump(out, n + 2);
     dump_AbstractSymbol(out, n + 2, name);
@@ -812,7 +812,7 @@ public void dump(PrintStream out, int n) {
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_dispatch");
     expr.dump_with_types(out, n + 2);
@@ -832,7 +832,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -861,7 +861,7 @@ class cond extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new cond(
         lineNumber,
         (Expression) pred.copy(),
@@ -870,7 +870,7 @@ public TreeNode copy() {
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "cond\n");
     pred.dump(out, n + 2);
     then_exp.dump(out, n + 2);
@@ -878,7 +878,7 @@ public void dump(PrintStream out, int n) {
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_cond");
     pred.dump_with_types(out, n + 2);
@@ -894,7 +894,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -920,19 +920,19 @@ class loop extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new loop(lineNumber, (Expression) pred.copy(), (Expression) body.copy());
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "loop\n");
     pred.dump(out, n + 2);
     body.dump(out, n + 2);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_loop");
     pred.dump_with_types(out, n + 2);
@@ -947,7 +947,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -973,19 +973,19 @@ class typcase extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new typcase(lineNumber, (Expression) expr.copy(), (Cases) cases.copy());
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "typcase\n");
     expr.dump(out, n + 2);
     cases.dump(out, n + 2);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_typcase");
     expr.dump_with_types(out, n + 2);
@@ -1002,7 +1002,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -1025,18 +1025,18 @@ class block extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new block(lineNumber, (Expressions) body.copy());
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "block\n");
     body.dump(out, n + 2);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_block");
     for (Enumeration e = body.getElements(); e.hasMoreElements(); ) {
@@ -1052,7 +1052,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -1084,7 +1084,7 @@ class let extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new let(
         lineNumber,
         copy_AbstractSymbol(identifier),
@@ -1094,7 +1094,7 @@ public TreeNode copy() {
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "let\n");
     dump_AbstractSymbol(out, n + 2, identifier);
     dump_AbstractSymbol(out, n + 2, type_decl);
@@ -1103,7 +1103,7 @@ public void dump(PrintStream out, int n) {
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_let");
     dump_AbstractSymbol(out, n + 2, identifier);
@@ -1120,7 +1120,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -1146,19 +1146,19 @@ class plus extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new plus(lineNumber, (Expression) e1.copy(), (Expression) e2.copy());
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "plus\n");
     e1.dump(out, n + 2);
     e2.dump(out, n + 2);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_plus");
     e1.dump_with_types(out, n + 2);
@@ -1173,7 +1173,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -1199,19 +1199,19 @@ class sub extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new sub(lineNumber, (Expression) e1.copy(), (Expression) e2.copy());
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "sub\n");
     e1.dump(out, n + 2);
     e2.dump(out, n + 2);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_sub");
     e1.dump_with_types(out, n + 2);
@@ -1226,7 +1226,7 @@ public void dump_with_types(PrintStream out, int n) {
    * @param s the output stream
    */
   @Override
-public void code(PrintStream s) {}
+  public void code(PrintStream s) {}
 }
 
 /**
@@ -1252,19 +1252,19 @@ class mul extends Expression {
   }
 
   @Override
-public TreeNode copy() {
+  public TreeNode copy() {
     return new mul(lineNumber, (Expression) e1.copy(), (Expression) e2.copy());
   }
 
   @Override
-public void dump(PrintStream out, int n) {
+  public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "mul\n");
     e1.dump(out, n + 2);
     e2.dump(out, n + 2);
   }
 
   @Override
-public void dump_with_types(PrintStream out, int n) {
+  public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_mul");
     e1.dump_with_types(out, n + 2);
@@ -1278,7 +1278,8 @@ public void dump_with_types(PrintStream out, int n) {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1303,17 +1304,20 @@ class divide extends Expression {
     e2 = a2;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new divide(lineNumber, (Expression) e1.copy(), (Expression) e2.copy());
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "divide\n");
     e1.dump(out, n + 2);
     e2.dump(out, n + 2);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_divide");
     e1.dump_with_types(out, n + 2);
@@ -1327,7 +1331,8 @@ class divide extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1349,16 +1354,19 @@ class neg extends Expression {
     e1 = a1;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new neg(lineNumber, (Expression) e1.copy());
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "neg\n");
     e1.dump(out, n + 2);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_neg");
     e1.dump_with_types(out, n + 2);
@@ -1371,7 +1379,8 @@ class neg extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1396,17 +1405,20 @@ class lt extends Expression {
     e2 = a2;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new lt(lineNumber, (Expression) e1.copy(), (Expression) e2.copy());
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "lt\n");
     e1.dump(out, n + 2);
     e2.dump(out, n + 2);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_lt");
     e1.dump_with_types(out, n + 2);
@@ -1420,7 +1432,8 @@ class lt extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1445,17 +1458,20 @@ class eq extends Expression {
     e2 = a2;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new eq(lineNumber, (Expression) e1.copy(), (Expression) e2.copy());
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "eq\n");
     e1.dump(out, n + 2);
     e2.dump(out, n + 2);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_eq");
     e1.dump_with_types(out, n + 2);
@@ -1469,7 +1485,8 @@ class eq extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1494,17 +1511,20 @@ class leq extends Expression {
     e2 = a2;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new leq(lineNumber, (Expression) e1.copy(), (Expression) e2.copy());
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "leq\n");
     e1.dump(out, n + 2);
     e2.dump(out, n + 2);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_leq");
     e1.dump_with_types(out, n + 2);
@@ -1518,7 +1538,8 @@ class leq extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1540,16 +1561,19 @@ class comp extends Expression {
     e1 = a1;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new comp(lineNumber, (Expression) e1.copy());
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "comp\n");
     e1.dump(out, n + 2);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_comp");
     e1.dump_with_types(out, n + 2);
@@ -1562,7 +1586,8 @@ class comp extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1584,16 +1609,19 @@ class int_const extends Expression {
     token = a1;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new int_const(lineNumber, copy_AbstractSymbol(token));
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "int_const\n");
     dump_AbstractSymbol(out, n + 2, token);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_int");
     dump_AbstractSymbol(out, n + 2, token);
@@ -1606,7 +1634,8 @@ class int_const extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {
+  @Override
+public void code(PrintStream s) {
     CgenSupport.emitLoadInt(
         CgenSupport.ACC, (IntSymbol) AbstractTable.inttable.lookup(token.getString()), s);
   }
@@ -1631,16 +1660,19 @@ class bool_const extends Expression {
     val = a1;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new bool_const(lineNumber, copy_Boolean(val));
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "bool_const\n");
     dump_Boolean(out, n + 2, val);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_bool");
     dump_Boolean(out, n + 2, val);
@@ -1653,7 +1685,8 @@ class bool_const extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {
+  @Override
+public void code(PrintStream s) {
     CgenSupport.emitLoadBool(CgenSupport.ACC, new BoolConst(val), s);
   }
 }
@@ -1677,16 +1710,19 @@ class string_const extends Expression {
     token = a1;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new string_const(lineNumber, copy_AbstractSymbol(token));
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "string_const\n");
     dump_AbstractSymbol(out, n + 2, token);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_string");
     out.print(Utilities.pad(n + 2) + "\"");
@@ -1701,7 +1737,8 @@ class string_const extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {
+  @Override
+public void code(PrintStream s) {
     CgenSupport.emitLoadString(
         CgenSupport.ACC, (StringSymbol) AbstractTable.stringtable.lookup(token.getString()), s);
   }
@@ -1726,16 +1763,19 @@ class new_ extends Expression {
     type_name = a1;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new new_(lineNumber, copy_AbstractSymbol(type_name));
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "new_\n");
     dump_AbstractSymbol(out, n + 2, type_name);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_new");
     dump_AbstractSymbol(out, n + 2, type_name);
@@ -1748,7 +1788,8 @@ class new_ extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1770,16 +1811,19 @@ class isvoid extends Expression {
     e1 = a1;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new isvoid(lineNumber, (Expression) e1.copy());
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "isvoid\n");
     e1.dump(out, n + 2);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_isvoid");
     e1.dump_with_types(out, n + 2);
@@ -1792,7 +1836,8 @@ class isvoid extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1810,15 +1855,18 @@ class no_expr extends Expression {
     super(lineNumber);
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new no_expr(lineNumber);
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "no_expr\n");
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_no_expr");
     dump_type(out, n);
@@ -1830,7 +1878,8 @@ class no_expr extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }
 
 /**
@@ -1852,16 +1901,19 @@ class object extends Expression {
     name = a1;
   }
 
-  public TreeNode copy() {
+  @Override
+public TreeNode copy() {
     return new object(lineNumber, copy_AbstractSymbol(name));
   }
 
-  public void dump(PrintStream out, int n) {
+  @Override
+public void dump(PrintStream out, int n) {
     out.print(Utilities.pad(n) + "object\n");
     dump_AbstractSymbol(out, n + 2, name);
   }
 
-  public void dump_with_types(PrintStream out, int n) {
+  @Override
+public void dump_with_types(PrintStream out, int n) {
     dump_line(out, n);
     out.println(Utilities.pad(n) + "_object");
     dump_AbstractSymbol(out, n + 2, name);
@@ -1874,5 +1926,6 @@ class object extends Expression {
    *
    * @param s the output stream
    */
-  public void code(PrintStream s) {}
+  @Override
+public void code(PrintStream s) {}
 }

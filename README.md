@@ -25,3 +25,11 @@ and or PDF, the directory will be named "PA5J".
 * check for any todos
 * make repo public
 * mention paths and other issues related to not running this in a VM
+
+## License
+
+This repo contains my solutions to the [CS143 Compilers](https://web.stanford.edu/class/cs143/)
+class assignments in Java that relies on code from the course. The code can be obtained from the
+Stanford Compilers course on https://www.edx.org/. The license is present in a header in all Java
+classes and copied into [LICENSE](./LICENSE).
+
