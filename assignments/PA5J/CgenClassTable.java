@@ -387,9 +387,18 @@ class CgenClassTable extends SymbolTable {
     if (Flags.cgen_debug) System.out.println("coding constants");
     codeConstants();
 
+    str.print(CgenSupport.CLASSNAMETAB + CgenSupport.LABEL);
+    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+      StringSymbol className =
+          (StringSymbol)
+              AbstractTable.stringtable.lookup(((CgenNode) e.nextElement()).getName().getString());
+      str.print(CgenSupport.WORD);
+      className.codeRef(str);
+      str.println();
+    }
+
     //                 Add your code to emit
     //                   - prototype objects
-    //                   - class_cnameTab
     //                   - dispatch tables
 
     if (Flags.cgen_debug) System.out.println("coding global text");

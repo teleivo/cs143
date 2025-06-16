@@ -32,8 +32,7 @@ class StringSymbol extends AbstractSymbol {
   }
 
   /**
-   * Generates code for the string constant definition. This method is incomplete; you get to finish
-   * it up in programming assignment 5.
+   * Generates code for the string constant definition.
    *
    * @param stringclasstag the class tag for string object
    * @param s the output stream
@@ -54,6 +53,7 @@ class StringSymbol extends AbstractSymbol {
     s.print(CgenSupport.WORD);
 
     /* Add code to reference the dispatch table for class String here */
+    // TODO(ivo)
 
     s.println(""); // dispatch table
     s.print(CgenSupport.WORD);
