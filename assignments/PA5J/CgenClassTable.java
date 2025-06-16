@@ -23,6 +23,7 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 import java.io.PrintStream;
 import java.util.Enumeration;
+import java.util.Stack;
 import java.util.Vector;
 
 /**
@@ -397,6 +398,7 @@ class CgenClassTable extends SymbolTable {
       str.println();
     }
 
+    // TODO(ivo) extract into methods
     str.print(CgenSupport.CLASSOBJTAB + CgenSupport.LABEL);
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       AbstractSymbol className = ((CgenNode) e.nextElement()).getName();
@@ -406,6 +408,43 @@ class CgenClassTable extends SymbolTable {
       str.print(CgenSupport.WORD);
       CgenSupport.emitInitRef(className, str);
       str.println();
+    }
+
+    // TODO(ivo) what is the -1 at the end of the IO_dispTab for?
+    // IO_dispTab:
+    // 	.word	Object.abort
+    // 	.word	Object.type_name
+    // 	.word	Object.copy
+    // 	.word	IO.out_string
+    // 	.word	IO.out_int
+    // 	.word	IO.in_string
+    // 	.word	IO.in_int
+    // 	.word	-1
+    Stack<class_c> hierarchy = new Stack<>();
+    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+      CgenNode cls = (CgenNode) e.nextElement();
+
+      CgenSupport.emitDispTableRef(cls.getName(), str);
+      str.print(CgenSupport.LABEL);
+
+      hierarchy.push(cls);
+      while (cls.getParentNd() != null
+          && !cls.getParentNd().getName().equals(TreeConstants.No_class)) {
+        hierarchy.push(cls.getParentNd());
+        cls = cls.getParentNd();
+      }
+
+      while (!hierarchy.empty()) {
+        class_c cur = hierarchy.pop();
+        for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
+          Feature feature = ((Feature) f.nextElement());
+          if (feature instanceof method m) {
+            str.print(CgenSupport.WORD);
+            CgenSupport.emitMethodRef(cur.getName(), m.name, str);
+            str.println();
+          }
+        }
+      }
     }
     //                 Add your code to emit
     //                   - prototype objects
