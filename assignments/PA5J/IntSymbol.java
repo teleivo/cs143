@@ -64,6 +64,10 @@ class IntSymbol extends AbstractSymbol {
     s.print(CgenSupport.INTCONST_PREFIX + index);
   }
 
+  public void codeRef(StringBuilder s) {
+    s.append(CgenSupport.INTCONST_PREFIX).append(index);
+  }
+
   /** Returns a copy of this symbol */
   @Override
   public Object clone() {

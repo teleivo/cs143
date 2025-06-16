@@ -59,6 +59,10 @@ class BoolConst {
     s.print(CgenSupport.BOOLCONST_PREFIX + (val ? "1" : "0"));
   }
 
+  public void codeRef(StringBuilder s) {
+    s.append(CgenSupport.BOOLCONST_PREFIX + (val ? "1" : "0"));
+  }
+
   /**
    * Generates code for the boolean constant definition.
    *

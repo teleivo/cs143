@@ -362,6 +362,10 @@ class CgenSupport {
     s.print(sym + DISPTAB_SUFFIX);
   }
 
+  static void emitDispTableRef(AbstractSymbol sym, StringBuilder s) {
+    s.append(sym).append(DISPTAB_SUFFIX);
+  }
+
   /**
    * Emits a reference to class' init() method.
    *
@@ -391,6 +395,10 @@ class CgenSupport {
    */
   static void emitMethodRef(AbstractSymbol classname, AbstractSymbol methodname, PrintStream s) {
     s.print(classname + METHOD_SEP + methodname);
+  }
+
+  static void emitMethodRef(AbstractSymbol classname, AbstractSymbol methodname, StringBuilder s) {
+    s.append(classname).append(METHOD_SEP).append(methodname);
   }
 
   /**

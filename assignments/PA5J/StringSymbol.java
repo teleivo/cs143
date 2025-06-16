@@ -70,6 +70,10 @@ class StringSymbol extends AbstractSymbol {
     s.print(CgenSupport.STRCONST_PREFIX + index);
   }
 
+  public void codeRef(StringBuilder s) {
+    s.append(CgenSupport.STRCONST_PREFIX + index);
+  }
+
   /** Returns a copy of this symbol */
   @Override
   public Object clone() {
