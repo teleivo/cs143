@@ -23,6 +23,8 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 import java.io.PrintStream;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -35,9 +37,13 @@ class CgenClassTable extends SymbolTable {
   /** All classes in the program, represented as CgenNode */
   private Vector nds;
 
+  private final Map<String, Integer> classTags;
+
   /** This is the stream to which assembly instructions are output */
   private PrintStream str;
 
+  private final int objectclasstag = 0;
+  private final int ioclasstag = 1;
   private final int intclasstag = 2;
   private final int boolclasstag = 3;
   private final int stringclasstag = 4;
@@ -212,6 +218,7 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(Object_class, CgenNode.Basic, this));
+    this.classTags.put(TreeConstants.Object_.getString(), objectclasstag);
 
     // The IO class inherits from Object. Its methods are
     //        out_string(Str) : SELF_TYPE  writes a string to the output
@@ -258,6 +265,7 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(IO_class, CgenNode.Basic, this));
+    this.classTags.put(TreeConstants.IO.getString(), ioclasstag);
 
     // The Int class has no methods and only a single attribute, the
     // "val" for the integer.
@@ -273,6 +281,7 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(Int_class, CgenNode.Basic, this));
+    this.classTags.put(TreeConstants.Int.getString(), intclasstag);
 
     // Bool also has only the "val" slot.
     class_c Bool_class =
@@ -286,6 +295,7 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(Bool_class, CgenNode.Basic, this));
+    this.classTags.put(TreeConstants.Bool.getString(), boolclasstag);
 
     // The class Str has a number of slots and operations:
     //       val                              the length of the string
@@ -326,6 +336,7 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(Str_class, CgenNode.Basic, this));
+    this.classTags.put(TreeConstants.Str.getString(), stringclasstag);
   }
 
   // The following creates an inheritance graph from
@@ -338,6 +349,7 @@ class CgenClassTable extends SymbolTable {
     if (probe(name) != null) return;
     nds.addElement(nd);
     addId(name, nd);
+    this.classTags.put(name.getString(), this.classTags.size());
   }
 
   private void installClasses(Classes cs) {
@@ -361,6 +373,9 @@ class CgenClassTable extends SymbolTable {
   /** Constructs a new class table and invokes the code generator */
   public CgenClassTable(Classes cls, PrintStream str) {
     this.nds = new Vector();
+    int basicClassNumber = 5;
+    this.classTags = new HashMap<>(basicClassNumber + cls.getLength());
+
     this.str = str;
 
     enterScope();
@@ -388,6 +403,21 @@ class CgenClassTable extends SymbolTable {
     if (Flags.cgen_debug) System.out.println("coding constants");
     codeConstants();
 
+    codeClassNameTable();
+    codeClassObjectTable();
+    codeDispatchTable();
+    codePrototypeObjects();
+
+    if (Flags.cgen_debug) System.out.println("coding global text");
+    codeGlobalText();
+
+    //                 Add your code to emit
+    //                   - object initializer
+    //                   - the class methods
+    //                   - etc...
+  }
+
+  private void codeClassNameTable() {
     str.print(CgenSupport.CLASSNAMETAB + CgenSupport.LABEL);
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       StringSymbol className =
@@ -397,8 +427,9 @@ class CgenClassTable extends SymbolTable {
       className.codeRef(str);
       str.println();
     }
+  }
 
-    // TODO(ivo) extract into methods
+  private void codeClassObjectTable() {
     str.print(CgenSupport.CLASSOBJTAB + CgenSupport.LABEL);
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       AbstractSymbol className = ((CgenNode) e.nextElement()).getName();
@@ -409,7 +440,9 @@ class CgenClassTable extends SymbolTable {
       CgenSupport.emitInitRef(className, str);
       str.println();
     }
+  }
 
+  private void codeDispatchTable() {
     // TODO(ivo) what is the -1 at the end of the IO_dispTab for?
     // IO_dispTab:
     // 	.word	Object.abort
@@ -446,17 +479,32 @@ class CgenClassTable extends SymbolTable {
         }
       }
     }
-    //                 Add your code to emit
-    //                   - prototype objects
-    //                   - dispatch tables
+  }
 
-    if (Flags.cgen_debug) System.out.println("coding global text");
-    codeGlobalText();
+  private void codePrototypeObjects() {
+    Stack<class_c> hierarchy = new Stack<>();
+    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+      CgenNode cls = (CgenNode) e.nextElement();
 
-    //                 Add your code to emit
-    //                   - object initializer
-    //                   - the class methods
-    //                   - etc...
+      CgenSupport.emitProtObjRef(cls.getName(), str);
+      str.print(CgenSupport.LABEL);
+
+      str.print(CgenSupport.WORD);
+      str.print(classTags.get(cls.getName().getString()));
+      str.println();
+
+      str.print(CgenSupport.WORD);
+      // TODO(ivo) what does the size mean? number of attributes? size of attributes? features?
+      // does it include the entire hierarchy?
+      str.println();
+
+      str.print(CgenSupport.WORD);
+      CgenSupport.emitDispTableRef(cls.getName(), str);
+      str.println();
+      // TODO(ivo) some protos end with a .word -1
+      // is this for alignment? or for making sure even addr point to the heap?
+
+    }
   }
 
   /** Gets the root of the inheritance tree */
