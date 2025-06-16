@@ -37,9 +37,9 @@ class CgenClassTable extends SymbolTable {
   /** This is the stream to which assembly instructions are output */
   private PrintStream str;
 
-  private int stringclasstag;
-  private int intclasstag;
-  private int boolclasstag;
+  private final int intclasstag = 2;
+  private final int boolclasstag = 3;
+  private final int stringclasstag = 4;
 
   // The following methods emit code for constants and global
   // declarations.
@@ -47,7 +47,6 @@ class CgenClassTable extends SymbolTable {
   /** Emits code to start the .data segment and to declare the global names. */
   private void codeGlobalData() {
     // The following global names must be defined first.
-
     str.print("\t.data\n" + CgenSupport.ALIGN);
     str.println(CgenSupport.GLOBAL + CgenSupport.CLASSNAMETAB);
     str.print(CgenSupport.GLOBAL);
@@ -71,7 +70,6 @@ class CgenClassTable extends SymbolTable {
 
     // We also need to know the tag of the Int, String, and Bool classes
     // during code generation.
-
     str.println(CgenSupport.INTTAG + CgenSupport.LABEL + CgenSupport.WORD + intclasstag);
     str.println(CgenSupport.BOOLTAG + CgenSupport.LABEL + CgenSupport.WORD + boolclasstag);
     str.println(CgenSupport.STRINGTAG + CgenSupport.LABEL + CgenSupport.WORD + stringclasstag);
@@ -361,13 +359,8 @@ class CgenClassTable extends SymbolTable {
 
   /** Constructs a new class table and invokes the code generator */
   public CgenClassTable(Classes cls, PrintStream str) {
-    nds = new Vector();
-
+    this.nds = new Vector();
     this.str = str;
-
-    stringclasstag = 0 /* Change to your String class tag here */;
-    intclasstag = 0 /* Change to your Int class tag here */;
-    boolclasstag = 0 /* Change to your Bool class tag here */;
 
     enterScope();
     if (Flags.cgen_debug) System.out.println("Building CgenClassTable");

@@ -19,8 +19,6 @@ ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
 PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 */
 
-// This is a project skeleton file
-
 import java.util.Enumeration;
 import java.util.Vector;
 

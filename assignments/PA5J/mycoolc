@@ -1,9 +1,9 @@
 #!/bin/csh -f
 # uncomment to use all the reference implementations of the lexer, parser, semantic analyzer and
 # code generator
-../../bin/lexer $* | ../../bin/parser $* | ../../bin/semant $* | ../../bin/cgen $*
+# ../../bin/lexer $* | ../../bin/parser $* | ../../bin/semant $* | ../../bin/cgen $*
 # uncomment to use the reference lexer, parser, semantic analyzer and my code generator
-# ../../bin/lexer $* | ../../bin/parser $* | ../../bin/semant $* | ./cgen $*
+../../bin/lexer $* | ../../bin/parser $* | ../../bin/semant $* | ./cgen $*
 
 # uncomment to only use my implementations
 # ../PA2J/lexer  $* | ../PA3J/parser $* | ../PA4J/semant $* | ./cgen

@@ -348,12 +348,7 @@ class program extends Program {
    */
   @Override
   public void cgen(PrintStream s) {
-    // spim wants comments to start with '#'
-    s.print("# start of generated code\n");
-
     CgenClassTable codegen_classtable = new CgenClassTable(classes, s);
-
-    s.print("\n# end of generated code\n");
   }
 }
 

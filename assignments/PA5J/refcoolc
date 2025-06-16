@@ -1,0 +1,4 @@
+#!/bin/csh -f
+# uncomment to use all the reference implementations of the lexer, parser, semantic analyzer and
+# code generator
+../../bin/lexer $* | ../../bin/parser $* | ../../bin/semant $* | ../../bin/cgen $*
