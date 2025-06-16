@@ -397,6 +397,16 @@ class CgenClassTable extends SymbolTable {
       str.println();
     }
 
+    str.print(CgenSupport.CLASSOBJTAB + CgenSupport.LABEL);
+    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+      AbstractSymbol className = ((CgenNode) e.nextElement()).getName();
+      str.print(CgenSupport.WORD);
+      CgenSupport.emitProtObjRef(className, str);
+      str.println();
+      str.print(CgenSupport.WORD);
+      CgenSupport.emitInitRef(className, str);
+      str.println();
+    }
     //                 Add your code to emit
     //                   - prototype objects
     //                   - dispatch tables
