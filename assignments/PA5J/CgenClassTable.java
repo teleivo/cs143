@@ -484,8 +484,12 @@ class CgenClassTable extends SymbolTable {
   private void codePrototypeObjects() {
     Stack<class_c> hierarchy = new Stack<>();
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
-      CgenNode cls = (CgenNode) e.nextElement();
+      // put -1 before any prototype for GC
+      str.print(CgenSupport.WORD);
+      str.print(-1);
+      str.println();
 
+      CgenNode cls = (CgenNode) e.nextElement();
       CgenSupport.emitProtObjRef(cls.getName(), str);
       str.print(CgenSupport.LABEL);
 
@@ -505,44 +509,59 @@ class CgenClassTable extends SymbolTable {
       CgenSupport.emitDispTableRef(cls.getName(), proto);
       proto.append('\n');
 
-      // TODO(ivo) some protos end with a .word -1
-      // is this for alignment? or for making sure even addr point to the heap?
+      // TODO(ivo) can I extend an Int/Bool?
+      if (TreeConstants.Bool.equals(cls.getName())) {
+        objSize++;
+        proto.append(CgenSupport.WORD);
+        proto.append(0);
+        proto.append('\n');
+      } else if (TreeConstants.Int.equals(cls.getName())) {
+        objSize++;
+        proto.append(CgenSupport.WORD);
+        proto.append(0);
+        proto.append('\n');
+      } else if (TreeConstants.Str.equals(cls.getName())) {
+        objSize += 2;
+        proto.append(CgenSupport.WORD);
+        ((IntSymbol) AbstractTable.inttable.lookup(0)).codeRef(proto);
+        proto.append('\n');
+        proto.append(CgenSupport.WORD);
+        proto.append(0);
+        proto.append('\n');
+        // TODO(ivo) what about IO and Object?
+      } else { // non-basic class
+        hierarchy.push(cls);
+        while (cls.getParentNd() != null
+            && !cls.getParentNd().getName().equals(TreeConstants.No_class)) {
+          hierarchy.push(cls.getParentNd());
+          cls = cls.getParentNd();
+        }
 
-      hierarchy.push(cls);
-      while (cls.getParentNd() != null
-          && !cls.getParentNd().getName().equals(TreeConstants.No_class)) {
-        hierarchy.push(cls.getParentNd());
-        cls = cls.getParentNd();
-      }
-
-      while (!hierarchy.empty()) {
-        class_c cur = hierarchy.pop();
-        for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
-          Feature feature = ((Feature) f.nextElement());
-          if (feature instanceof attr a) {
-            objSize++;
-            // TODO(ivo) add default value for int, bool and Str or void which looks like its -1 in
-            // the ref impl?
-            proto.append(CgenSupport.WORD);
-            if (TreeConstants.Bool.equals(a.type_decl)) {
-              BoolConst.falsebool.codeRef(proto);
-            } else if (TreeConstants.Int.equals(a.type_decl)) {
-              ((IntSymbol) AbstractTable.inttable.lookup(0)).codeRef(proto);
-            } else if (TreeConstants.Str.equals(a.type_decl)) {
-              ((StringSymbol) AbstractTable.stringtable.lookup("")).codeRef(proto);
-              proto.append('\n');
-              // TODO(ivo) this does not seeM to work
-              // TODO(ivo) double check that this represents the length of the string. the ref impl
-              // does not increment the objSize which seems odd
+        while (!hierarchy.empty()) {
+          class_c cur = hierarchy.pop();
+          for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
+            Feature feature = ((Feature) f.nextElement());
+            if (feature instanceof attr a) {
+              objSize++;
+              // TODO(ivo) add default value for int, bool and Str or void which looks like its -1
+              // in
+              // the ref impl?
               proto.append(CgenSupport.WORD);
-              proto.append(0);
-            } else {
-              proto.append(-1);
+              if (TreeConstants.Bool.equals(a.type_decl)) {
+                BoolConst.falsebool.codeRef(proto);
+              } else if (TreeConstants.Int.equals(a.type_decl)) {
+                ((IntSymbol) AbstractTable.inttable.lookup(0)).codeRef(proto);
+              } else if (TreeConstants.Str.equals(a.type_decl)) {
+                ((StringSymbol) AbstractTable.stringtable.lookup("")).codeRef(proto);
+              } else {
+                // TODO(ivo) print 0 for void?
+              }
+              proto.append('\n');
             }
-            proto.append('\n');
           }
         }
       }
+
       str.print(objSize);
       str.print(proto.toString());
     }
