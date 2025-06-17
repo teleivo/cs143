@@ -1,8 +1,8 @@
 class A {
 	aAttr1: Int <- 1;
-	aAttr2 : Int <- 1;
+	aAttr2 : Int <- 11;
 	aAttr3 : Bool <- true;
-	a() : Int { 1 };
+	a(par:Int) : Int { par };
 };
 class B inherits A {
 	b() : Int { 1 };

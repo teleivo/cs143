@@ -414,6 +414,9 @@ class CgenClassTable extends SymbolTable {
     //                 Add your code to emit
     //                   - object initializer
     //                   - the class methods
+    //                   TODO(ivo) try emitting code for the simples A.a method that calls code on
+    codeMethods();
+    //                   the int_const expresSion which has an impl
     //                   - etc...
   }
 
@@ -551,6 +554,30 @@ class CgenClassTable extends SymbolTable {
 
       str.print(objSize);
       str.print(proto.toString());
+    }
+  }
+
+  private void codeMethods() {
+    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+      CgenNode cls = (CgenNode) e.nextElement();
+      // basic class methods apart from the init() are provided by the SPIM runtime
+      if (cls.basic()) {
+        continue;
+      }
+
+      for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
+        Feature feature = ((Feature) f.nextElement());
+        if (feature instanceof method m) {
+          CgenSupport.emitMethodRef(cls.getName(), m.name, str);
+          str.print(CgenSupport.LABEL);
+
+          m.expr.code(str);
+
+          // TODO(ivo) is it always 3 for fp, ra, s0?
+          CgenSupport.emitPop(3 + m.formals.getLength(), str);
+          CgenSupport.emitReturn(str);
+        }
+      }
     }
   }
 

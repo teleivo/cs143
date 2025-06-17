@@ -1629,8 +1629,7 @@ class int_const extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method method is provided to you as an example of code
-   * generation.
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1680,8 +1679,7 @@ class bool_const extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method method is provided to you as an example of code
-   * generation.
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1732,8 +1730,7 @@ class string_const extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method method is provided to you as an example of code
-   * generation.
+   * Generates code for this expression.
    *
    * @param s the output stream
    */

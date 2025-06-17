@@ -77,7 +77,7 @@ class CgenSupport {
   static final String ZERO = "$zero"; // Zero register
   static final String ACC = "$a0"; // Accumulator
   static final String A1 = "$a1"; // For arguments to prim funcs
-  static final String SELF = "$s0"; // Ptr to self (callee saves)
+  static final String SELF = "$s0"; // Ptr to self (callee saved)
   static final String T1 = "$t1"; // Temporary 1
   static final String T2 = "$t2"; // Temporary 2
   static final String T3 = "$t3"; // Temporary 3
@@ -541,6 +541,16 @@ class CgenSupport {
   static void emitPush(String reg, PrintStream s) {
     emitStore(reg, 0, SP, s);
     emitAddiu(SP, SP, -4, s);
+  }
+
+  /**
+   * Pops n words from the stack. Stack grows toward smaller addresses.
+   *
+   * @param n number of words to pop from the stack
+   * @param s the output stream
+   */
+  static void emitPop(int n, PrintStream s) {
+    emitAddiu(SP, SP, n * 4, s);
   }
 
   /**
