@@ -443,16 +443,6 @@ class CgenClassTable extends SymbolTable {
   }
 
   private void codeDispatchTable() {
-    // TODO(ivo) what is the -1 at the end of the IO_dispTab for?
-    // IO_dispTab:
-    // 	.word	Object.abort
-    // 	.word	Object.type_name
-    // 	.word	Object.copy
-    // 	.word	IO.out_string
-    // 	.word	IO.out_int
-    // 	.word	IO.in_string
-    // 	.word	IO.in_int
-    // 	.word	-1
     Stack<class_c> hierarchy = new Stack<>();
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       CgenNode cls = (CgenNode) e.nextElement();
@@ -509,11 +499,10 @@ class CgenClassTable extends SymbolTable {
       CgenSupport.emitDispTableRef(cls.getName(), proto);
       proto.append('\n');
 
-      // TODO(ivo) can I extend an Int/Bool?
       if (TreeConstants.Bool.equals(cls.getName())) {
         objSize++;
         proto.append(CgenSupport.WORD);
-        proto.append(0);
+        proto.append(0); // default value of false
         proto.append('\n');
       } else if (TreeConstants.Int.equals(cls.getName())) {
         objSize++;
@@ -523,13 +512,13 @@ class CgenClassTable extends SymbolTable {
       } else if (TreeConstants.Str.equals(cls.getName())) {
         objSize += 2;
         proto.append(CgenSupport.WORD);
+        // pointer to string length (of zero)
         ((IntSymbol) AbstractTable.inttable.lookup(0)).codeRef(proto);
         proto.append('\n');
         proto.append(CgenSupport.WORD);
-        proto.append(0);
+        proto.append(0); // empty string
         proto.append('\n');
-        // TODO(ivo) what about IO and Object?
-      } else { // non-basic class
+      } else { // non-basic class + IO and Object which have no attributes
         hierarchy.push(cls);
         while (cls.getParentNd() != null
             && !cls.getParentNd().getName().equals(TreeConstants.No_class)) {
@@ -543,9 +532,7 @@ class CgenClassTable extends SymbolTable {
             Feature feature = ((Feature) f.nextElement());
             if (feature instanceof attr a) {
               objSize++;
-              // TODO(ivo) add default value for int, bool and Str or void which looks like its -1
-              // in
-              // the ref impl?
+
               proto.append(CgenSupport.WORD);
               if (TreeConstants.Bool.equals(a.type_decl)) {
                 BoolConst.falsebool.codeRef(proto);
@@ -554,7 +541,7 @@ class CgenClassTable extends SymbolTable {
               } else if (TreeConstants.Str.equals(a.type_decl)) {
                 ((StringSymbol) AbstractTable.stringtable.lookup("")).codeRef(proto);
               } else {
-                // TODO(ivo) print 0 for void?
+                proto.append(0); // set to void
               }
               proto.append('\n');
             }

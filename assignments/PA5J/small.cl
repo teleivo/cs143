@@ -7,6 +7,7 @@ class A {
 class B inherits A {
 	b() : Int { 1 };
 	bAttr1: String <- "wow";
+	bAttr2: A;
 };
 class Main {
 	main() : Bool {
