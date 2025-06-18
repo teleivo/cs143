@@ -405,6 +405,23 @@ class CgenSupport {
     s.append(classname).append(METHOD_SEP).append(methodname);
   }
 
+  static void emitInitMethodDef(CgenNode classNode, PrintStream s) {
+    s.print(initMethodRef(classNode.getName()));
+    s.print(LABEL);
+  }
+
+  static void emitInitMethodRef(CgenNode classNode, PrintStream s) {
+    s.print(initMethodRef(classNode.getName()));
+  }
+
+  static void emitInitMethodRef(AbstractSymbol classname, PrintStream s) {
+    s.print(initMethodRef(classname));
+  }
+
+  static String initMethodRef(AbstractSymbol classname) {
+    return classname + CgenSupport.CLASSINIT_SUFFIX;
+  }
+
   /**
    * Emits a reference to a label
    *

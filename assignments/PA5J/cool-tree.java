@@ -1174,6 +1174,7 @@ class plus extends Expression {
   @Override
   public void code(PrintStream s) {
     e1.code(s);
+    // TODO(ivo) can I use s1 instead? so move s1 a0
     CgenSupport.emitPush(CgenSupport.ACC, s);
     e2.code(s);
     // TODO(ivo) do I need to do something to setup the new activation record? like store the fp

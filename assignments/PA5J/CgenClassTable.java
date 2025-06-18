@@ -411,13 +411,11 @@ class CgenClassTable extends SymbolTable {
     if (Flags.cgen_debug) System.out.println("coding global text");
     codeGlobalText();
 
-    //                 Add your code to emit
-    //                   - object initializer
-    //                   - the class methods
-    //                   TODO(ivo) try emitting code for the simples A.a method that calls code on
+    codeInitMethods();
     codeMethods();
-    //                   the int_const expresSion which has an impl
-    //                   - etc...
+    // TODO(ivo) walk the AST
+    // the int_const expresSion which has an impl
+    // - etc...
   }
 
   private void codeClassNameTable() {
@@ -454,8 +452,7 @@ class CgenClassTable extends SymbolTable {
       s.print(CgenSupport.LABEL);
 
       hierarchy.push(cls);
-      while (cls.getParentNd() != null
-          && !cls.getParentNd().getName().equals(TreeConstants.No_class)) {
+      while (hasParent(cls)) {
         hierarchy.push(cls.getParentNd());
         cls = cls.getParentNd();
       }
@@ -523,8 +520,7 @@ class CgenClassTable extends SymbolTable {
         proto.append('\n');
       } else { // non-basic class + IO and Object which have no attributes
         hierarchy.push(cls);
-        while (cls.getParentNd() != null
-            && !cls.getParentNd().getName().equals(TreeConstants.No_class)) {
+        while (hasParent(cls)) {
           hierarchy.push(cls.getParentNd());
           cls = cls.getParentNd();
         }
@@ -557,6 +553,68 @@ class CgenClassTable extends SymbolTable {
     }
   }
 
+  private void codeInitMethods() {
+    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+      codeInitMethod((CgenNode) e.nextElement());
+    }
+  }
+
+  // TODO(ivo) what if init is declared, has formals and a body?
+  private void codeInitMethod(CgenNode cls) {
+    CgenSupport.emitInitMethodDef(cls, s);
+
+    // similar steps to codeMethod
+    // store the callee saved registers on the stack
+    CgenSupport.emitPush(CgenSupport.FP, s);
+    CgenSupport.emitPush(CgenSupport.SELF, s);
+    CgenSupport.emitPush(CgenSupport.RA, s);
+    // set FP of the current activation to RA
+    CgenSupport.emitAddiu(CgenSupport.FP, CgenSupport.SP, 4, s);
+
+    // save self
+    CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
+
+    // call to init() of parent is emitted first which in turn will call its parent at runtime
+    // up to and including Object
+    if (hasParent(cls)) {
+      CgenNode parent = cls.getParentNd();
+      CgenSupport.emitJal(CgenSupport.initMethodRef(parent.getName()), s);
+    }
+
+    // emit code to evaluate attribute initializers, attributes without one get their defaults
+    // via the proto objects
+    int attrNumber = 0;
+    for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
+      Feature feature = ((Feature) f.nextElement());
+      if (feature instanceof attr a) {
+        if (a.init != null) {
+          a.init.code(s);
+          // store initialization value into corresponding attribute
+          CgenSupport.emitStore(
+              CgenSupport.ACC, CgenSupport.DEFAULT_OBJFIELDS + attrNumber, CgenSupport.SELF, s);
+        }
+        attrNumber++;
+      }
+    }
+
+    // restore self
+    CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
+
+    CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);
+    CgenSupport.emitLoad(CgenSupport.SELF, 2, CgenSupport.SP, s);
+    CgenSupport.emitLoad(CgenSupport.RA, 1, CgenSupport.SP, s);
+
+    // TODO(ivo) fix this as init can have formals, see manual.
+    // this is 3 words for fp, ra, s0 right now + formals
+    // CgenSupport.emitPop(3 + m.formals.getLength(), s);
+    CgenSupport.emitPop(3, s);
+    CgenSupport.emitReturn(s);
+  }
+
+  private boolean hasParent(CgenNode cls) {
+    return cls.getParentNd() != null && !cls.getParentNd().getName().equals(TreeConstants.No_class);
+  }
+
   private void codeMethods() {
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       CgenNode cls = (CgenNode) e.nextElement();
@@ -568,39 +626,43 @@ class CgenClassTable extends SymbolTable {
       for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
         if (feature instanceof method m) {
-          CgenSupport.emitMethodRef(cls.getName(), m.name, s);
-          s.print(CgenSupport.LABEL);
-
-          // addiu	$sp $sp -12
-          // sw	$fp 12($sp)
-          // sw	$s0 8($sp)
-          // sw	$ra 4($sp)
-          // store the callee saved registers on the stack
-          CgenSupport.emitPush(CgenSupport.FP, s);
-          CgenSupport.emitPush(CgenSupport.SELF, s);
-          CgenSupport.emitPush(CgenSupport.RA, s);
-          // set FP of the current activation to RA
-          CgenSupport.emitAddiu(CgenSupport.FP, CgenSupport.SP, 4, s);
-
-          // TODO(ivo) the reference generator does that but I don't get why. I also see this line
-          // in the trap handler code. I know s0 is callee saved, so due to this line we must
-          // store/restore s0 using the stack but why set s0 in the first place? The
-          // runtime docs don't mention this. The docs say a0 should contain self and is
-          // also used for the result of an eval.
-          // move	$s0 $a0			# set $s0 to point to self
-          CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
-          m.expr.code(s);
-
-          CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);
-          CgenSupport.emitLoad(CgenSupport.SELF, 2, CgenSupport.SP, s);
-          CgenSupport.emitLoad(CgenSupport.RA, 1, CgenSupport.SP, s);
-
-          // this is 3 words for fp, ra, s0 right now + formals
-          CgenSupport.emitPop(3 + m.formals.getLength(), s);
-          CgenSupport.emitReturn(s);
+          codeMethod(cls, m);
         }
       }
     }
+  }
+
+  private void codeMethod(CgenNode cls, method m) {
+    CgenSupport.emitMethodRef(cls.getName(), m.name, s);
+    s.print(CgenSupport.LABEL);
+
+    // addiu	$sp $sp -12
+    // sw	$fp 12($sp)
+    // sw	$s0 8($sp)
+    // sw	$ra 4($sp)
+    // store the callee saved registers on the stack
+    CgenSupport.emitPush(CgenSupport.FP, s);
+    CgenSupport.emitPush(CgenSupport.SELF, s);
+    CgenSupport.emitPush(CgenSupport.RA, s);
+    // set FP of the current activation to RA
+    CgenSupport.emitAddiu(CgenSupport.FP, CgenSupport.SP, 4, s);
+
+    // TODO(ivo) the reference generator does that but I don't get why. I also see this line
+    // in the trap handler code. I know s0 is callee saved, so due to this line we must
+    // store/restore s0 using the stack but why set s0 in the first place? The
+    // runtime docs don't mention this. The docs say a0 should contain self and is
+    // also used for the result of an eval.
+    // move	$s0 $a0			# set $s0 to point to self
+    CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
+    m.expr.code(s);
+
+    CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);
+    CgenSupport.emitLoad(CgenSupport.SELF, 2, CgenSupport.SP, s);
+    CgenSupport.emitLoad(CgenSupport.RA, 1, CgenSupport.SP, s);
+
+    // this is 3 words for fp, ra, s0 right now + formals
+    CgenSupport.emitPop(3 + m.formals.getLength(), s);
+    CgenSupport.emitReturn(s);
   }
 
   /** Gets the root of the inheritance tree */
