@@ -41,9 +41,6 @@ class CgenClassTable extends SymbolTable {
   // Object size per class name to calculate attribute offsets in the object layout.
   private final Map<String, Integer> objectSizes;
 
-  // The next label suffix to be used when generating a label used for branching.
-  private int nextLabel = 0;
-
   /** This is the stream to which assembly instructions are output */
   private final PrintStream s;
 

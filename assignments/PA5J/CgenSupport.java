@@ -57,6 +57,11 @@ class CgenSupport {
   static final String STRCONST_PREFIX = "str_const";
   static final String BOOLCONST_PREFIX = "bool_const";
 
+  // This is a hack as I assume the filename is always entered first in the string symbol table. I
+  // would not do this in production :joy: but I am not interested in wiring this through more
+  // elegantly.
+  static final String FILENAME_LABEL = "str_const0";
+
   static final int EMPTYSLOT = 0;
   static final String LABEL = ":\n";
 
@@ -113,6 +118,19 @@ class CgenSupport {
   static final String BLEQ = "\tble\t";
   static final String BLT = "\tblt\t";
   static final String BGT = "\tbgt\t";
+
+  // Keeping this state here feels a bit hacky but it works. The code generator is not used
+  // concurrently. This will only generate labels that are unique within one file.
+  //
+  // The next label suffix to be used when generating a label used for branching.
+  private static int nextLocalLabel = 0;
+
+  /** Generate a label suffix to be used with {@link #emitLabelDef(int, PrintStream)}. */
+  static int generateLocalLabel() {
+    int label = nextLocalLabel;
+    nextLocalLabel++;
+    return label;
+  }
 
   /**
    * Emits an LW instruction.

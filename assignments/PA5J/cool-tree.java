@@ -832,19 +832,18 @@ class dispatch extends Expression {
    */
   @Override
   public void code(PrintStream s) {
-    // TODO(ivo) generate a label that is unique
-    int label = 1;
+    int label = CgenSupport.generateLocalLabel();
+    // handle dispatch on void
     CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, label, s);
-    CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.FP, s);
-    // TODO(ivo) load filename; can I assume its always at str_const0?
-    // or is thiS the classname?
-    // 	la	$a0 str_const0
+    CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.FILENAME_LABEL, s);
     CgenSupport.emitLoadImm(CgenSupport.T1, this.getLineNumber(), s);
     CgenSupport.emitJal(CgenSupport.DISPATCH_ABORT, s);
-    // label0:
-    // 	lw	$t1 8($a0)
+    // handle non-void dispatch
+    CgenSupport.emitLabelDef(label, s);
+    CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
+    // TODO(ivo) I need the offset to the correct method
     // 	lw	$t1 12($t1)
-    // 	jalr		$t1
+    CgenSupport.emitJalr(CgenSupport.T1, s);
   }
 }
 
