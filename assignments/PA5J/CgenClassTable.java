@@ -33,14 +33,16 @@ import java.util.Vector;
  * fill in some of its methods and potentially extend it in other useful ways.
  */
 class CgenClassTable extends SymbolTable {
-
   /** All classes in the program, represented as CgenNode */
-  private Vector nds;
+  private final Vector<CgenNode> nds;
 
+  // Class tags per class name stored in the prototype objects and used to refer to classes.
   private final Map<String, Integer> classTags;
+  // Object size per class name to calculate attribute offsets in the object layout.
+  private final Map<String, Integer> objectSizes;
 
   /** This is the stream to which assembly instructions are output */
-  private PrintStream s;
+  private final PrintStream s;
 
   private final int objectclasstag = 0;
   private final int ioclasstag = 1;
@@ -372,9 +374,10 @@ class CgenClassTable extends SymbolTable {
 
   /** Constructs a new class table and invokes the code generator */
   public CgenClassTable(Classes cls, PrintStream str) {
-    this.nds = new Vector();
+    this.nds = new Vector<CgenNode>();
     int basicClassNumber = 5;
     this.classTags = new HashMap<>(basicClassNumber + cls.getLength());
+    this.objectSizes = new HashMap<>(basicClassNumber + cls.getLength());
 
     this.s = str;
 
@@ -390,9 +393,7 @@ class CgenClassTable extends SymbolTable {
     exitScope();
   }
 
-  /**
-   * This method is the meat of the code generator. It is to be filled in programming assignment 5
-   */
+  /** Main code generation method. */
   public void code() {
     if (Flags.cgen_debug) System.out.println("coding global data");
     codeGlobalData();
@@ -480,37 +481,38 @@ class CgenClassTable extends SymbolTable {
       s.println();
 
       CgenNode cls = (CgenNode) e.nextElement();
-      CgenSupport.emitProtObjRef(cls.getName(), s);
+      AbstractSymbol className = cls.getName();
+      CgenSupport.emitProtObjRef(className, s);
       s.print(CgenSupport.LABEL);
 
       s.print(CgenSupport.WORD);
-      s.print(classTags.get(cls.getName().getString()));
+      s.print(classTags.get(className.getString()));
       s.println();
 
       s.print(CgenSupport.WORD);
       // the minimum object size is a word for class tag, size and dispatch table pointer
       // printing of attribute layout needs to be delayed as the size is printed first but
       // depends on the attributes in the hierarchy
-      int objSize = CgenSupport.DEFAULT_OBJFIELDS;
+      int objectSize = CgenSupport.DEFAULT_OBJFIELDS;
       StringBuilder proto = new StringBuilder();
       proto.append('\n');
 
       proto.append(CgenSupport.WORD);
-      CgenSupport.emitDispTableRef(cls.getName(), proto);
+      CgenSupport.emitDispTableRef(className, proto);
       proto.append('\n');
 
-      if (TreeConstants.Bool.equals(cls.getName())) {
-        objSize++;
+      if (TreeConstants.Bool.equals(className)) {
+        objectSize++;
         proto.append(CgenSupport.WORD);
         proto.append(0); // default value of false
         proto.append('\n');
-      } else if (TreeConstants.Int.equals(cls.getName())) {
-        objSize++;
+      } else if (TreeConstants.Int.equals(className)) {
+        objectSize++;
         proto.append(CgenSupport.WORD);
         proto.append(0);
         proto.append('\n');
-      } else if (TreeConstants.Str.equals(cls.getName())) {
-        objSize += 2;
+      } else if (TreeConstants.Str.equals(className)) {
+        objectSize += 2;
         proto.append(CgenSupport.WORD);
         // pointer to string length (of zero)
         ((IntSymbol) AbstractTable.inttable.lookup(0)).codeRef(proto);
@@ -530,7 +532,7 @@ class CgenClassTable extends SymbolTable {
           for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
             Feature feature = ((Feature) f.nextElement());
             if (feature instanceof attr a) {
-              objSize++;
+              objectSize++;
 
               proto.append(CgenSupport.WORD);
               if (TreeConstants.Bool.equals(a.type_decl)) {
@@ -548,7 +550,8 @@ class CgenClassTable extends SymbolTable {
         }
       }
 
-      s.print(objSize);
+      s.print(objectSize);
+      objectSizes.put(className.toString(), objectSize);
       s.print(proto.toString());
     }
   }
@@ -588,19 +591,23 @@ class CgenClassTable extends SymbolTable {
       CgenSupport.emitJal(CgenSupport.initMethodRef(parent.getName()), s);
     }
 
-    // TODO(ivo) the attributeNumber has to incorporate the parent attributes
+    // the class attributes either start after the object header or after the parents object
+    // size. See object layout in the Cool runtime doc Figure 2: Example object layout for Child.
+    int attrNumber = CgenSupport.DEFAULT_OBJFIELDS;
+    if (hasParent(cls)) {
+      AbstractSymbol name = cls.getParentNd().getName();
+      attrNumber = objectSizes.get(name.toString());
+    }
 
     // emit code to evaluate attribute initializers, attributes without one get their defaults
     // via the proto objects
-    int attrNumber = 0;
     for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
-        if (a.init != null) {
+        if (a.init != null && !(a.init instanceof no_expr)) {
           a.init.code(s);
           // store initialization value into corresponding attribute
-          CgenSupport.emitStore(
-              CgenSupport.ACC, CgenSupport.DEFAULT_OBJFIELDS + attrNumber, CgenSupport.SELF, s);
+          CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }
         attrNumber++;
       }
