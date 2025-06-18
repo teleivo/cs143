@@ -40,7 +40,7 @@ class CgenClassTable extends SymbolTable {
   private final Map<String, Integer> classTags;
 
   /** This is the stream to which assembly instructions are output */
-  private PrintStream str;
+  private PrintStream s;
 
   private final int objectclasstag = 0;
   private final int ioclasstag = 1;
@@ -54,76 +54,76 @@ class CgenClassTable extends SymbolTable {
   /** Emits code to start the .data segment and to declare the global names. */
   private void codeGlobalData() {
     // The following global names must be defined first.
-    str.print("\t.data\n" + CgenSupport.ALIGN);
-    str.println(CgenSupport.GLOBAL + CgenSupport.CLASSNAMETAB);
-    str.print(CgenSupport.GLOBAL);
-    CgenSupport.emitProtObjRef(TreeConstants.Main, str);
-    str.println("");
-    str.print(CgenSupport.GLOBAL);
-    CgenSupport.emitProtObjRef(TreeConstants.Int, str);
-    str.println("");
-    str.print(CgenSupport.GLOBAL);
-    CgenSupport.emitProtObjRef(TreeConstants.Str, str);
-    str.println("");
-    str.print(CgenSupport.GLOBAL);
-    BoolConst.falsebool.codeRef(str);
-    str.println("");
-    str.print(CgenSupport.GLOBAL);
-    BoolConst.truebool.codeRef(str);
-    str.println("");
-    str.println(CgenSupport.GLOBAL + CgenSupport.INTTAG);
-    str.println(CgenSupport.GLOBAL + CgenSupport.BOOLTAG);
-    str.println(CgenSupport.GLOBAL + CgenSupport.STRINGTAG);
+    s.print("\t.data\n" + CgenSupport.ALIGN);
+    s.println(CgenSupport.GLOBAL + CgenSupport.CLASSNAMETAB);
+    s.print(CgenSupport.GLOBAL);
+    CgenSupport.emitProtObjRef(TreeConstants.Main, s);
+    s.println("");
+    s.print(CgenSupport.GLOBAL);
+    CgenSupport.emitProtObjRef(TreeConstants.Int, s);
+    s.println("");
+    s.print(CgenSupport.GLOBAL);
+    CgenSupport.emitProtObjRef(TreeConstants.Str, s);
+    s.println("");
+    s.print(CgenSupport.GLOBAL);
+    BoolConst.falsebool.codeRef(s);
+    s.println("");
+    s.print(CgenSupport.GLOBAL);
+    BoolConst.truebool.codeRef(s);
+    s.println("");
+    s.println(CgenSupport.GLOBAL + CgenSupport.INTTAG);
+    s.println(CgenSupport.GLOBAL + CgenSupport.BOOLTAG);
+    s.println(CgenSupport.GLOBAL + CgenSupport.STRINGTAG);
 
     // We also need to know the tag of the Int, String, and Bool classes
     // during code generation.
-    str.println(CgenSupport.INTTAG + CgenSupport.LABEL + CgenSupport.WORD + intclasstag);
-    str.println(CgenSupport.BOOLTAG + CgenSupport.LABEL + CgenSupport.WORD + boolclasstag);
-    str.println(CgenSupport.STRINGTAG + CgenSupport.LABEL + CgenSupport.WORD + stringclasstag);
+    s.println(CgenSupport.INTTAG + CgenSupport.LABEL + CgenSupport.WORD + intclasstag);
+    s.println(CgenSupport.BOOLTAG + CgenSupport.LABEL + CgenSupport.WORD + boolclasstag);
+    s.println(CgenSupport.STRINGTAG + CgenSupport.LABEL + CgenSupport.WORD + stringclasstag);
   }
 
   /** Emits code to start the .text segment and to declare the global names. */
   private void codeGlobalText() {
-    str.println(CgenSupport.GLOBAL + CgenSupport.HEAP_START);
-    str.print(CgenSupport.HEAP_START + CgenSupport.LABEL);
-    str.println(CgenSupport.WORD + 0);
-    str.println("\t.text");
-    str.print(CgenSupport.GLOBAL);
-    CgenSupport.emitInitRef(TreeConstants.Main, str);
-    str.println("");
-    str.print(CgenSupport.GLOBAL);
-    CgenSupport.emitInitRef(TreeConstants.Int, str);
-    str.println("");
-    str.print(CgenSupport.GLOBAL);
-    CgenSupport.emitInitRef(TreeConstants.Str, str);
-    str.println("");
-    str.print(CgenSupport.GLOBAL);
-    CgenSupport.emitInitRef(TreeConstants.Bool, str);
-    str.println("");
-    str.print(CgenSupport.GLOBAL);
-    CgenSupport.emitMethodRef(TreeConstants.Main, TreeConstants.main_meth, str);
-    str.println("");
+    s.println(CgenSupport.GLOBAL + CgenSupport.HEAP_START);
+    s.print(CgenSupport.HEAP_START + CgenSupport.LABEL);
+    s.println(CgenSupport.WORD + 0);
+    s.println("\t.text");
+    s.print(CgenSupport.GLOBAL);
+    CgenSupport.emitInitRef(TreeConstants.Main, s);
+    s.println("");
+    s.print(CgenSupport.GLOBAL);
+    CgenSupport.emitInitRef(TreeConstants.Int, s);
+    s.println("");
+    s.print(CgenSupport.GLOBAL);
+    CgenSupport.emitInitRef(TreeConstants.Str, s);
+    s.println("");
+    s.print(CgenSupport.GLOBAL);
+    CgenSupport.emitInitRef(TreeConstants.Bool, s);
+    s.println("");
+    s.print(CgenSupport.GLOBAL);
+    CgenSupport.emitMethodRef(TreeConstants.Main, TreeConstants.main_meth, s);
+    s.println("");
   }
 
   /** Emits code definitions for boolean constants. */
   private void codeBools(int classtag) {
-    BoolConst.falsebool.codeDef(classtag, str);
-    BoolConst.truebool.codeDef(classtag, str);
+    BoolConst.falsebool.codeDef(classtag, s);
+    BoolConst.truebool.codeDef(classtag, s);
   }
 
   /** Generates GC choice constants (pointers to GC functions) */
   private void codeSelectGc() {
-    str.println(CgenSupport.GLOBAL + "_MemMgr_INITIALIZER");
-    str.println("_MemMgr_INITIALIZER:");
-    str.println(CgenSupport.WORD + CgenSupport.gcInitNames[Flags.cgen_Memmgr]);
+    s.println(CgenSupport.GLOBAL + "_MemMgr_INITIALIZER");
+    s.println("_MemMgr_INITIALIZER:");
+    s.println(CgenSupport.WORD + CgenSupport.gcInitNames[Flags.cgen_Memmgr]);
 
-    str.println(CgenSupport.GLOBAL + "_MemMgr_COLLECTOR");
-    str.println("_MemMgr_COLLECTOR:");
-    str.println(CgenSupport.WORD + CgenSupport.gcCollectNames[Flags.cgen_Memmgr]);
+    s.println(CgenSupport.GLOBAL + "_MemMgr_COLLECTOR");
+    s.println("_MemMgr_COLLECTOR:");
+    s.println(CgenSupport.WORD + CgenSupport.gcCollectNames[Flags.cgen_Memmgr]);
 
-    str.println(CgenSupport.GLOBAL + "_MemMgr_TEST");
-    str.println("_MemMgr_TEST:");
-    str.println(CgenSupport.WORD + ((Flags.cgen_Memmgr_Test == Flags.GC_TEST) ? "1" : "0"));
+    s.println(CgenSupport.GLOBAL + "_MemMgr_TEST");
+    s.println("_MemMgr_TEST:");
+    s.println(CgenSupport.WORD + ((Flags.cgen_Memmgr_Test == Flags.GC_TEST) ? "1" : "0"));
   }
 
   /**
@@ -138,8 +138,8 @@ class CgenClassTable extends SymbolTable {
     AbstractTable.stringtable.addString("");
     AbstractTable.inttable.addString("0");
 
-    AbstractTable.stringtable.codeStringTable(stringclasstag, str);
-    AbstractTable.inttable.codeStringTable(intclasstag, str);
+    AbstractTable.stringtable.codeStringTable(stringclasstag, s);
+    AbstractTable.inttable.codeStringTable(intclasstag, s);
     codeBools(boolclasstag);
   }
 
@@ -376,7 +376,7 @@ class CgenClassTable extends SymbolTable {
     int basicClassNumber = 5;
     this.classTags = new HashMap<>(basicClassNumber + cls.getLength());
 
-    this.str = str;
+    this.s = str;
 
     enterScope();
     if (Flags.cgen_debug) System.out.println("Building CgenClassTable");
@@ -421,27 +421,27 @@ class CgenClassTable extends SymbolTable {
   }
 
   private void codeClassNameTable() {
-    str.print(CgenSupport.CLASSNAMETAB + CgenSupport.LABEL);
+    s.print(CgenSupport.CLASSNAMETAB + CgenSupport.LABEL);
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       StringSymbol className =
           (StringSymbol)
               AbstractTable.stringtable.lookup(((CgenNode) e.nextElement()).getName().getString());
-      str.print(CgenSupport.WORD);
-      className.codeRef(str);
-      str.println();
+      s.print(CgenSupport.WORD);
+      className.codeRef(s);
+      s.println();
     }
   }
 
   private void codeClassObjectTable() {
-    str.print(CgenSupport.CLASSOBJTAB + CgenSupport.LABEL);
+    s.print(CgenSupport.CLASSOBJTAB + CgenSupport.LABEL);
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       AbstractSymbol className = ((CgenNode) e.nextElement()).getName();
-      str.print(CgenSupport.WORD);
-      CgenSupport.emitProtObjRef(className, str);
-      str.println();
-      str.print(CgenSupport.WORD);
-      CgenSupport.emitInitRef(className, str);
-      str.println();
+      s.print(CgenSupport.WORD);
+      CgenSupport.emitProtObjRef(className, s);
+      s.println();
+      s.print(CgenSupport.WORD);
+      CgenSupport.emitInitRef(className, s);
+      s.println();
     }
   }
 
@@ -450,8 +450,8 @@ class CgenClassTable extends SymbolTable {
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       CgenNode cls = (CgenNode) e.nextElement();
 
-      CgenSupport.emitDispTableRef(cls.getName(), str);
-      str.print(CgenSupport.LABEL);
+      CgenSupport.emitDispTableRef(cls.getName(), s);
+      s.print(CgenSupport.LABEL);
 
       hierarchy.push(cls);
       while (cls.getParentNd() != null
@@ -465,9 +465,9 @@ class CgenClassTable extends SymbolTable {
         for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
           Feature feature = ((Feature) f.nextElement());
           if (feature instanceof method m) {
-            str.print(CgenSupport.WORD);
-            CgenSupport.emitMethodRef(cur.getName(), m.name, str);
-            str.println();
+            s.print(CgenSupport.WORD);
+            CgenSupport.emitMethodRef(cur.getName(), m.name, s);
+            s.println();
           }
         }
       }
@@ -478,19 +478,19 @@ class CgenClassTable extends SymbolTable {
     Stack<class_c> hierarchy = new Stack<>();
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       // put -1 before any prototype for GC
-      str.print(CgenSupport.WORD);
-      str.print(-1);
-      str.println();
+      s.print(CgenSupport.WORD);
+      s.print(-1);
+      s.println();
 
       CgenNode cls = (CgenNode) e.nextElement();
-      CgenSupport.emitProtObjRef(cls.getName(), str);
-      str.print(CgenSupport.LABEL);
+      CgenSupport.emitProtObjRef(cls.getName(), s);
+      s.print(CgenSupport.LABEL);
 
-      str.print(CgenSupport.WORD);
-      str.print(classTags.get(cls.getName().getString()));
-      str.println();
+      s.print(CgenSupport.WORD);
+      s.print(classTags.get(cls.getName().getString()));
+      s.println();
 
-      str.print(CgenSupport.WORD);
+      s.print(CgenSupport.WORD);
       // the minimum object size is a word for class tag, size and dispatch table pointer
       // printing of attribute layout needs to be delayed as the size is printed first but
       // depends on the attributes in the hierarchy
@@ -552,8 +552,8 @@ class CgenClassTable extends SymbolTable {
         }
       }
 
-      str.print(objSize);
-      str.print(proto.toString());
+      s.print(objSize);
+      s.print(proto.toString());
     }
   }
 
@@ -568,14 +568,36 @@ class CgenClassTable extends SymbolTable {
       for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
         if (feature instanceof method m) {
-          CgenSupport.emitMethodRef(cls.getName(), m.name, str);
-          str.print(CgenSupport.LABEL);
+          CgenSupport.emitMethodRef(cls.getName(), m.name, s);
+          s.print(CgenSupport.LABEL);
 
-          m.expr.code(str);
+          // addiu	$sp $sp -12
+          // sw	$fp 12($sp)
+          // sw	$s0 8($sp)
+          // sw	$ra 4($sp)
+          // store the callee saved registers on the stack
+          CgenSupport.emitPush(CgenSupport.FP, s);
+          CgenSupport.emitPush(CgenSupport.SELF, s);
+          CgenSupport.emitPush(CgenSupport.RA, s);
+          // set FP of the current activation to RA
+          CgenSupport.emitAddiu(CgenSupport.FP, CgenSupport.SP, 4, s);
 
-          // TODO(ivo) is it always 3 for fp, ra, s0?
-          CgenSupport.emitPop(3 + m.formals.getLength(), str);
-          CgenSupport.emitReturn(str);
+          // TODO(ivo) the reference generator does that but I don't get why. I also see this line
+          // in the trap handler code. I know s0 is callee saved, so due to this line we must
+          // store/restore s0 using the stack but why set s0 in the first place? The
+          // runtime docs don't mention this. The docs say a0 should contain self and is
+          // also used for the result of an eval.
+          // move	$s0 $a0			# set $s0 to point to self
+          CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
+          m.expr.code(s);
+
+          CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);
+          CgenSupport.emitLoad(CgenSupport.SELF, 2, CgenSupport.SP, s);
+          CgenSupport.emitLoad(CgenSupport.RA, 1, CgenSupport.SP, s);
+
+          // this is 3 words for fp, ra, s0 right now + formals
+          CgenSupport.emitPop(3 + m.formals.getLength(), s);
+          CgenSupport.emitReturn(s);
         }
       }
     }
