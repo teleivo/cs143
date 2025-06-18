@@ -41,6 +41,9 @@ class CgenClassTable extends SymbolTable {
   // Object size per class name to calculate attribute offsets in the object layout.
   private final Map<String, Integer> objectSizes;
 
+  // The next label suffix to be used when generating a label used for branching.
+  private int nextLabel = 0;
+
   /** This is the stream to which assembly instructions are output */
   private final PrintStream s;
 
@@ -414,9 +417,6 @@ class CgenClassTable extends SymbolTable {
 
     codeInitMethods();
     codeMethods();
-    // TODO(ivo) walk the AST
-    // the int_const expresSion which has an impl
-    // - etc...
   }
 
   private void codeClassNameTable() {
@@ -651,10 +651,6 @@ class CgenClassTable extends SymbolTable {
     CgenSupport.emitMethodRef(cls.getName(), m.name, s);
     s.print(CgenSupport.LABEL);
 
-    // addiu	$sp $sp -12
-    // sw	$fp 12($sp)
-    // sw	$s0 8($sp)
-    // sw	$ra 4($sp)
     // store the callee saved registers on the stack
     CgenSupport.emitPush(CgenSupport.FP, s);
     CgenSupport.emitPush(CgenSupport.SELF, s);
@@ -669,6 +665,7 @@ class CgenClassTable extends SymbolTable {
     // also used for the result of an eval.
     // move	$s0 $a0			# set $s0 to point to self
     CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
+
     m.expr.code(s);
 
     // restore callee saved registers from the stack

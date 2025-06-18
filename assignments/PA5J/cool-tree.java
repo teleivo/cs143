@@ -826,13 +826,26 @@ class dispatch extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(PrintStream s) {
+    // TODO(ivo) generate a label that is unique
+    int label = 1;
+    CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, label, s);
+    CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.FP, s);
+    // TODO(ivo) load filename; can I assume its always at str_const0?
+    // or is thiS the classname?
+    // 	la	$a0 str_const0
+    CgenSupport.emitLoadImm(CgenSupport.T1, this.getLineNumber(), s);
+    CgenSupport.emitJal(CgenSupport.DISPATCH_ABORT, s);
+    // label0:
+    // 	lw	$t1 8($a0)
+    // 	lw	$t1 12($t1)
+    // 	jalr		$t1
+  }
 }
 
 /**
@@ -1444,8 +1457,7 @@ class lt extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */

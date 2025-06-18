@@ -34,16 +34,13 @@ To try yourself
 
 ## TODO
 
-* start with generating the fixed labels things shown in Figure 3 of runtime
-  * .text section
-    * with init methods
-  * get `small.cl` to compile with my code and run successfully
-* get a function call to compile and run
-* get a recursive call to work that takes input like fact or fibonacci
-* get branches to work
-* look at error handling like in a case statement
-* handle void
-* get a loop to work
+* get fibonacci to work
+  * implement missing expression like < and if
+  * print result in Main?
+  * if that works get n from stdin?
+  * or print sequence of fibonacci using the Cons from the manual?
+* what kinds of tests can I setup to make sure each expression I add is actually working?
+
 
 ## Limitations and improvements
 
