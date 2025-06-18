@@ -5,7 +5,7 @@ class A {
 	a(par:Int) : Int { par };
 };
 class B inherits A {
-	b() : Int { 1 };
+	b() : Int { 23 + 24 };
 	bAttr1: String <- "wow";
 	bAttr2: A;
 };

@@ -1167,13 +1167,29 @@ class plus extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(PrintStream s) {
+    e1.code(s);
+    CgenSupport.emitPush(CgenSupport.ACC, s);
+    e2.code(s);
+    // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
+    // or so?
+    // copy e2 int object which will then be returned in a0
+    CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
+    // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
+    CgenSupport.emitLoad(CgenSupport.T1, 1, CgenSupport.SP, s);
+    CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+    // get the value of the freshly copied e2 into t3
+    CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitAdd(CgenSupport.T2, CgenSupport.T2, CgenSupport.T3, s);
+    // update the result objects int attribute with the sum
+    CgenSupport.emitStore(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitPop(1, s);
+  }
 }
 
 /**

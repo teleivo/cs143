@@ -394,7 +394,11 @@ class CgenSupport {
    * @param s the output stream
    */
   static void emitMethodRef(AbstractSymbol classname, AbstractSymbol methodname, PrintStream s) {
-    s.print(classname + METHOD_SEP + methodname);
+    s.print(methodRef(classname, methodname));
+  }
+
+  static String methodRef(AbstractSymbol classname, AbstractSymbol methodname) {
+    return classname + METHOD_SEP + methodname;
   }
 
   static void emitMethodRef(AbstractSymbol classname, AbstractSymbol methodname, StringBuilder s) {
