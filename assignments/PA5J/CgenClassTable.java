@@ -559,11 +559,18 @@ class CgenClassTable extends SymbolTable {
     }
   }
 
-  // TODO(ivo) what if init is declared, has formals and a body?
+  /**
+   * codeInitMethod emits the class init methods which are called by the runtime when a new instance
+   * is created. The generated code has similar setup/cleanup to a method definition. This init has
+   * no formals. This init has nothing to do with the Cons.init() method shown in the Cool Manual
+   * 3.1. That was very confusing :joy:.
+   *
+   * <p>The parent class init method is called before the classes attribute initializers are
+   * evaluated to set their attributes.
+   */
   private void codeInitMethod(CgenNode cls) {
     CgenSupport.emitInitMethodDef(cls, s);
 
-    // similar steps to codeMethod
     // store the callee saved registers on the stack
     CgenSupport.emitPush(CgenSupport.FP, s);
     CgenSupport.emitPush(CgenSupport.SELF, s);
@@ -580,6 +587,8 @@ class CgenClassTable extends SymbolTable {
       CgenNode parent = cls.getParentNd();
       CgenSupport.emitJal(CgenSupport.initMethodRef(parent.getName()), s);
     }
+
+    // TODO(ivo) the attributeNumber has to incorporate the parent attributes
 
     // emit code to evaluate attribute initializers, attributes without one get their defaults
     // via the proto objects
@@ -600,13 +609,12 @@ class CgenClassTable extends SymbolTable {
     // restore self
     CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
 
+    // restore callee saved registers from the stack
     CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);
     CgenSupport.emitLoad(CgenSupport.SELF, 2, CgenSupport.SP, s);
     CgenSupport.emitLoad(CgenSupport.RA, 1, CgenSupport.SP, s);
-
-    // TODO(ivo) fix this as init can have formals, see manual.
-    // this is 3 words for fp, ra, s0 right now + formals
-    // CgenSupport.emitPop(3 + m.formals.getLength(), s);
+    // restore stack to hold invariant of stack being unchanged by method calls
+    // this is 3 words for fp, ra
     CgenSupport.emitPop(3, s);
     CgenSupport.emitReturn(s);
   }
@@ -656,10 +664,11 @@ class CgenClassTable extends SymbolTable {
     CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
     m.expr.code(s);
 
+    // restore callee saved registers from the stack
     CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);
     CgenSupport.emitLoad(CgenSupport.SELF, 2, CgenSupport.SP, s);
     CgenSupport.emitLoad(CgenSupport.RA, 1, CgenSupport.SP, s);
-
+    // restore stack to hold invariant of stack being unchanged by method calls
     // this is 3 words for fp, ra, s0 right now + formals
     CgenSupport.emitPop(3 + m.formals.getLength(), s);
     CgenSupport.emitReturn(s);
