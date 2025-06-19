@@ -57,11 +57,6 @@ class CgenSupport {
   static final String STRCONST_PREFIX = "str_const";
   static final String BOOLCONST_PREFIX = "bool_const";
 
-  // This is a hack as I assume the filename is always entered first in the string symbol table. I
-  // would not do this in production :joy: but I am not interested in wiring this through more
-  // elegantly.
-  static final String FILENAME_LABEL = "str_const0";
-
   static final int EMPTYSLOT = 0;
   static final String LABEL = ":\n";
 

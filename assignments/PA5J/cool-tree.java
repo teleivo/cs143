@@ -837,8 +837,7 @@ class dispatch extends Expression {
     int label = CgenSupport.generateLocalLabel();
     // handle dispatch on void
     CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, label, s);
-    // TODO(ivo) replace filename hack with cls.getFilename
-    CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.FILENAME_LABEL, s);
+    CgenSupport.emitLoadAddress(CgenSupport.ACC, cls.getFilename().toString(), s);
     CgenSupport.emitLoadImm(CgenSupport.T1, this.getLineNumber(), s);
     CgenSupport.emitJal(CgenSupport.DISPATCH_ABORT, s);
     // handle non-void dispatch
