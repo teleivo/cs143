@@ -46,6 +46,10 @@ class CgenClassTable extends SymbolTable {
   // fastest way but that is not the goal here.
   private final Map<String, List<String>> dispatchTable;
 
+  // Represents the environment mapping identifiers to store locations as described in the
+  // operational semantics of the Cool manual.
+  // private final SymbolTable environment;
+
   /** This is the stream to which assembly instructions are output */
   private final PrintStream s;
 
@@ -617,13 +621,22 @@ class CgenClassTable extends SymbolTable {
       attrNumber = objectSizes.get(name.toString());
     }
 
+    // TODO(ivo) all attributes are visible to the initializers via the environment. If they are
+    // accessed before their initializer is run they are visible using their defaults. Meaning
+    // first all are visible using defaults, then initializers are run in greates ancester order
+    // I think. Am I doing this correctly? Come up with a code example to show it works as
+    // expected. The environment here is just a dummy one as I have to pass one but am unsure if
+    // the one created for methods should be created first and reused here or how reuse would
+    // even look like.
+    SymbolTable environment = new SymbolTable();
+
     // emit code to evaluate attribute initializers, attributes without one get their defaults
     // via the proto objects
     for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
         if (a.init != null && !(a.init instanceof no_expr)) {
-          a.init.code(cls, dispatchTable, s);
+          a.init.code(cls, environment, dispatchTable, s);
           // store initialization value into corresponding attribute
           CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }
@@ -648,6 +661,8 @@ class CgenClassTable extends SymbolTable {
     return cls.getParentNd() != null && !cls.getParentNd().getName().equals(TreeConstants.No_class);
   }
 
+  record Location(int offset, String sourceRegister) {}
+
   private void codeMethods() {
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       CgenNode cls = (CgenNode) e.nextElement();
@@ -656,16 +671,39 @@ class CgenClassTable extends SymbolTable {
         continue;
       }
 
+      // TODO(ivo) cleanup mess once its working
+      // add all attributes and their locations to the environment
+      SymbolTable environment = new SymbolTable();
+      environment.enterScope();
+      // the class attributes either start after the object header or after the parents object
+      // size. See object layout in the Cool runtime doc Figure 2: Example object layout for Child.
+      int attrNumber = CgenSupport.DEFAULT_OBJFIELDS;
+      if (hasParent(cls)) {
+        AbstractSymbol name = cls.getParentNd().getName();
+        attrNumber = objectSizes.get(name.toString());
+      }
+      for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
+        Feature feature = ((Feature) f.nextElement());
+        if (feature instanceof attr attr) {
+          environment.addId(attr.name, new Location(attrNumber, CgenSupport.SELF));
+        }
+        attrNumber++;
+      }
+
       for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
         if (feature instanceof method m) {
-          codeMethod(cls, m);
+          environment.enterScope();
+          codeMethod(environment, cls, m);
+          environment.exitScope();
         }
       }
+
+      environment.exitScope();
     }
   }
 
-  private void codeMethod(CgenNode cls, method m) {
+  private void codeMethod(SymbolTable environment, CgenNode cls, method m) {
     CgenSupport.emitMethodRef(cls.getName(), m.name, s);
     s.print(CgenSupport.LABEL);
 
@@ -680,7 +718,16 @@ class CgenClassTable extends SymbolTable {
     // a0
     CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
 
-    m.expr.code(cls, dispatchTable, s);
+    // TODO(ivo) who is responsible for the missing bit?
+    // move	$s0 $a0
+    // >>> missing
+    // lw	$a0 12($fp)
+    // <<<
+    // sw	$a0 0($sp)
+    // addiu	$sp $sp -4
+    // move	$a0 $s0
+    // TODO(ivo) for all the formals
+    m.expr.code(cls, environment, dispatchTable, s);
 
     // restore callee saved registers from the stack
     CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);

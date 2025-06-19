@@ -192,7 +192,8 @@ abstract class Expression extends TreeNode {
     }
   }
 
-  public abstract void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s);
+  public abstract void code(
+      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s);
 }
 
 /**
@@ -695,7 +696,11 @@ class assign extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -768,7 +773,11 @@ class static_dispatch extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -833,9 +842,11 @@ class dispatch extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
+  public void code(
+      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
+    // TODO(ivo) put these args into the environment
     for (Enumeration e = actual.getElements(); e.hasMoreElements(); ) {
-      ((Expression) e.nextElement()).code(cls, dispatchTable, s);
+      ((Expression) e.nextElement()).code(cls, environment, dispatchTable, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
     }
     // restore self
@@ -919,7 +930,11 @@ class cond extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -972,7 +987,11 @@ class loop extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1021,13 +1040,16 @@ class typcase extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1071,13 +1093,20 @@ class block extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
+    for (Enumeration e = body.getElements(); e.hasMoreElements(); ) {
+      Expression exp = (Expression) e.nextElement();
+      // a block results in the last expression which is handled by this setting a0 and not
+      // restoring a0 to self
+      exp.code(cls, environment, dispatchTable, s);
+    }
+  }
 }
 
 /**
@@ -1145,7 +1174,11 @@ class let extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1197,11 +1230,12 @@ class plus extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
-    e1.code(cls, dispatchTable, s);
+  public void code(
+      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
+    e1.code(cls, environment, dispatchTable, s);
     // TODO(ivo) can I use s1 instead? so move s1 a0
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, dispatchTable, s);
+    e2.code(cls, environment, dispatchTable, s);
     // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
     // or so?
     // copy e2 int object which will then be returned in a0
@@ -1268,7 +1302,11 @@ class sub extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1321,7 +1359,11 @@ class mul extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1374,7 +1416,11 @@ class divide extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1422,7 +1468,11 @@ class neg extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1474,7 +1524,11 @@ class lt extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1527,7 +1581,11 @@ class eq extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1580,7 +1638,11 @@ class leq extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1628,7 +1690,11 @@ class comp extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1675,7 +1741,8 @@ class int_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
+  public void code(
+      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
     CgenSupport.emitLoadInt(
         CgenSupport.ACC, (IntSymbol) AbstractTable.inttable.lookup(token.getString()), s);
   }
@@ -1725,7 +1792,8 @@ class bool_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
+  public void code(
+      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
     CgenSupport.emitLoadBool(CgenSupport.ACC, new BoolConst(val), s);
   }
 }
@@ -1776,7 +1844,8 @@ class string_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
+  public void code(
+      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
     CgenSupport.emitLoadString(
         CgenSupport.ACC, (StringSymbol) AbstractTable.stringtable.lookup(token.getString()), s);
   }
@@ -1827,7 +1896,11 @@ class new_ extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1875,7 +1948,11 @@ class isvoid extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1917,7 +1994,11 @@ class no_expr extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls,
+      SymbolTable environment,
+      Map<String, List<String>> dispatchTable,
+      PrintStream s) {}
 }
 
 /**
@@ -1959,11 +2040,14 @@ class object extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
   @Override
-  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
+  public void code(
+      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
+    CgenClassTable.Location location = (CgenClassTable.Location) environment.lookup(name);
+    CgenSupport.emitLoad(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
+  }
 }
