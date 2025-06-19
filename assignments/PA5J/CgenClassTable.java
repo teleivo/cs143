@@ -46,10 +46,6 @@ class CgenClassTable extends SymbolTable {
   // fastest way but that is not the goal here.
   private final Map<String, List<String>> dispatchTable;
 
-  // Represents the environment mapping identifiers to store locations as described in the
-  // operational semantics of the Cool manual.
-  // private final SymbolTable environment;
-
   /** This is the stream to which assembly instructions are output */
   private final PrintStream s;
 
@@ -673,33 +669,44 @@ class CgenClassTable extends SymbolTable {
 
       // TODO(ivo) cleanup mess once its working
       // add all attributes and their locations to the environment
-      SymbolTable environment = new SymbolTable();
-      environment.enterScope();
-      // the class attributes either start after the object header or after the parents object
-      // size. See object layout in the Cool runtime doc Figure 2: Example object layout for Child.
-      int attrNumber = CgenSupport.DEFAULT_OBJFIELDS;
-      if (hasParent(cls)) {
-        AbstractSymbol name = cls.getParentNd().getName();
-        attrNumber = objectSizes.get(name.toString());
-      }
-      for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
-        Feature feature = ((Feature) f.nextElement());
-        if (feature instanceof attr attr) {
-          environment.addId(attr.name, new Location(attrNumber, CgenSupport.SELF));
-        }
-        attrNumber++;
-      }
+      SymbolTable env = new SymbolTable();
+      env.enterScope();
+      addAttributes(env, cls);
+      System.out.println(env);
 
       for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
         if (feature instanceof method m) {
-          environment.enterScope();
-          codeMethod(environment, cls, m);
-          environment.exitScope();
+          env.enterScope();
+          codeMethod(env, cls, m);
+          env.exitScope();
         }
       }
 
-      environment.exitScope();
+      env.exitScope();
+    }
+  }
+
+  private void addAttributes(SymbolTable env, CgenNode cls) {
+    Stack<class_c> hierarchy = new Stack<>();
+    hierarchy.push(cls);
+    while (hasParent(cls)) {
+      hierarchy.push(cls.getParentNd());
+      cls = cls.getParentNd();
+    }
+
+    // the class attributes either start after the object header or after the parents object
+    // size. See object layout in the Cool runtime doc Figure 2: Example object layout for Child.
+    int attrNumber = CgenSupport.DEFAULT_OBJFIELDS;
+    while (!hierarchy.empty()) {
+      class_c cur = hierarchy.pop();
+      for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
+        Feature feature = ((Feature) f.nextElement());
+        if (feature instanceof attr attr) {
+          env.addId(attr.name, new Location(attrNumber, CgenSupport.SELF));
+          attrNumber++;
+        }
+      }
     }
   }
 
