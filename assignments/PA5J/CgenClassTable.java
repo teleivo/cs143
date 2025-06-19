@@ -22,8 +22,10 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // This is a project skeleton file
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -40,6 +42,9 @@ class CgenClassTable extends SymbolTable {
   private final Map<String, Integer> classTags;
   // Object size per class name to calculate attribute offsets in the object layout.
   private final Map<String, Integer> objectSizes;
+  // Dispatch table per class name to get the method offsets. Using a list is obviously not the
+  // fastest way but that is not the goal here.
+  private final Map<String, List<String>> dispatchTable;
 
   /** This is the stream to which assembly instructions are output */
   private final PrintStream s;
@@ -378,6 +383,7 @@ class CgenClassTable extends SymbolTable {
     int basicClassNumber = 5;
     this.classTags = new HashMap<>(basicClassNumber + cls.getLength());
     this.objectSizes = new HashMap<>(basicClassNumber + cls.getLength());
+    this.dispatchTable = new HashMap<>(basicClassNumber + cls.getLength());
 
     this.s = str;
 
@@ -441,13 +447,23 @@ class CgenClassTable extends SymbolTable {
     }
   }
 
+  /*
+   * Emits the dispatch table as described in the Cool runtime manual. Method declarations in a
+   * child class take precedence over the parent. This fact is used by the reference code
+   * generator to only put the child methods into the dispatch table on override. I am not making
+   * this optimization here so dispatch tables and offsets into the dispatch tables will differ
+   * with the reference implementation. This is certainly doable though :)
+   */
   private void codeDispatchTable() {
     Stack<class_c> hierarchy = new Stack<>();
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       CgenNode cls = (CgenNode) e.nextElement();
 
-      CgenSupport.emitDispTableRef(cls.getName(), s);
+      AbstractSymbol name = cls.getName();
+      CgenSupport.emitDispTableRef(name, s);
       s.print(CgenSupport.LABEL);
+
+      dispatchTable.put(name.toString(), new ArrayList<String>());
 
       hierarchy.push(cls);
       while (hasParent(cls)) {
@@ -463,6 +479,11 @@ class CgenClassTable extends SymbolTable {
             s.print(CgenSupport.WORD);
             CgenSupport.emitMethodRef(cur.getName(), m.name, s);
             s.println();
+
+            // method names are added in the dispatch table order without class name
+            // prefix so they can be found by a dispatch which only has access to its
+            // name
+            dispatchTable.get(name.toString()).add(m.name.toString());
           }
         }
       }
@@ -602,7 +623,7 @@ class CgenClassTable extends SymbolTable {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
         if (a.init != null && !(a.init instanceof no_expr)) {
-          a.init.code(s);
+          a.init.code(cls, dispatchTable, s);
           // store initialization value into corresponding attribute
           CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }
@@ -663,7 +684,7 @@ class CgenClassTable extends SymbolTable {
     // move	$s0 $a0			# set $s0 to point to self
     CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
 
-    m.expr.code(s);
+    m.expr.code(cls, dispatchTable, s);
 
     // restore callee saved registers from the stack
     CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);

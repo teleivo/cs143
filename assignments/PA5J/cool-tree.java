@@ -8,6 +8,8 @@
 
 import java.io.PrintStream;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 /** Defines simple phylum Program */
@@ -190,7 +192,7 @@ abstract class Expression extends TreeNode {
     }
   }
 
-  public abstract void code(PrintStream s);
+  public abstract void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s);
 }
 
 /**
@@ -693,7 +695,7 @@ class assign extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -766,7 +768,7 @@ class static_dispatch extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -831,18 +833,23 @@ class dispatch extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
     int label = CgenSupport.generateLocalLabel();
     // handle dispatch on void
     CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, label, s);
+    // TODO(ivo) replace filename hack with cls.getFilename
     CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.FILENAME_LABEL, s);
     CgenSupport.emitLoadImm(CgenSupport.T1, this.getLineNumber(), s);
     CgenSupport.emitJal(CgenSupport.DISPATCH_ABORT, s);
     // handle non-void dispatch
     CgenSupport.emitLabelDef(label, s);
+    // load offset to the objects (self) dispatch table
     CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
-    // TODO(ivo) I need the offset to the correct method
-    // 	lw	$t1 12($t1)
+    // 	add the offset to the right method in the dispatch table
+    // methods in children take precedence over parent so search backwards in the dispatch table
+    // assuming the method exists as semantic analysis should catch that case
+    int offset = dispatchTable.get(cls.getName().getString()).lastIndexOf(name.getString());
+    CgenSupport.emitLoad(CgenSupport.T1, offset, CgenSupport.T1, s);
     CgenSupport.emitJalr(CgenSupport.T1, s);
   }
 }
@@ -906,7 +913,7 @@ class cond extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -959,7 +966,7 @@ class loop extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1014,7 +1021,7 @@ class typcase extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1064,7 +1071,7 @@ class block extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1132,7 +1139,7 @@ class let extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1184,11 +1191,11 @@ class plus extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {
-    e1.code(s);
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
+    e1.code(cls, dispatchTable, s);
     // TODO(ivo) can I use s1 instead? so move s1 a0
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(s);
+    e2.code(cls, dispatchTable, s);
     // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
     // or so?
     // copy e2 int object which will then be returned in a0
@@ -1255,7 +1262,7 @@ class sub extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1308,7 +1315,7 @@ class mul extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1361,7 +1368,7 @@ class divide extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1409,7 +1416,7 @@ class neg extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1461,7 +1468,7 @@ class lt extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1514,7 +1521,7 @@ class eq extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1567,7 +1574,7 @@ class leq extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1615,7 +1622,7 @@ class comp extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1662,7 +1669,7 @@ class int_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
     CgenSupport.emitLoadInt(
         CgenSupport.ACC, (IntSymbol) AbstractTable.inttable.lookup(token.getString()), s);
   }
@@ -1712,7 +1719,7 @@ class bool_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
     CgenSupport.emitLoadBool(CgenSupport.ACC, new BoolConst(val), s);
   }
 }
@@ -1763,7 +1770,7 @@ class string_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
     CgenSupport.emitLoadString(
         CgenSupport.ACC, (StringSymbol) AbstractTable.stringtable.lookup(token.getString()), s);
   }
@@ -1814,7 +1821,7 @@ class new_ extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1862,7 +1869,7 @@ class isvoid extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1904,7 +1911,7 @@ class no_expr extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
 
 /**
@@ -1952,5 +1959,5 @@ class object extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(PrintStream s) {}
+  public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {}
 }
