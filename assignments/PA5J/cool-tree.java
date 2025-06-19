@@ -834,10 +834,17 @@ class dispatch extends Expression {
    */
   @Override
   public void code(Class_ cls, Map<String, List<String>> dispatchTable, PrintStream s) {
+    for (Enumeration e = actual.getElements(); e.hasMoreElements(); ) {
+      ((Expression) e.nextElement()).code(cls, dispatchTable, s);
+      CgenSupport.emitPush(CgenSupport.ACC, s);
+    }
+    // restore self
+    CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
+
     int label = CgenSupport.generateLocalLabel();
     // handle dispatch on void
     CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, label, s);
-    CgenSupport.emitLoadAddress(CgenSupport.ACC, cls.getFilename().toString(), s);
+    CgenSupport.emitLoadString(CgenSupport.ACC, (StringSymbol) cls.getFilename(), s);
     CgenSupport.emitLoadImm(CgenSupport.T1, this.getLineNumber(), s);
     CgenSupport.emitJal(CgenSupport.DISPATCH_ABORT, s);
     // handle non-void dispatch

@@ -676,12 +676,8 @@ class CgenClassTable extends SymbolTable {
     // set FP of the current activation to RA
     CgenSupport.emitAddiu(CgenSupport.FP, CgenSupport.SP, 4, s);
 
-    // TODO(ivo) the reference generator does that but I don't get why. I also see this line
-    // in the trap handler code. I know s0 is callee saved, so due to this line we must
-    // store/restore s0 using the stack but why set s0 in the first place? The
-    // runtime docs don't mention this. The docs say a0 should contain self and is
-    // also used for the result of an eval.
-    // move	$s0 $a0			# set $s0 to point to self
+    // move self stored in a0 into s0 as the result of evaluating an expression will be put into
+    // a0
     CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
 
     m.expr.code(cls, dispatchTable, s);
@@ -691,7 +687,8 @@ class CgenClassTable extends SymbolTable {
     CgenSupport.emitLoad(CgenSupport.SELF, 2, CgenSupport.SP, s);
     CgenSupport.emitLoad(CgenSupport.RA, 1, CgenSupport.SP, s);
     // restore stack to hold invariant of stack being unchanged by method calls
-    // this is 3 words for fp, ra, s0 right now + formals
+    // this is 3 words for fp, ra, s0 pushed to by the callee + actual parameters pushed to by the
+    // caller
     CgenSupport.emitPop(3 + m.formals.getLength(), s);
     CgenSupport.emitReturn(s);
   }
