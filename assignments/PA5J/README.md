@@ -45,8 +45,11 @@ To try yourself
   * not
   * ~
   * isvoid
+    * do I need to do some void checks for example in the arith operators? some comparison to 0 and
+      then some kind of abort
   * loop
   * case
+  * use self / SELF_TYPE
   * what else?
   * add tests for the error cases like dispatch on void
   * what changes are needed to be able to use the GC? how can I also test that in test.sh?

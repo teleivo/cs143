@@ -1599,12 +1599,17 @@ class lt extends Expression {
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     e1.code(cls, env, dispatchTables, s);
+    // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
+    CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
     e2.code(cls, env, dispatchTables, s);
-    CgenSupport.emitMove(CgenSupport.T2, CgenSupport.ACC, s);
+    // get the value of e2 into t3 (load reference to int object, then retrieve its attribute)
+    CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
+    CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
     int endLabel = CgenSupport.generateLocalLabel();
-    CgenSupport.emitBlt(CgenSupport.T1, CgenSupport.T2, endLabel, s);
+    CgenSupport.emitBlt(CgenSupport.T2, CgenSupport.T3, endLabel, s);
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
     CgenSupport.emitLabelDef(endLabel, s);
   }
