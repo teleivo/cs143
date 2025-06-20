@@ -52,8 +52,8 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			print_bool("Main.ifOnly", ifElse(true));
-			print_bool("Main.ifOnly", ifElse(false));
+			print_bool("Main.ifElseNested", ifElse(true));
+			print_bool("Main.ifElseNested", ifElse(false));
 			print_bool("Main.ifElseNested", ifElseNested(true));
 			print_bool("Main.ifElseNested", ifElseNested(false));
 		}

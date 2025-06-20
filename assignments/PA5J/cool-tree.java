@@ -957,9 +957,7 @@ class cond extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO write test for if without else and handle here
     pred.code(cls, env, dispatchTables, s);
-    // int thenLabel = CgenSupport.generateLocalLabel();
     int elseLabel = CgenSupport.generateLocalLabel();
     int fiLabel = CgenSupport.generateLocalLabel();
     CgenSupport.emitLoadBool(CgenSupport.T1, BoolConst.truebool, s);
