@@ -1598,6 +1598,7 @@ class lt extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
+    // evaluate e1 then e2
     e1.code(cls, env, dispatchTables, s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
@@ -1607,6 +1608,7 @@ class lt extends Expression {
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
 
+    // compare
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
     int endLabel = CgenSupport.generateLocalLabel();
     CgenSupport.emitBlt(CgenSupport.T2, CgenSupport.T3, endLabel, s);
@@ -1738,7 +1740,22 @@ class leq extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    // evaluate e1 then e2
+    e1.code(cls, env, dispatchTables, s);
+    // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
+    CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
+    CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+    e2.code(cls, env, dispatchTables, s);
+    // get the value of e2 into t3 (load reference to int object, then retrieve its attribute)
+    CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
+    CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+
+    // compare
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
+    int endLabel = CgenSupport.generateLocalLabel();
+    CgenSupport.emitBleq(CgenSupport.T2, CgenSupport.T3, endLabel, s);
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
+    CgenSupport.emitLabelDef(endLabel, s);
   }
 }
 
