@@ -853,16 +853,36 @@ class dispatch extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
+    CgenClassTable.DispatchTableEntry dispatchTableEntry =
+        dispatchTables.get(cls.getName().getString()).get(name.getString());
+    System.out.println("dispatch to " + cls.getName() + " method " + name.getString());
+    System.out.println("before evaluating args");
+    System.out.println(env);
+
     // TODO put these args into the environment
     // the body of the method that is called should be evaluated in the new environment which
     // has mappings for the formal parameters to the locations of the actual parameters that
     // were evaluated in the environment without these formal parameters
-    // TODO I think I need to be able to create a fresh env here with the class attributes and the
-    // formals of the method
-    for (Enumeration e = actual.getElements(); e.hasMoreElements(); ) {
-      ((Expression) e.nextElement()).code(cls, env, dispatchTables, s);
+    // TODO where should the responsibility of creating a new scope be, I think here but am
+    // unsure. right now its in codeMethods
+    method m = dispatchTableEntry.method();
+    // TODO should I add the default offset of 3 here or is the calle responsible for it?
+    int argOffset = 3;
+    for (int i = 0; i < m.formals.getLength(); i++) {
+      formalc f = (formalc) m.formals.getNth(i);
+      Expression e = (Expression) actual.getNth(i);
+      e.code(cls, env, dispatchTables, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
+
+      // TODO I need to create a fresh env but lets get the test working first by mutating this
+      // env
+      // the arg is put onto the stack and will be available by the calle via the framepointer
+      env.addId(f.name, new CgenClassTable.Location(argOffset, CgenSupport.FP));
+      argOffset++;
     }
+    System.out.println("after evaluating args");
+    System.out.println(env);
+
     // restore self
     CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
 
@@ -877,8 +897,8 @@ class dispatch extends Expression {
     // load offset to the objects (self) dispatch table
     CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
     // add the offset to the right method in the dispatch table
-    int offset = dispatchTables.get(cls.getName().getString()).get(name.getString()).offset();
-    CgenSupport.emitLoad(CgenSupport.T1, offset, CgenSupport.T1, s);
+    int dispatchOffset = dispatchTableEntry.offset();
+    CgenSupport.emitLoad(CgenSupport.T1, dispatchOffset, CgenSupport.T1, s);
     CgenSupport.emitJalr(CgenSupport.T1, s);
   }
 }

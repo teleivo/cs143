@@ -704,11 +704,11 @@ class CgenClassTable extends SymbolTable {
       SymbolTable env = new SymbolTable();
       env.enterScope();
       addAttributes(env, cls);
-      // System.out.println(env);
 
       for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
         if (feature instanceof method m) {
+          System.out.println("codeMethod for " + cls.getName() + " method " + m.name);
           env.enterScope();
           codeMethod(env, cls, m);
           env.exitScope();
