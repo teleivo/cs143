@@ -34,12 +34,25 @@ To try yourself
 
 ## TODO
 
+* implement missing expression
+  * <
+  * <=
+  * arith ops like * (maybe create a recursive factorial func) / (I think I already tested + and -)
+  * new
+  * use new in dispatch test and see how that affects self
+  * test initializers with the scoping and attributes being able to refer to each other even if not
+    yet initialized
+  * not
+  * ~
+  * isvoid
+  * loop
+  * case
+  * what else?
+  * add tests for the error cases like dispatch on void
+  * what changes are needed to be able to use the GC? how can I also test that in test.sh?
+
 * get fibonacci to work
-  * implement missing expression like < and if
-  * print result in Main?
-  * if that works get n from stdin?
   * or print sequence of fibonacci using the Cons from the manual?
-* what kinds of tests can I setup to make sure each expression I add is actually working?
 
 * run only my implementation in the `my` case in test.sh
 
