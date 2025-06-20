@@ -1,5 +1,7 @@
 -- tests arithmetic comparison operators
 class Main inherits IO {
+	-- TODO test equality on void
+	-- TODO test equality on instance once I have new implemented
 	eqInt(a : Int, b : Int) : Bool {
 		a = b
 	};
@@ -8,6 +10,10 @@ class Main inherits IO {
 	};
 	eqString(a : String, b : String) : Bool {
 		a = b
+	};
+	-- <, <=, =
+	lessThan(a : Int, b : Int) : Bool {
+		a < b
 	};
 
 	-- test helpers
@@ -50,12 +56,14 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			print_bool("Main.main", eqInt(5, 5));
-			print_bool("Main.main", eqInt(6, 5));
-			print_bool("Main.main", eqBool(true,true));
-			print_bool("Main.main", eqBool(false,false));
-			print_bool("Main.main", eqString("yes","yes"));
-			print_bool("Main.main", eqString("yes","no"));
+			print_bool("Main.eqInt", eqInt(5, 5));
+			print_bool("Main.eqInt", eqInt(6, 5));
+			print_bool("Main.eqBool", eqBool(true,true));
+			print_bool("Main.eqBool", eqBool(false,false));
+			print_bool("Main.eqString", eqString("yes","yes"));
+			print_bool("Main.eqString", eqString("yes","no"));
+			print_bool("Main.lessThan", lessThan(5, 6));
+			print_bool("Main.lessThan", lessThan(7, 6));
 		}
 	};
 };

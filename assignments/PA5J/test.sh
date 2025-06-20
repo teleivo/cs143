@@ -53,7 +53,7 @@ for file in "$TEST_DIR"/*.cl; do
         # Compare outputs
         if ! diff_output=$(diff -u <(echo "$ref_output") <(echo "$my_output")); then
             echo "FAILED (Outputs differ between implementations)"
-            echo "Diff between reference and my output:"
+            echo "-reference +my"
             echo "$diff_output"
             failed=1
         else

@@ -1600,7 +1600,15 @@ class lt extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    e1.code(cls, env, dispatchTables, s);
+    CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
+    e2.code(cls, env, dispatchTables, s);
+    CgenSupport.emitMove(CgenSupport.T2, CgenSupport.ACC, s);
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
+    int endLabel = CgenSupport.generateLocalLabel();
+    CgenSupport.emitBlt(CgenSupport.T1, CgenSupport.T2, endLabel, s);
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
+    CgenSupport.emitLabelDef(endLabel, s);
   }
 }
 

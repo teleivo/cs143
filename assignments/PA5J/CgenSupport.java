@@ -107,6 +107,7 @@ class CgenSupport {
   static final String MUL = "\tmul\t";
   static final String SUB = "\tsub\t";
   static final String SLL = "\tsll\t";
+  static final String BGTZ = "\tbgtz\t";
   static final String BEQZ = "\tbeqz\t";
   static final String BRANCH = "\tb\t";
   static final String BEQ = "\tbeq\t";
@@ -221,6 +222,10 @@ class CgenSupport {
     emitPartialLoadAddress(dest_reg, s);
     i.codeRef(s);
     s.println("");
+  }
+
+  static void emitInstruction(String instruction, String r1, String r2, String r3, PrintStream s) {
+    s.println("\t" + instruction + "\t" + r1 + " " + r2 + " " + r3);
   }
 
   /**
@@ -456,6 +461,19 @@ class CgenSupport {
   static void emitLabelDef(int label, PrintStream s) {
     emitLabelRef(label, s);
     s.println(":");
+  }
+
+  /**
+   * Emits a BGTZ instruction.
+   *
+   * @param src the source register
+   * @param label the label number
+   * @param s the output stream
+   */
+  static void emitBgtz(String src, int label, PrintStream s) {
+    s.print(BGTZ + src + " ");
+    emitLabelRef(label, s);
+    s.println("");
   }
 
   /**
