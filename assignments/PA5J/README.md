@@ -35,16 +35,18 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * not
   * ~
+    * why is -4 not valid according to the reference parser?
   * arith ops like * (maybe create a recursive factorial func) / (I think I already tested + and -)
   * new
   * use new in dispatch test and see how that affects self
   * test initializers with the scoping and attributes being able to refer to each other even if not
     yet initialized
+  * static dispatch
   * isvoid
     * do I need to do some void checks for example in the arith operators? some comparison to 0 and
       then some kind of abort
+  * let
   * loop
   * case
   * use self / SELF_TYPE
