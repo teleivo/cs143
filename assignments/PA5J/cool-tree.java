@@ -873,8 +873,6 @@ class dispatch extends Expression {
     // load offset to the objects (self) dispatch table
     CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
     // add the offset to the right method in the dispatch table
-    System.out.println(dispatchTables);
-    System.out.println(cls.getName().getString() + " " + name.getString());
     int offset = dispatchTables.get(cls.getName().getString()).get(name.getString()).offset();
     CgenSupport.emitLoad(CgenSupport.T1, offset, CgenSupport.T1, s);
     CgenSupport.emitJalr(CgenSupport.T1, s);
