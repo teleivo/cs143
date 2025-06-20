@@ -947,8 +947,7 @@ class cond extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -958,7 +957,18 @@ class cond extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    // TODO write test for if without else and handle here
+    pred.code(cls, env, dispatchTables, s);
+    // int thenLabel = CgenSupport.generateLocalLabel();
+    int elseLabel = CgenSupport.generateLocalLabel();
+    int fiLabel = CgenSupport.generateLocalLabel();
+    CgenSupport.emitLoadBool(CgenSupport.T1, BoolConst.truebool, s);
+    CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.T1, elseLabel, s);
+    then_exp.code(cls, env, dispatchTables, s);
+    CgenSupport.emitBranch(fiLabel, s);
+    CgenSupport.emitLabelDef(elseLabel, s);
+    else_exp.code(cls, env, dispatchTables, s);
+    CgenSupport.emitLabelDef(fiLabel, s);
   }
 }
 
@@ -1270,7 +1280,6 @@ class plus extends Expression {
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     e1.code(cls, env, dispatchTables, s);
-    // TODO(ivo) can I use s1 instead? so move s1 a0
     CgenSupport.emitPush(CgenSupport.ACC, s);
     e2.code(cls, env, dispatchTables, s);
     // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
@@ -1344,7 +1353,24 @@ class sub extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    // TODO there might be a way to extract the binary arith operator code gen but not sure if its
+    // worth it
+    e1.code(cls, env, dispatchTables, s);
+    CgenSupport.emitPush(CgenSupport.ACC, s);
+    e2.code(cls, env, dispatchTables, s);
+    // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
+    // or so?
+    // copy e2 int object which will then be returned in a0
+    CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
+    // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
+    CgenSupport.emitLoad(CgenSupport.T1, 1, CgenSupport.SP, s);
+    CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+    // get the value of the freshly copied e2 into t3
+    CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitSub(CgenSupport.T2, CgenSupport.T2, CgenSupport.T3, s);
+    // update the result objects int attribute with the sum
+    CgenSupport.emitStore(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitPop(1, s);
   }
 }
 
@@ -1633,7 +1659,16 @@ class eq extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    e1.code(cls, env, dispatchTables, s);
+    CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
+    e2.code(cls, env, dispatchTables, s);
+    CgenSupport.emitMove(CgenSupport.T2, CgenSupport.ACC, s);
+    // equality test whether the objects passed in $t1 and $t2 have the same primitive type
+    // {Int,String,Bool} and the same value. If they do, the value in $a0 is returned, otherwise
+    // $a1 is returned.
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
+    CgenSupport.emitLoadBool(CgenSupport.A1, BoolConst.falsebool, s);
+    CgenSupport.emitJal(CgenSupport.EQUALITY_TEST, s);
   }
 }
 

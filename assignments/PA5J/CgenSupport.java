@@ -46,6 +46,7 @@ class CgenSupport {
   static final String STRINGTAG = "_string_tag";
   static final String HEAP_START = "heap_start";
   static final String DISPATCH_ABORT = "_dispatch_abort";
+  static final String EQUALITY_TEST = "equality_test";
 
   // Naming conventions
   static final String DISPTAB_SUFFIX = "_dispTab";

@@ -61,7 +61,6 @@ class Main inherits A {
 	print_line() : Object {
 		out_string("\n")
 	};
-	-- create add method and test to show args
 	main() : Object {
 		{
 			-- TODO implement let with init to extract prefix
