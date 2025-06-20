@@ -6,25 +6,24 @@ class A inherits IO {
 class Main inherits A {
 	print_int(prefix : String, arg : Int) : Object {
 		{
-			-- print_prefix(prefix);
+			print_prefix(prefix);
 			out_int(arg);
 			print_line();
 		}
 	};
 
-	-- print_string(prefix : String, arg : String) : Object {
-	-- 	{
-	-- 		print_prefix(prefix);
-	-- 		out_string(arg);
-	-- 		print_line();
-	-- 	}
-	-- };
+	print_string(prefix : String, arg : String) : Object {
+		{
+			print_prefix(prefix);
+			out_string(arg);
+			print_line();
+		}
+	};
 
-	print_prefix(prefix : String, arg2: String) : Object {
+	print_prefix(prefix : String) : Object {
 		{
 			out_string(prefix);
-			out_string(arg2);
-			-- out_string(": ");
+			out_string(": ");
 		}
 	};
 
@@ -50,9 +49,8 @@ class Main inherits A {
 	main() : Object {
 		{
 			-- TODO implement let with init to extract prefix
-			print_prefix("foo", "faa");
-			-- print_int("Main.main", number());
-			-- print_string("Main.main", string());
+			print_int("Main.main", number());
+			print_string("Main.main", string());
 		}
 	};
 };
