@@ -19,12 +19,10 @@ ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
 PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 */
 
-// This is a project skeleton file
-
 import java.io.PrintStream;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -41,11 +39,11 @@ class CgenClassTable extends SymbolTable {
   private final Map<String, Integer> classTags;
   // Object size per class name to calculate attribute offsets in the object layout.
   private final Map<String, Integer> objectSizes;
-  // Dispatch table per class name to get the method offsets. Using a list is obviously not the
+  // Dispatch tables per class name to get the method offsets. Using a list is obviously not the
   // fastest way but that is not the goal here.
-  private final Map<String, List<String>> dispatchTable;
+  private final Map<String, Map<String, DispatchTableEntry>> dispatchTables;
 
-  record MethodRef(method method, String methodRef, int offset) {}
+  record DispatchTableEntry(method method, String methodRef, int offset) {}
   ;
 
   // private final Map<String, Map<String, MethodRef>> methods;
@@ -387,7 +385,7 @@ class CgenClassTable extends SymbolTable {
     int basicClassNumber = 5;
     this.classTags = new HashMap<>(basicClassNumber + cls.getLength());
     this.objectSizes = new HashMap<>(basicClassNumber + cls.getLength());
-    this.dispatchTable = new HashMap<>(basicClassNumber + cls.getLength());
+    this.dispatchTables = new HashMap<>(basicClassNumber + cls.getLength());
     this.s = str;
 
     enterScope();
@@ -450,94 +448,79 @@ class CgenClassTable extends SymbolTable {
     }
   }
 
+  /*
+   * Emits the dispatch table as described in the Cool runtime manual. Method declarations in a
+   * child class take precedence over the parent. This fact is used to only put the child methods
+   * into the dispatch table on override.
+   */
   private void codeDispatchTable() {
-    Map<String, Map<String, String>> disptables = new HashMap<>();
-    codeDispatchTable(root(), disptables);
+    collectDispatchTables(root(), dispatchTables);
+    emitDispatchTables();
   }
 
-  private void codeDispatchTable(CgenNode n, Map<String, Map<String, String>> disptables) {
+  private void collectDispatchTables(
+      CgenNode n, Map<String, Map<String, DispatchTableEntry>> dispatchTables) {
     if (n == null) {
       return;
     }
 
-    collect(n, disptables);
+    collectDispatchTable(n, dispatchTables);
 
     for (Enumeration children = n.getChildren(); children.hasMoreElements(); ) {
-      codeDispatchTable((CgenNode) children.nextElement(), disptables);
+      collectDispatchTables((CgenNode) children.nextElement(), dispatchTables);
     }
   }
 
-  private void collect(class_c cls, Map<String, Map<String, String>> disptables) {
-    Map<String, String> dispTable;
+  /**
+   * Using a linked hash map so the insertion order is kept for each class and its parent methods. I
+   * don't think this matters as long as the offsets are generated correctly but it does make
+   * comparisons with the reference implementation easier.
+   */
+  private void collectDispatchTable(
+      class_c cls, Map<String, Map<String, DispatchTableEntry>> dispatchTables) {
+    Map<String, DispatchTableEntry> dispatchTable;
     if (isRoot(cls)) {
-      dispTable = new HashMap<>();
+      dispatchTable = new LinkedHashMap<>();
     } else {
-      Map<String, String> parentDispTable = disptables.get(cls.getParent().getString());
-      dispTable = new HashMap<>(parentDispTable);
+      Map<String, DispatchTableEntry> parentDispTable =
+          dispatchTables.get(cls.getParent().getString());
+      dispatchTable = new LinkedHashMap<>(parentDispTable);
     }
-    disptables.put(cls.name.getString(), dispTable);
+    dispatchTables.put(cls.name.getString(), dispatchTable);
 
     for (Enumeration features = cls.features.getElements(); features.hasMoreElements(); ) {
       Feature feature = ((Feature) features.nextElement());
       if (feature instanceof method m) {
-
-        // TODO change value type of map to some record so I can store the method as well
-        // TODO think of order and offset
-        String methodRef = CgenSupport.methodRef(cls.getName(), m.name);
-
-        // method names are added in the dispatch table order without class name
-        // prefix so they can be found by a dispatch which only has access to its
-        // name
-        dispTable.put(m.name.toString(), methodRef);
+        int offset = dispatchTable.size();
+        // either the method ends up at the end of the dispatch table or replaces one of its
+        // parent (this is how the reference implementation does it)
+        if (dispatchTable.containsKey(m.name.getString())) {
+          offset = dispatchTable.get(m.name.getString()).offset;
+        }
+        dispatchTable.put(
+            m.name.toString(),
+            new DispatchTableEntry(m, CgenSupport.methodRef(cls.getName(), m.name), offset));
       }
     }
-
-    System.out.println();
-    System.out.println(disptables);
   }
 
-  // /*
-  //  * Emits the dispatch table as described in the Cool runtime manual. Method declarations in a
-  //  * child class take precedence over the parent. This fact is used by the reference code
-  //  * generator to only put the child methods into the dispatch table on override. I am not making
-  //  * this optimization here so dispatch tables and offsets into the dispatch tables will differ
-  //  * with the reference implementation. This is certainly doable though :)
-  //  */
-  // private void codeDispatchTable() {
-  //   Stack<class_c> hierarchy = new Stack<>();
-  //   for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
-  //     CgenNode cls = (CgenNode) e.nextElement();
-  //
-  //     AbstractSymbol name = cls.getName();
-  //     CgenSupport.emitDispTableRef(name, s);
-  //     s.print(CgenSupport.LABEL);
-  //
-  //     dispatchTable.put(name.toString(), new ArrayList<String>());
-  //
-  //     hierarchy.push(cls);
-  //     while (hasParent(cls)) {
-  //       hierarchy.push(cls.getParentNd());
-  //       cls = cls.getParentNd();
-  //     }
-  //
-  //     while (!hierarchy.empty()) {
-  //       class_c cur = hierarchy.pop();
-  //       for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
-  //         Feature feature = ((Feature) f.nextElement());
-  //         if (feature instanceof method m) {
-  //           s.print(CgenSupport.WORD);
-  //           CgenSupport.emitMethodRef(cur.getName(), m.name, s);
-  //           s.println();
-  //
-  //           // method names are added in the dispatch table order without class name
-  //           // prefix so they can be found by a dispatch which only has access to its
-  //           // name
-  //           dispatchTable.get(name.toString()).add(m.name.toString());
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+  private void emitDispatchTables() {
+    // does the order matter in which I output the tables? if not iterate over disptables?
+    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+      CgenNode cls = (CgenNode) e.nextElement();
+
+      AbstractSymbol name = cls.getName();
+      CgenSupport.emitDispTableRef(name, s);
+      s.print(CgenSupport.LABEL);
+
+      Map<String, DispatchTableEntry> dispatchTable = dispatchTables.get(name.getString());
+      for (Map.Entry<String, DispatchTableEntry> entry : dispatchTable.entrySet()) {
+        s.print(CgenSupport.WORD);
+        s.print(entry.getValue().methodRef);
+        s.println();
+      }
+    }
+  }
 
   private void codePrototypeObjects() {
     Stack<class_c> hierarchy = new Stack<>();
@@ -681,7 +664,7 @@ class CgenClassTable extends SymbolTable {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
         if (a.init != null && !(a.init instanceof no_expr)) {
-          a.init.code(cls, environment, dispatchTable, s);
+          a.init.code(cls, environment, dispatchTables, s);
           // store initialization value into corresponding attribute
           CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }
@@ -783,7 +766,7 @@ class CgenClassTable extends SymbolTable {
     // addiu	$sp $sp -4
     // move	$a0 $s0
     // TODO(ivo) for all the formals
-    m.expr.code(cls, environment, dispatchTable, s);
+    m.expr.code(cls, environment, dispatchTables, s);
 
     // restore callee saved registers from the stack
     CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);

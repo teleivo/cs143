@@ -8,7 +8,6 @@
 
 import java.io.PrintStream;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -193,7 +192,10 @@ abstract class Expression extends TreeNode {
   }
 
   public abstract void code(
-      Class_ cls, SymbolTable env, Map<String, List<String>> dispatchTable, PrintStream s);
+      Class_ cls,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
+      PrintStream s);
 }
 
 /**
@@ -698,8 +700,8 @@ class assign extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -775,8 +777,8 @@ class static_dispatch extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -843,7 +845,10 @@ class dispatch extends Expression {
    */
   @Override
   public void code(
-      Class_ cls, SymbolTable env, Map<String, List<String>> dispatchTable, PrintStream s) {
+      Class_ cls,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
+      PrintStream s) {
     // TODO put these args into the environment
     // the body of the method that is called should be evaluated in the new environment which
     // has mappings for the formal parameters to the locations of the actual parameters that
@@ -851,7 +856,7 @@ class dispatch extends Expression {
     // TODO I think I need to be able to create a fresh env here with the class attributes and the
     // formals of the method
     for (Enumeration e = actual.getElements(); e.hasMoreElements(); ) {
-      ((Expression) e.nextElement()).code(cls, env, dispatchTable, s);
+      ((Expression) e.nextElement()).code(cls, env, dispatchTables, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
     }
     // restore self
@@ -867,10 +872,10 @@ class dispatch extends Expression {
     CgenSupport.emitLabelDef(label, s);
     // load offset to the objects (self) dispatch table
     CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
-    // 	add the offset to the right method in the dispatch table
-    // methods in children take precedence over parent so search backwards in the dispatch table
-    // assuming the method exists as semantic analysis should catch that case
-    int offset = dispatchTable.get(cls.getName().getString()).lastIndexOf(name.getString());
+    // add the offset to the right method in the dispatch table
+    System.out.println(dispatchTables);
+    System.out.println(cls.getName().getString() + " " + name.getString());
+    int offset = dispatchTables.get(cls.getName().getString()).get(name.getString()).offset();
     CgenSupport.emitLoad(CgenSupport.T1, offset, CgenSupport.T1, s);
     CgenSupport.emitJalr(CgenSupport.T1, s);
   }
@@ -937,8 +942,8 @@ class cond extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -994,8 +999,8 @@ class loop extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1052,8 +1057,8 @@ class typcase extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1104,12 +1109,15 @@ class block extends Expression {
    */
   @Override
   public void code(
-      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
+      Class_ cls,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
+      PrintStream s) {
     for (Enumeration e = body.getElements(); e.hasMoreElements(); ) {
       Expression exp = (Expression) e.nextElement();
       // a block results in the last expression which is handled by this setting a0 and not
       // restoring a0 to self
-      exp.code(cls, environment, dispatchTable, s);
+      exp.code(cls, env, dispatchTables, s);
     }
   }
 }
@@ -1181,8 +1189,8 @@ class let extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1236,11 +1244,14 @@ class plus extends Expression {
    */
   @Override
   public void code(
-      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
-    e1.code(cls, environment, dispatchTable, s);
+      Class_ cls,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
+      PrintStream s) {
+    e1.code(cls, env, dispatchTables, s);
     // TODO(ivo) can I use s1 instead? so move s1 a0
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, environment, dispatchTable, s);
+    e2.code(cls, env, dispatchTables, s);
     // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
     // or so?
     // copy e2 int object which will then be returned in a0
@@ -1309,8 +1320,8 @@ class sub extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1366,8 +1377,8 @@ class mul extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1423,8 +1434,8 @@ class divide extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1475,8 +1486,8 @@ class neg extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1531,8 +1542,8 @@ class lt extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1588,8 +1599,8 @@ class eq extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1645,8 +1656,8 @@ class leq extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1697,8 +1708,8 @@ class comp extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1747,7 +1758,10 @@ class int_const extends Expression {
    */
   @Override
   public void code(
-      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
+      Class_ cls,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
+      PrintStream s) {
     CgenSupport.emitLoadInt(
         CgenSupport.ACC, (IntSymbol) AbstractTable.inttable.lookup(token.getString()), s);
   }
@@ -1798,7 +1812,10 @@ class bool_const extends Expression {
    */
   @Override
   public void code(
-      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
+      Class_ cls,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
+      PrintStream s) {
     CgenSupport.emitLoadBool(CgenSupport.ACC, new BoolConst(val), s);
   }
 }
@@ -1850,7 +1867,10 @@ class string_const extends Expression {
    */
   @Override
   public void code(
-      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
+      Class_ cls,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
+      PrintStream s) {
     CgenSupport.emitLoadString(
         CgenSupport.ACC, (StringSymbol) AbstractTable.stringtable.lookup(token.getString()), s);
   }
@@ -1903,8 +1923,8 @@ class new_ extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -1955,8 +1975,8 @@ class isvoid extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -2001,8 +2021,8 @@ class no_expr extends Expression {
   @Override
   public void code(
       Class_ cls,
-      SymbolTable environment,
-      Map<String, List<String>> dispatchTable,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {}
 }
 
@@ -2051,8 +2071,11 @@ class object extends Expression {
    */
   @Override
   public void code(
-      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
-    CgenClassTable.Location location = (CgenClassTable.Location) environment.lookup(name);
+      Class_ cls,
+      SymbolTable env,
+      Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
+      PrintStream s) {
+    CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
     CgenSupport.emitLoad(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
   }
 }
