@@ -1,4 +1,4 @@
--- tests arithmetic comparison operators
+-- tests arithmetic operators
 class Main inherits IO {
 	-- TODO test equality on void
 	-- TODO test equality on instance once I have new implemented
@@ -16,6 +16,9 @@ class Main inherits IO {
 	};
 	less_than_equal(a : Int, b : Int) : Bool {
 		a <= b
+	};
+	not_op(a : Bool) : Bool {
+		not a
 	};
 
 	-- test helpers
@@ -64,12 +67,16 @@ class Main inherits IO {
 			print_bool("Main.eq_bool", eq_bool(false,false));
 			print_bool("Main.eq_string", eq_string("yes","yes"));
 			print_bool("Main.eq_string", eq_string("yes","no"));
+
 			print_bool("Main.less_than", less_than(5, 6));
 			print_bool("Main.less_than", less_than(6, 6));
 			print_bool("Main.less_than", less_than(7, 6));
 			print_bool("Main.less_than_equal", less_than_equal(5, 6));
 			print_bool("Main.less_than_equal", less_than_equal(6, 6));
 			print_bool("Main.less_than_equal", less_than_equal(7, 6));
+
+			print_bool("Main.not_op", not_op(true));
+			print_bool("Main.not_op", not_op(false));
 		}
 	};
 };

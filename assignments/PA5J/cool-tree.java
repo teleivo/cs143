@@ -1280,8 +1280,6 @@ class plus extends Expression {
     e1.code(cls, env, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
     e2.code(cls, env, dispatchTables, s);
-    // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
-    // or so?
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1529,8 +1527,7 @@ class neg extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1540,7 +1537,7 @@ class neg extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    // TODO implement
   }
 }
 
@@ -1798,8 +1795,7 @@ class comp extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1809,7 +1805,18 @@ class comp extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    e1.code(cls, env, dispatchTables, s);
+    // get the value of e1 into t2 (load reference to bool object, then retrieve its attribute)
+    CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
+    CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+    // I need to return a bool so, maybe test if that is true if so return the false constant,
+    // ...
+    // compare to zero
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
+    int endLabel = CgenSupport.generateLocalLabel();
+    CgenSupport.emitBeqz(CgenSupport.T2, endLabel, s);
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
+    CgenSupport.emitLabelDef(endLabel, s);
   }
 }
 
