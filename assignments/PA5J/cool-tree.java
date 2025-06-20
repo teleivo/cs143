@@ -855,9 +855,9 @@ class dispatch extends Expression {
       PrintStream s) {
     CgenClassTable.DispatchTableEntry dispatchTableEntry =
         dispatchTables.get(cls.getName().getString()).get(name.getString());
-    System.out.println("dispatch to " + cls.getName() + " method " + name.getString());
-    System.out.println("before evaluating args");
-    System.out.println(env);
+    // System.out.println("dispatch to " + cls.getName() + " method " + name.getString());
+    // System.out.println("before evaluating args");
+    // System.out.println(env);
 
     // TODO put these args into the environment
     // the body of the method that is called should be evaluated in the new environment which
@@ -866,22 +866,13 @@ class dispatch extends Expression {
     // TODO where should the responsibility of creating a new scope be, I think here but am
     // unsure. right now its in codeMethods
     method m = dispatchTableEntry.method();
-    // TODO should I add the default offset of 3 here or is the calle responsible for it?
-    int argOffset = 3;
     for (int i = 0; i < m.formals.getLength(); i++) {
-      formalc f = (formalc) m.formals.getNth(i);
       Expression e = (Expression) actual.getNth(i);
       e.code(cls, env, dispatchTables, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
-
-      // TODO I need to create a fresh env but lets get the test working first by mutating this
-      // env
-      // the arg is put onto the stack and will be available by the calle via the framepointer
-      env.addId(f.name, new CgenClassTable.Location(argOffset, CgenSupport.FP));
-      argOffset++;
     }
-    System.out.println("after evaluating args");
-    System.out.println(env);
+    // System.out.println("after evaluating args");
+    // System.out.println(env);
 
     // restore self
     CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);

@@ -708,9 +708,18 @@ class CgenClassTable extends SymbolTable {
       for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
         if (feature instanceof method m) {
-          System.out.println("codeMethod for " + cls.getName() + " method " + m.name);
+          // System.out.println("codeMethod for " + cls.getName() + " method " + m.name);
           env.enterScope();
+          int argOffset = 3;
+          for (int i = 0; i < m.formals.getLength(); i++) {
+            formalc form = (formalc) m.formals.getNth(i);
+            // the arg is put onto the stack and will be available by the calle via the framepointer
+            env.addId(form.name, new CgenClassTable.Location(argOffset, CgenSupport.FP));
+            argOffset++;
+          }
+
           codeMethod(env, cls, m);
+
           env.exitScope();
         }
       }
