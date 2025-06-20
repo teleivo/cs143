@@ -20,6 +20,9 @@ class Main inherits IO {
 	not_op(a : Bool) : Bool {
 		not a
 	};
+	negate(a : Int) : Int {
+		~a
+	};
 
 	-- test helpers
 	print_int(prefix : String, arg : Int) : Object {
@@ -74,6 +77,10 @@ class Main inherits IO {
 			print_bool("Main.less_than_equal", less_than_equal(5, 6));
 			print_bool("Main.less_than_equal", less_than_equal(6, 6));
 			print_bool("Main.less_than_equal", less_than_equal(7, 6));
+
+			print_int("Main.negate", negate(0));
+			print_int("Main.negate", negate(4));
+			print_int("Main.negate", negate(negate(4)));
 
 			print_bool("Main.not_op", not_op(true));
 			print_bool("Main.not_op", not_op(false));
