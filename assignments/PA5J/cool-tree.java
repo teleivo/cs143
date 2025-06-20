@@ -193,7 +193,7 @@ abstract class Expression extends TreeNode {
   }
 
   public abstract void code(
-      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s);
+      Class_ cls, SymbolTable env, Map<String, List<String>> dispatchTable, PrintStream s);
 }
 
 /**
@@ -843,10 +843,15 @@ class dispatch extends Expression {
    */
   @Override
   public void code(
-      Class_ cls, SymbolTable environment, Map<String, List<String>> dispatchTable, PrintStream s) {
-    // TODO(ivo) put these args into the environment
+      Class_ cls, SymbolTable env, Map<String, List<String>> dispatchTable, PrintStream s) {
+    // TODO put these args into the environment
+    // the body of the method that is called should be evaluated in the new environment which
+    // has mappings for the formal parameters to the locations of the actual parameters that
+    // were evaluated in the environment without these formal parameters
+    // TODO I think I need to be able to create a fresh env here with the class attributes and the
+    // formals of the method
     for (Enumeration e = actual.getElements(); e.hasMoreElements(); ) {
-      ((Expression) e.nextElement()).code(cls, environment, dispatchTable, s);
+      ((Expression) e.nextElement()).code(cls, env, dispatchTable, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
     }
     // restore self

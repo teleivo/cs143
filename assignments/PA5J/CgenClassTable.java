@@ -22,7 +22,6 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // This is a project skeleton file
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +44,11 @@ class CgenClassTable extends SymbolTable {
   // Dispatch table per class name to get the method offsets. Using a list is obviously not the
   // fastest way but that is not the goal here.
   private final Map<String, List<String>> dispatchTable;
+
+  record MethodRef(method method, String methodRef, int offset) {}
+  ;
+
+  // private final Map<String, Map<String, MethodRef>> methods;
 
   /** This is the stream to which assembly instructions are output */
   private final PrintStream s;
@@ -384,7 +388,6 @@ class CgenClassTable extends SymbolTable {
     this.classTags = new HashMap<>(basicClassNumber + cls.getLength());
     this.objectSizes = new HashMap<>(basicClassNumber + cls.getLength());
     this.dispatchTable = new HashMap<>(basicClassNumber + cls.getLength());
-
     this.s = str;
 
     enterScope();
@@ -447,48 +450,94 @@ class CgenClassTable extends SymbolTable {
     }
   }
 
-  /*
-   * Emits the dispatch table as described in the Cool runtime manual. Method declarations in a
-   * child class take precedence over the parent. This fact is used by the reference code
-   * generator to only put the child methods into the dispatch table on override. I am not making
-   * this optimization here so dispatch tables and offsets into the dispatch tables will differ
-   * with the reference implementation. This is certainly doable though :)
-   */
   private void codeDispatchTable() {
-    Stack<class_c> hierarchy = new Stack<>();
-    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
-      CgenNode cls = (CgenNode) e.nextElement();
+    Map<String, Map<String, String>> disptables = new HashMap<>();
+    codeDispatchTable(root(), disptables);
+  }
 
-      AbstractSymbol name = cls.getName();
-      CgenSupport.emitDispTableRef(name, s);
-      s.print(CgenSupport.LABEL);
+  private void codeDispatchTable(CgenNode n, Map<String, Map<String, String>> disptables) {
+    if (n == null) {
+      return;
+    }
 
-      dispatchTable.put(name.toString(), new ArrayList<String>());
+    collect(n, disptables);
 
-      hierarchy.push(cls);
-      while (hasParent(cls)) {
-        hierarchy.push(cls.getParentNd());
-        cls = cls.getParentNd();
-      }
-
-      while (!hierarchy.empty()) {
-        class_c cur = hierarchy.pop();
-        for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
-          Feature feature = ((Feature) f.nextElement());
-          if (feature instanceof method m) {
-            s.print(CgenSupport.WORD);
-            CgenSupport.emitMethodRef(cur.getName(), m.name, s);
-            s.println();
-
-            // method names are added in the dispatch table order without class name
-            // prefix so they can be found by a dispatch which only has access to its
-            // name
-            dispatchTable.get(name.toString()).add(m.name.toString());
-          }
-        }
-      }
+    for (Enumeration children = n.getChildren(); children.hasMoreElements(); ) {
+      codeDispatchTable((CgenNode) children.nextElement(), disptables);
     }
   }
+
+  private void collect(class_c cls, Map<String, Map<String, String>> disptables) {
+    Map<String, String> dispTable;
+    if (isRoot(cls)) {
+      dispTable = new HashMap<>();
+    } else {
+      Map<String, String> parentDispTable = disptables.get(cls.getParent().getString());
+      dispTable = new HashMap<>(parentDispTable);
+    }
+    disptables.put(cls.name.getString(), dispTable);
+
+    for (Enumeration features = cls.features.getElements(); features.hasMoreElements(); ) {
+      Feature feature = ((Feature) features.nextElement());
+      if (feature instanceof method m) {
+
+        // TODO change value type of map to some record so I can store the method as well
+        // TODO think of order and offset
+        String methodRef = CgenSupport.methodRef(cls.getName(), m.name);
+
+        // method names are added in the dispatch table order without class name
+        // prefix so they can be found by a dispatch which only has access to its
+        // name
+        dispTable.put(m.name.toString(), methodRef);
+      }
+    }
+
+    System.out.println();
+    System.out.println(disptables);
+  }
+
+  // /*
+  //  * Emits the dispatch table as described in the Cool runtime manual. Method declarations in a
+  //  * child class take precedence over the parent. This fact is used by the reference code
+  //  * generator to only put the child methods into the dispatch table on override. I am not making
+  //  * this optimization here so dispatch tables and offsets into the dispatch tables will differ
+  //  * with the reference implementation. This is certainly doable though :)
+  //  */
+  // private void codeDispatchTable() {
+  //   Stack<class_c> hierarchy = new Stack<>();
+  //   for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+  //     CgenNode cls = (CgenNode) e.nextElement();
+  //
+  //     AbstractSymbol name = cls.getName();
+  //     CgenSupport.emitDispTableRef(name, s);
+  //     s.print(CgenSupport.LABEL);
+  //
+  //     dispatchTable.put(name.toString(), new ArrayList<String>());
+  //
+  //     hierarchy.push(cls);
+  //     while (hasParent(cls)) {
+  //       hierarchy.push(cls.getParentNd());
+  //       cls = cls.getParentNd();
+  //     }
+  //
+  //     while (!hierarchy.empty()) {
+  //       class_c cur = hierarchy.pop();
+  //       for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
+  //         Feature feature = ((Feature) f.nextElement());
+  //         if (feature instanceof method m) {
+  //           s.print(CgenSupport.WORD);
+  //           CgenSupport.emitMethodRef(cur.getName(), m.name, s);
+  //           s.println();
+  //
+  //           // method names are added in the dispatch table order without class name
+  //           // prefix so they can be found by a dispatch which only has access to its
+  //           // name
+  //           dispatchTable.get(name.toString()).add(m.name.toString());
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   private void codePrototypeObjects() {
     Stack<class_c> hierarchy = new Stack<>();
@@ -667,12 +716,12 @@ class CgenClassTable extends SymbolTable {
         continue;
       }
 
-      // TODO(ivo) cleanup mess once its working
+      // TODO(ivo) cleanup mess once its working; I am likely repeating work here
       // add all attributes and their locations to the environment
       SymbolTable env = new SymbolTable();
       env.enterScope();
       addAttributes(env, cls);
-      System.out.println(env);
+      // System.out.println(env);
 
       for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
@@ -750,5 +799,9 @@ class CgenClassTable extends SymbolTable {
   /** Gets the root of the inheritance tree */
   public CgenNode root() {
     return (CgenNode) probe(TreeConstants.Object_);
+  }
+
+  private static boolean isRoot(class_c cls) {
+    return cls.getName() == TreeConstants.Object_;
   }
 }
