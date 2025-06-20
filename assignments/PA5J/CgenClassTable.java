@@ -711,7 +711,9 @@ class CgenClassTable extends SymbolTable {
           // System.out.println("codeMethod for " + cls.getName() + " method " + m.name);
           env.enterScope();
           int argOffset = 3;
-          for (int i = 0; i < m.formals.getLength(); i++) {
+          // need to add locations in reverse as args are pushed in increasing order (1.,
+          // 2., ...) by a dispatch (see Cool runtime document)
+          for (int i = m.formals.getLength() - 1; i >= 0; i--) {
             formalc form = (formalc) m.formals.getNth(i);
             // the arg is put onto the stack and will be available by the calle via the framepointer
             env.addId(form.name, new CgenClassTable.Location(argOffset, CgenSupport.FP));
