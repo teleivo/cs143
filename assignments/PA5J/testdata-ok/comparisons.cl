@@ -2,6 +2,7 @@
 class Main inherits IO {
 	-- TODO test equality on void
 	-- TODO test equality on instance once I have new implemented
+	-- TODO <, <=
 	eqInt(a : Int, b : Int) : Bool {
 		a = b
 	};
@@ -11,7 +12,6 @@ class Main inherits IO {
 	eqString(a : String, b : String) : Bool {
 		a = b
 	};
-	-- <, <=, =
 	lessThan(a : Int, b : Int) : Bool {
 		a < b
 	};
