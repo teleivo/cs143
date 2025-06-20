@@ -41,6 +41,7 @@ To try yourself
   * or print sequence of fibonacci using the Cons from the manual?
 * what kinds of tests can I setup to make sure each expression I add is actually working?
 
+* run only my implementation in the `my` case in test.sh
 
 ## Limitations and improvements
 

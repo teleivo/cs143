@@ -702,7 +702,9 @@ class assign extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -779,7 +781,9 @@ class static_dispatch extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -942,7 +946,9 @@ class cond extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -999,7 +1005,9 @@ class loop extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1057,7 +1065,9 @@ class typcase extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1189,7 +1199,9 @@ class let extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1320,7 +1332,9 @@ class sub extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1377,7 +1391,9 @@ class mul extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1434,7 +1450,9 @@ class divide extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1486,7 +1504,9 @@ class neg extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1542,7 +1562,9 @@ class lt extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1599,7 +1621,9 @@ class eq extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1656,7 +1680,9 @@ class leq extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1708,7 +1734,9 @@ class comp extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1923,7 +1951,9 @@ class new_ extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -1975,7 +2005,9 @@ class isvoid extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
@@ -2021,7 +2053,9 @@ class no_expr extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
-      PrintStream s) {}
+      PrintStream s) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 }
 
 /**
