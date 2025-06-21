@@ -2064,7 +2064,11 @@ class new_ extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    // TODO implement SELF_TYPE
+    // get the proto object put into a0
+    CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.getProtoObjRef(type_name), s);
+    // copy proto object which will then be returned in a0
+    CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
   }
 }
 

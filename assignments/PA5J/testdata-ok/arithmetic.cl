@@ -1,8 +1,16 @@
 -- tests mostly arithmetic operators
 -- * if
+class A {
+  a : Int <- 10;
+  a() : Int { a };
+};
+class B {
+  b : Int;
+  b() : Int { b };
+};
 class Main inherits IO {
 	-- TODO test equality on void
-	-- TODO test equality on instance once I have new implemented
+	-- TODO test equality on instance once I have new implemented and let for the true case
 	eq_int(a : Int, b : Int) : Bool {
 		a = b
 	};
@@ -80,10 +88,14 @@ class Main inherits IO {
 		{
 			print_bool("Main.eq_int", eq_int(5, 5));
 			print_bool("Main.eq_int", eq_int(6, 5));
+			-- TODO enhance dispatch
+			-- print_bool("Main.eq_int", eq_int((new A).a(), (new A).a()));
 			print_bool("Main.eq_bool", eq_bool(true,true));
 			print_bool("Main.eq_bool", eq_bool(false,false));
 			print_bool("Main.eq_string", eq_string("yes","yes"));
 			print_bool("Main.eq_string", eq_string("yes","no"));
+			print_bool("Main.eq A objects", (new A) = (new A));
+			print_bool("Main.eq A and B objects", (new A) = (new B));
 
 			print_bool("Main.less_than", less_than(5, 6));
 			print_bool("Main.less_than", less_than(6, 6));

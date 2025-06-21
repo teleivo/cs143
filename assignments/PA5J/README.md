@@ -39,6 +39,7 @@ To try yourself
   * use new in dispatch test and see how that affects self
   * test initializers with the scoping and attributes being able to refer to each other even if not
     yet initialized
+  * assign
   * static dispatch
   * isvoid
     * do I need to do some void checks for example in the arith operators? some comparison to 0 and
