@@ -35,23 +35,26 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * new
+  * fix e0 in dispatch: how to get the correct offset for a dynamic dispatch?
+  * new using self
   * use new in dispatch test and see how that affects self
-  * test initializers with the scoping and attributes being able to refer to each other even if not
-    yet initialized
-  * assign
-  * static dispatch
   * isvoid
     * do I need to do some void checks for example in the arith operators? some comparison to 0 and
       then some kind of abort
+  * test initializers with the scoping and attributes being able to refer to each other even if not
+    yet initialized
+  * self / SELF_TYPE
+  * assign
+  * static dispatch
   * let
   * loop
   * case
-  * use self / SELF_TYPE
-  * what else?
   * add tests for the error cases like dispatch on void
   * what changes are needed to be able to use the GC? how can I also test that in test.sh?
+  * what else?
 
+* how to get the example programs to do something useful? They did not even have a main before I
+added one
 * why is -4 not valid according to the reference parser?
 * get fibonacci to work
   * or print sequence of fibonacci using the Cons from the manual?
