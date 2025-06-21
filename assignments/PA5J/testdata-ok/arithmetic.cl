@@ -1,4 +1,5 @@
--- tests arithmetic operators
+-- tests mostly arithmetic operators
+-- * if
 class Main inherits IO {
 	-- TODO test equality on void
 	-- TODO test equality on instance once I have new implemented
@@ -22,6 +23,19 @@ class Main inherits IO {
 	};
 	negate(a : Int) : Int {
 		~a
+	};
+	add(a : Int, b : Int) : Int {
+		a + b
+	};
+	sum_to_gauss(n : Int) : Int {
+		(n*(n+1))/2
+	};
+	sum_to_recursive(n : Int) : Int {
+		if n = 1 then
+			1
+		else
+			add(n, sum_to_recursive(n-1))
+		fi
 	};
 
 	-- test helpers
@@ -84,6 +98,14 @@ class Main inherits IO {
 
 			print_bool("Main.not_op", not_op(true));
 			print_bool("Main.not_op", not_op(false));
+
+			print_int("Main.add", add(5, 12));
+
+			print_int("Main.sum_to_recursive", sum_to_recursive(1));
+			print_int("Main.sum_to_recursive", sum_to_recursive(56));
+			print_int("Main.sum_to_gauss", sum_to_gauss(1));
+			print_int("Main.sum_to_gauss", sum_to_gauss(56));
+			print_bool("Main.sum_to_gauss = sum_to_recursive", eq_int(sum_to_gauss(78), sum_to_recursive(78)));
 		}
 	};
 };

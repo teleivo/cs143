@@ -35,7 +35,6 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * arith ops like * (maybe create a recursive factorial func) / (I think I already tested + and -)
   * new
   * use new in dispatch test and see how that affects self
   * test initializers with the scoping and attributes being able to refer to each other even if not

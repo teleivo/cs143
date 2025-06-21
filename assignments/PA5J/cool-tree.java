@@ -1414,8 +1414,7 @@ class mul extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1425,7 +1424,20 @@ class mul extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    e1.code(cls, env, dispatchTables, s);
+    CgenSupport.emitPush(CgenSupport.ACC, s);
+    e2.code(cls, env, dispatchTables, s);
+    // copy e2 int object which will then be returned in a0
+    CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
+    // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
+    CgenSupport.emitLoad(CgenSupport.T1, 1, CgenSupport.SP, s);
+    CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+    // get the value of the freshly copied e2 into t3
+    CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitMul(CgenSupport.T2, CgenSupport.T2, CgenSupport.T3, s);
+    // update the result objects int attribute with the sum
+    CgenSupport.emitStore(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitPop(1, s);
   }
 }
 
@@ -1473,8 +1485,7 @@ class divide extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1484,7 +1495,20 @@ class divide extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    e1.code(cls, env, dispatchTables, s);
+    CgenSupport.emitPush(CgenSupport.ACC, s);
+    e2.code(cls, env, dispatchTables, s);
+    // copy e2 int object which will then be returned in a0
+    CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
+    // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
+    CgenSupport.emitLoad(CgenSupport.T1, 1, CgenSupport.SP, s);
+    CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+    // get the value of the freshly copied e2 into t3
+    CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitDiv(CgenSupport.T2, CgenSupport.T2, CgenSupport.T3, s);
+    // update the result objects int attribute with the sum
+    CgenSupport.emitStore(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitPop(1, s);
   }
 }
 
