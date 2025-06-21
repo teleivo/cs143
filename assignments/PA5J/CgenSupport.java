@@ -403,10 +403,10 @@ class CgenSupport {
    * @param s the output stream
    */
   static void emitProtObjRef(AbstractSymbol sym, PrintStream s) {
-    s.print(getProtoObjRef(sym));
+    s.print(protoObjRef(sym));
   }
 
-  static String getProtoObjRef(AbstractSymbol sym) {
+  static String protoObjRef(AbstractSymbol sym) {
     return sym + PROTOBJ_SUFFIX;
   }
 
@@ -422,6 +422,10 @@ class CgenSupport {
   }
 
   static String methodRef(AbstractSymbol classname, AbstractSymbol methodname) {
+    return methodRef(classname.getString(), methodname.getString());
+  }
+
+  static String methodRef(String classname, String methodname) {
     return classname + METHOD_SEP + methodname;
   }
 
