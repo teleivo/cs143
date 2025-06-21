@@ -35,8 +35,6 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * ~
-    * why is -4 not valid according to the reference parser?
   * arith ops like * (maybe create a recursive factorial func) / (I think I already tested + and -)
   * new
   * use new in dispatch test and see how that affects self
@@ -54,6 +52,7 @@ To try yourself
   * add tests for the error cases like dispatch on void
   * what changes are needed to be able to use the GC? how can I also test that in test.sh?
 
+* why is -4 not valid according to the reference parser?
 * get fibonacci to work
   * or print sequence of fibonacci using the Cons from the manual?
 

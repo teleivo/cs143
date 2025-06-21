@@ -1537,7 +1537,14 @@ class neg extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO implement
+    e1.code(cls, env, dispatchTables, s);
+    // copy e1 int object which will then be returned in a0
+    CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
+    // get the value of the freshly copied e1 into t1
+    CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    CgenSupport.emitNeg(CgenSupport.T1, CgenSupport.T1, s);
+    // update the result objects int attribute
+    CgenSupport.emitStore(CgenSupport.T1, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
   }
 }
 
