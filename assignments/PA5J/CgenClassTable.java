@@ -37,6 +37,8 @@ class CgenClassTable extends SymbolTable {
 
   // Class tags per class name stored in the prototype objects and used to refer to classes.
   private final Map<String, Integer> classTags;
+  // Class names per class tag stored in the prototype objects and used to refer to classes.
+  private Map<Integer, String> classTagsInverse;
   // Object size per class name to calculate attribute offsets in the object layout.
   private final Map<String, Integer> objectSizes;
   // Dispatch tables per class name to get the method offsets. Using a list is obviously not the
@@ -365,6 +367,7 @@ class CgenClassTable extends SymbolTable {
     for (Enumeration e = cs.getElements(); e.hasMoreElements(); ) {
       installClass(new CgenNode((class_c) e.nextElement(), CgenNode.NotBasic, this));
     }
+    this.classTagsInverse = invert(this.classTags);
   }
 
   private void buildInheritanceTree() {
@@ -664,7 +667,7 @@ class CgenClassTable extends SymbolTable {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
         if (a.init != null && !(a.init instanceof no_expr)) {
-          a.init.code(cls, environment, dispatchTables, s);
+          a.init.code(cls, environment, classTagsInverse, dispatchTables, s);
           // store initialization value into corresponding attribute
           CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }
@@ -777,7 +780,7 @@ class CgenClassTable extends SymbolTable {
     // addiu	$sp $sp -4
     // move	$a0 $s0
     // TODO(ivo) for all the formals
-    m.expr.code(cls, environment, dispatchTables, s);
+    m.expr.code(cls, environment, classTagsInverse, dispatchTables, s);
 
     // restore callee saved registers from the stack
     CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);
@@ -797,5 +800,13 @@ class CgenClassTable extends SymbolTable {
 
   private static boolean isRoot(class_c cls) {
     return cls.getName() == TreeConstants.Object_;
+  }
+
+  private static <V, K> Map<V, K> invert(Map<K, V> map) {
+    Map<V, K> result = new HashMap<V, K>();
+    for (Map.Entry<K, V> entry : map.entrySet()) {
+      result.put(entry.getValue(), entry.getKey());
+    }
+    return result;
   }
 }

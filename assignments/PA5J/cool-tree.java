@@ -194,6 +194,7 @@ abstract class Expression extends TreeNode {
   public abstract void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s);
 }
@@ -701,6 +702,7 @@ class assign extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     throw new UnsupportedOperationException("not implemented");
@@ -780,6 +782,7 @@ class static_dispatch extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     throw new UnsupportedOperationException("not implemented");
@@ -851,6 +854,7 @@ class dispatch extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // evaluate actual parameters and put them on the stack where the callee expects them
@@ -860,8 +864,21 @@ class dispatch extends Expression {
       CgenSupport.emitPush(CgenSupport.ACC, s);
     }
 
-    // restore self
-    CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
+    // evaluate e0 (if any) and set self to v0
+    // TODO I am not sure I am doing this 100% correctly according to the operational semantics.
+    // The body is supposed to be evaluated in a fresh environment based of the attributes which
+    // should be the attributes of v0's class after having evaluated e0. Right now I think its
+    // only correct for dispatches to self (when there is no e0).
+    String dispatchClass;
+    if (expr != null && !(expr instanceof no_expr)) {
+      expr.code(cls, env, classTags, dispatchTables, s);
+      // TODO load class
+      dispatchClass = "";
+    } else {
+      // restore self
+      CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
+      dispatchClass = cls.getName().getString();
+    }
 
     int label = CgenSupport.generateLocalLabel();
     // handle dispatch on void
@@ -871,12 +888,18 @@ class dispatch extends Expression {
     CgenSupport.emitJal(CgenSupport.DISPATCH_ABORT, s);
     // handle non-void dispatch
     CgenSupport.emitLabelDef(label, s);
+<<<<<<< Updated upstream
     // load offset to the objects (self) dispatch table
     CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
     // add the offset to the right method in the dispatch table
     int dispatchOffset =
         dispatchTables.get(cls.getName().getString()).get(name.getString()).offset();
     CgenSupport.emitLoad(CgenSupport.T1, dispatchOffset, CgenSupport.T1, s);
+=======
+    // load method into register via method label to deal with e0 and no e0 equally
+    CgenSupport.emitLoadAddress(
+        CgenSupport.T1, CgenSupport.methodRef(dispatchClass, name.getString()), s);
+>>>>>>> Stashed changes
     CgenSupport.emitJalr(CgenSupport.T1, s);
   }
 }
@@ -942,17 +965,18 @@ class cond extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    pred.code(cls, env, dispatchTables, s);
+    pred.code(cls, env, classTags, dispatchTables, s);
     int elseLabel = CgenSupport.generateLocalLabel();
     int fiLabel = CgenSupport.generateLocalLabel();
     CgenSupport.emitLoadBool(CgenSupport.T1, BoolConst.truebool, s);
     CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.T1, elseLabel, s);
-    then_exp.code(cls, env, dispatchTables, s);
+    then_exp.code(cls, env, classTags, dispatchTables, s);
     CgenSupport.emitBranch(fiLabel, s);
     CgenSupport.emitLabelDef(elseLabel, s);
-    else_exp.code(cls, env, dispatchTables, s);
+    else_exp.code(cls, env, classTags, dispatchTables, s);
     CgenSupport.emitLabelDef(fiLabel, s);
   }
 }
@@ -1010,6 +1034,7 @@ class loop extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     throw new UnsupportedOperationException("not implemented");
@@ -1070,6 +1095,7 @@ class typcase extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     throw new UnsupportedOperationException("not implemented");
@@ -1125,13 +1151,14 @@ class block extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     for (Enumeration e = body.getElements(); e.hasMoreElements(); ) {
       Expression exp = (Expression) e.nextElement();
       // a block results in the last expression which is handled by this setting a0 and not
       // restoring a0 to self
-      exp.code(cls, env, dispatchTables, s);
+      exp.code(cls, env, classTags, dispatchTables, s);
     }
   }
 }
@@ -1204,6 +1231,7 @@ class let extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     throw new UnsupportedOperationException("not implemented");
@@ -1262,11 +1290,12 @@ class plus extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, dispatchTables, s);
+    e2.code(cls, env, classTags, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1334,13 +1363,14 @@ class sub extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // TODO there might be a way to extract the binary arith operator code gen but not sure if its
     // worth it
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, dispatchTables, s);
+    e2.code(cls, env, classTags, dispatchTables, s);
     // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
     // or so?
     // copy e2 int object which will then be returned in a0
@@ -1409,11 +1439,12 @@ class mul extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, dispatchTables, s);
+    e2.code(cls, env, classTags, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1480,11 +1511,12 @@ class divide extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, dispatchTables, s);
+    e2.code(cls, env, classTags, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1546,9 +1578,10 @@ class neg extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     // copy e1 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of the freshly copied e1 into t1
@@ -1611,14 +1644,15 @@ class lt extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // evaluate e1 then e2
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
-    e2.code(cls, env, dispatchTables, s);
+    e2.code(cls, env, classTags, dispatchTables, s);
     // get the value of e2 into t3 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
@@ -1685,11 +1719,12 @@ class eq extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
-    e2.code(cls, env, dispatchTables, s);
+    e2.code(cls, env, classTags, dispatchTables, s);
     CgenSupport.emitMove(CgenSupport.T2, CgenSupport.ACC, s);
     // equality test whether the objects passed in $t1 and $t2 have the same primitive type
     // {Int,String,Bool} and the same value. If they do, the value in $a0 is returned, otherwise
@@ -1753,14 +1788,15 @@ class leq extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // evaluate e1 then e2
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
-    e2.code(cls, env, dispatchTables, s);
+    e2.code(cls, env, classTags, dispatchTables, s);
     // get the value of e2 into t3 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
@@ -1821,9 +1857,10 @@ class comp extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, dispatchTables, s);
+    e1.code(cls, env, classTags, dispatchTables, s);
     // get the value of e1 into t2 (load reference to bool object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
@@ -1885,6 +1922,7 @@ class int_const extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     CgenSupport.emitLoadInt(
@@ -1939,6 +1977,7 @@ class bool_const extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     CgenSupport.emitLoadBool(CgenSupport.ACC, new BoolConst(val), s);
@@ -1994,6 +2033,7 @@ class string_const extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     CgenSupport.emitLoadString(
@@ -2049,6 +2089,7 @@ class new_ extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // TODO implement SELF_TYPE
@@ -2109,6 +2150,7 @@ class isvoid extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     throw new UnsupportedOperationException("not implemented");
@@ -2157,6 +2199,7 @@ class no_expr extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     throw new UnsupportedOperationException("not implemented");
@@ -2210,6 +2253,7 @@ class object extends Expression {
   public void code(
       Class_ cls,
       SymbolTable env,
+      Map<Integer, String> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
