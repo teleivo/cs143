@@ -1336,13 +1336,9 @@ class sub extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO there might be a way to extract the binary arith operator code gen but not sure if its
-    // worth it
     e1.code(cls, env, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
     e2.code(cls, env, dispatchTables, s);
-    // TODO(ivo) do I need to do something to setup the new activation record? like store the fp
-    // or so?
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
