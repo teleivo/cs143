@@ -860,8 +860,21 @@ class dispatch extends Expression {
       CgenSupport.emitPush(CgenSupport.ACC, s);
     }
 
+    // TODO do I need this with e0 as well?
     // restore self
     CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
+
+    // TODO I am not sure I am doing this 100% correctly according to the operational semantics.
+    // The body is supposed to be evaluated in a fresh environment based of the attributes which
+    // should be the attributes of v0's class after having evaluated e0. Right now I think its
+    // only correct for dispatches to self (when there is no e0).
+    String dispatchClass;
+    if (TreeConstants.SELF_TYPE.equals(expr.get_type())) {
+      dispatchClass = cls.getName().getString();
+    } else {
+      expr.code(cls, env, dispatchTables, s);
+      dispatchClass = expr.get_type().getString();
+    }
 
     int label = CgenSupport.generateLocalLabel();
     // handle dispatch on void
@@ -874,8 +887,7 @@ class dispatch extends Expression {
     // load offset to the objects (self) dispatch table
     CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
     // add the offset to the right method in the dispatch table
-    int dispatchOffset =
-        dispatchTables.get(cls.getName().getString()).get(name.getString()).offset();
+    int dispatchOffset = dispatchTables.get(dispatchClass).get(name.getString()).offset();
     CgenSupport.emitLoad(CgenSupport.T1, dispatchOffset, CgenSupport.T1, s);
     CgenSupport.emitJalr(CgenSupport.T1, s);
   }
@@ -2036,8 +2048,7 @@ class new_ extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -2208,6 +2219,8 @@ class object extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
+    // TODO the attribute is not defined but should be
+    // System.out.println(getLineNumber() + " " + cls.getName() + " " + name);
     CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
     CgenSupport.emitLoad(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
   }

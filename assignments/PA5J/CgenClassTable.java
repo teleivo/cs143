@@ -656,7 +656,8 @@ class CgenClassTable extends SymbolTable {
     // expected. The environment here is just a dummy one as I have to pass one but am unsure if
     // the one created for methods should be created first and reused here or how reuse would
     // even look like.
-    SymbolTable environment = new SymbolTable();
+    SymbolTable env = new SymbolTable();
+    env.enterScope();
 
     // emit code to evaluate attribute initializers, attributes without one get their defaults
     // via the proto objects
@@ -664,13 +665,15 @@ class CgenClassTable extends SymbolTable {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
         if (a.init != null && !(a.init instanceof no_expr)) {
-          a.init.code(cls, environment, dispatchTables, s);
+          a.init.code(cls, env, dispatchTables, s);
           // store initialization value into corresponding attribute
           CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }
         attrNumber++;
       }
     }
+
+    env.exitScope();
 
     // restore self
     CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
@@ -768,15 +771,6 @@ class CgenClassTable extends SymbolTable {
     // a0
     CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
 
-    // TODO(ivo) who is responsible for the missing bit?
-    // move	$s0 $a0
-    // >>> missing
-    // lw	$a0 12($fp)
-    // <<<
-    // sw	$a0 0($sp)
-    // addiu	$sp $sp -4
-    // move	$a0 $s0
-    // TODO(ivo) for all the formals
     m.expr.code(cls, environment, dispatchTables, s);
 
     // restore callee saved registers from the stack

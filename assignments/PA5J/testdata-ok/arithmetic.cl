@@ -88,8 +88,7 @@ class Main inherits IO {
 		{
 			print_bool("Main.eq_int", eq_int(5, 5));
 			print_bool("Main.eq_int", eq_int(6, 5));
-			-- TODO enhance dispatch
-			-- print_bool("Main.eq_int", eq_int((new A).a(), (new A).a()));
+			print_bool("Main.eq_int", eq_int((new A).a(), (new A).a()));
 			print_bool("Main.eq_bool", eq_bool(true,true));
 			print_bool("Main.eq_bool", eq_bool(false,false));
 			print_bool("Main.eq_string", eq_string("yes","yes"));
