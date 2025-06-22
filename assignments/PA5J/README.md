@@ -35,14 +35,14 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * fix e0 in dispatch: how to get the correct offset for a dynamic dispatch?
+  * fix todos around e0 in dispatch and cleanup
+  * fix attributes.cl/test initializers with the scoping and attributes being able to refer to each
+  other even if not yet initialized
   * new using self
   * use new in dispatch test and see how that affects self
   * isvoid
     * do I need to do some void checks for example in the arith operators? some comparison to 0 and
       then some kind of abort
-  * test initializers with the scoping and attributes being able to refer to each other even if not
-    yet initialized
   * self / SELF_TYPE
   * assign
   * static dispatch
