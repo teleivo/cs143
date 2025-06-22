@@ -68,7 +68,9 @@ class Main inherits A {
 			print_string("Main.main", b());
 			print_string("Main.main", c());
 			print_string("Main.main", d());
-			print_string("Main.concat", "foo".concat("bar"));
+			print_string("Main String.concat", "foo".concat("bar"));
+			print_string("Main String.substr", "foobar".substr(0, 3));
+			print_int("Main String.length", "foo".length());
 			print_int("Main.main", numberA());
 			print_int("Main.main", numberB(11));
 		}
