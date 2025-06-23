@@ -588,7 +588,7 @@ class CgenClassTable extends SymbolTable {
               if (TreeConstants.Bool.equals(a.type_decl)) {
                 BoolConst.falsebool.codeRef(proto);
               } else if (TreeConstants.Int.equals(a.type_decl)) {
-                ((IntSymbol) AbstractTable.inttable.lookup(0)).codeRef(proto);
+                ((IntSymbol) AbstractTable.inttable.lookup("0")).codeRef(proto);
               } else if (TreeConstants.Str.equals(a.type_decl)) {
                 ((StringSymbol) AbstractTable.stringtable.lookup("")).codeRef(proto);
               } else {
@@ -649,15 +649,13 @@ class CgenClassTable extends SymbolTable {
       attrNumber = objectSizes.get(name.toString());
     }
 
-    // TODO(ivo) all attributes are visible to the initializers via the environment. If they are
-    // accessed before their initializer is run they are visible using their defaults. Meaning
-    // first all are visible using defaults, then initializers are run in greates ancester order
-    // I think. Am I doing this correctly? Come up with a code example to show it works as
-    // expected. The environment here is just a dummy one as I have to pass one but am unsure if
-    // the one created for methods should be created first and reused here or how reuse would
-    // even look like.
+    // 1. all attributes are visible to the initializers via the environment
+    // 2. initializers are run in greates ancestor + code order
+    // 3. if an attribute is thus accessed before its initializer has run, its default will be
+    // seen
     SymbolTable env = new SymbolTable();
     env.enterScope();
+    addAttributes(env, cls);
 
     // emit code to evaluate attribute initializers, attributes without one get their defaults
     // via the proto objects
@@ -733,6 +731,8 @@ class CgenClassTable extends SymbolTable {
     }
   }
 
+  // TODO could I create a map like the dispatchTables during the object layout prototype table
+  // emitting to not have to redo this?
   private void addAttributes(SymbolTable env, CgenNode cls) {
     Stack<class_c> hierarchy = new Stack<>();
     hierarchy.push(cls);

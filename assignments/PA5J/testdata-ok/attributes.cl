@@ -1,18 +1,21 @@
--- TODO I need to fix dispatch with e0
 -- tests mostly initialization of attributes
 class A {
-  b : Int <- a;
-  a : Int <- 10;
-  c : A;
+  a : Int <- b; -- should be 0 as bs' initializer will not have run yet
+  b : Int <- 10;
+  c : Int <- b; -- should be 10 as bs' initializer will have run
   a() : Int { a };
   b() : Int { b };
-  c() : A { c };
-  -- TODO that will only work if I finish the e0 eval issue
-  -- is_c_void() : Bool { isvoid c };
+  c() : Int { c };
 };
-class B {
-  b : Int;
-  b() : Int { b };
+-- class B {
+--   a : A;
+--   b : A <- new A;
+--   a() : A { a };
+--   b() : A { b };
+-- };
+class C inherits A {
+	e: Int <- b; -- should be 10 as As' initializers will have run
+	e() : Int { e };
 };
 class Main inherits IO {
 
@@ -57,9 +60,12 @@ class Main inherits IO {
 	main() : Object {
 		{
 			-- TODO that will only work if I finish the e0 eval issue
-			-- print_bool("Main A.c() isvoid", isvoid ((new A).c()));
-			-- print_bool("Main A.c() isvoid", isvoid ((new A).c()));
-			1;
+			print_int("Main A.a()", (new A).a());
+			print_int("Main A.b()", (new A).b());
+			print_int("Main A.c()", (new A).c());
+			print_int("Main C.e()", (new C).e());
+			-- print_bool("Main B.a() isvoid", isvoid ((new B).a()));
+			-- print_bool("Main B.b() isvoid", isvoid ((new B).b()));
 		}
 	};
 };
