@@ -2107,8 +2107,7 @@ class isvoid extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -2118,7 +2117,13 @@ class isvoid extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    e1.code(cls, env, dispatchTables, s);
+    CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
+    int endLabel = CgenSupport.generateLocalLabel();
+    CgenSupport.emitBeqz(CgenSupport.T1, endLabel, s);
+    CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
+    CgenSupport.emitLabelDef(endLabel, s);
   }
 }
 

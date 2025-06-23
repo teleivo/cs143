@@ -35,21 +35,19 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * fix todos around e0 in dispatch and cleanup
-  * fix attributes.cl/test initializers with the scoping and attributes being able to refer to each
-  other even if not yet initialized
+  * fix todos around e0 in dispatch and cleanup, is an attribute offset table like the dispatch
+  table worth it? I am redoing the hierarchy iteration twice
   * new using self
   * use new in dispatch test and see how that affects self
-  * isvoid
-    * do I need to do some void checks for example in the arith operators? some comparison to 0 and
-      then some kind of abort
-  * self / SELF_TYPE
+  * test all kinds of self / SELF_TYPE scenarios
   * assign
   * static dispatch
   * let
   * loop
   * case
   * add tests for the error cases like dispatch on void
+    * do I need to do some void checks for example in the arith operators? some comparison to 0 and
+      then some kind of abort
   * what changes are needed to be able to use the GC? how can I also test that in test.sh?
   * what else?
 

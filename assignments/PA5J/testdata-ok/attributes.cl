@@ -7,12 +7,12 @@ class A {
   b() : Int { b };
   c() : Int { c };
 };
--- class B {
---   a : A;
---   b : A <- new A;
---   a() : A { a };
---   b() : A { b };
--- };
+class B {
+  a : A;
+  b : A <- new A;
+  a() : A { a };
+  b() : A { b };
+};
 class C inherits A {
 	e: Int <- b; -- should be 10 as As' initializers will have run
 	e() : Int { e };
@@ -59,13 +59,12 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			-- TODO that will only work if I finish the e0 eval issue
-			print_int("Main A.a()", (new A).a());
-			print_int("Main A.b()", (new A).b());
-			print_int("Main A.c()", (new A).c());
-			print_int("Main C.e()", (new C).e());
-			-- print_bool("Main B.a() isvoid", isvoid ((new B).a()));
-			-- print_bool("Main B.b() isvoid", isvoid ((new B).b()));
+			-- print_int("Main A.a()", (new A).a());
+			-- print_int("Main A.b()", (new A).b());
+			-- print_int("Main A.c()", (new A).c());
+			-- print_int("Main C.e()", (new C).e());
+			print_bool("Main B.a() isvoid", isvoid ((new B).a()));
+			print_bool("Main B.b() isvoid", isvoid ((new B).b()));
 		}
 	};
 };
