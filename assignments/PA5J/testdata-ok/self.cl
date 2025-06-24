@@ -1,9 +1,11 @@
--- tests mostly initialization of attributes
+-- tests mostly self and SELF_TYPE
 class A {
-  a : Int <- 10;
-  a() : Int { a };
-  new_self() : SELF_TYPE { new SELF_TYPE };
-  get_self() : SELF_TYPE { self };
+	a : Int <- 10;
+	a() : Int { a };
+	b : A <- self;
+	b() : A { b };
+	new_self() : SELF_TYPE { new SELF_TYPE };
+	get_self() : SELF_TYPE { self };
 };
 class Main inherits IO {
 	-- test helpers
@@ -47,7 +49,8 @@ class Main inherits IO {
 	main() : Object {
 		{
 			print_int("Main A.new_self().a()", (new A).new_self().a());
-			print_int("Main A.new_self().a()", (new A).get_self().a());
+			print_int("Main A.get_self().a()", (new A).get_self().a());
+			print_int("Main A.b().a()", (new A).b().a());
 		}
 	};
 };

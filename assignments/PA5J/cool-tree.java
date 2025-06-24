@@ -2228,7 +2228,11 @@ class object extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
-    CgenSupport.emitLoad(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
+    if (TreeConstants.self.equals(name)) {
+      CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
+    } else {
+      CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
+      CgenSupport.emitLoad(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
+    }
   }
 }
