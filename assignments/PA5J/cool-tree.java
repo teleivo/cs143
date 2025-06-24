@@ -2056,13 +2056,19 @@ class new_ extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO implement SELF_TYPE
+    AbstractSymbol dispatchClass;
+    if (TreeConstants.SELF_TYPE.equals(type_name)) {
+      dispatchClass = cls.getName();
+    } else {
+      dispatchClass = type_name;
+    }
+
     // get the proto object put into a0
-    CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.protoObjRef(type_name), s);
+    CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.protoObjRef(dispatchClass), s);
     // copy proto object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // call initializer
-    CgenSupport.emitJal(CgenSupport.initMethodRef(type_name), s);
+    CgenSupport.emitJal(CgenSupport.initMethodRef(dispatchClass), s);
   }
 }
 
