@@ -700,7 +700,6 @@ class CgenClassTable extends SymbolTable {
         continue;
       }
 
-      // TODO(ivo) cleanup mess once its working; I am likely repeating work here
       // add all attributes and their locations to the environment
       SymbolTable env = new SymbolTable();
       env.enterScope();
@@ -731,8 +730,8 @@ class CgenClassTable extends SymbolTable {
     }
   }
 
-  // TODO could I create a map like the dispatchTables during the object layout prototype table
-  // emitting to not have to redo this?
+  // I could create an attribute offset map like the dispatchTables as I am redoing this work in at
+  // least two places.
   private void addAttributes(SymbolTable env, CgenNode cls) {
     Stack<class_c> hierarchy = new Stack<>();
     hierarchy.push(cls);

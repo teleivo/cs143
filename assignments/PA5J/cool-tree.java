@@ -860,14 +860,10 @@ class dispatch extends Expression {
       CgenSupport.emitPush(CgenSupport.ACC, s);
     }
 
-    // TODO do I need this with e0 as well?
     // restore self
     CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
 
-    // TODO I am not sure I am doing this 100% correctly according to the operational semantics.
-    // The body is supposed to be evaluated in a fresh environment based of the attributes which
-    // should be the attributes of v0's class after having evaluated e0. Right now I think its
-    // only correct for dispatches to self (when there is no e0).
+    // Getting the class to lookup the method in
     String dispatchClass;
     if (TreeConstants.SELF_TYPE.equals(expr.get_type())) {
       dispatchClass = cls.getName().getString();
@@ -876,6 +872,8 @@ class dispatch extends Expression {
       dispatchClass = expr.get_type().getString();
     }
 
+    // The body is supposed to be evaluated in a fresh environment based of the attributes which
+    // should be the attributes of v0's class after having evaluated e0.
     int label = CgenSupport.generateLocalLabel();
     // handle dispatch on void
     CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, label, s);
@@ -2224,8 +2222,6 @@ class object extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO the attribute is not defined but should be
-    // System.out.println(getLineNumber() + " " + cls.getName() + " " + name);
     CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
     CgenSupport.emitLoad(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
   }

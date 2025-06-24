@@ -18,6 +18,7 @@ class C inherits A {
 	e() : Int { e };
 };
 class Main inherits IO {
+	a: Int <- 20; -- this should not influence As' attribute visibility on new
 
 	-- test helpers
 	print_int(prefix : String, arg : Int) : Object {
@@ -59,10 +60,10 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			-- print_int("Main A.a()", (new A).a());
-			-- print_int("Main A.b()", (new A).b());
-			-- print_int("Main A.c()", (new A).c());
-			-- print_int("Main C.e()", (new C).e());
+			print_int("Main A.a()", (new A).a());
+			print_int("Main A.b()", (new A).b());
+			print_int("Main A.c()", (new A).c());
+			print_int("Main C.e()", (new C).e());
 			print_bool("Main B.a() isvoid", isvoid ((new B).a()));
 			print_bool("Main B.b() isvoid", isvoid ((new B).b()));
 		}

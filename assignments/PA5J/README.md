@@ -35,8 +35,6 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * fix todos around e0 in dispatch and cleanup, is an attribute offset table like the dispatch
-  table worth it? I am redoing the hierarchy iteration twice
   * new using self
   * use new in dispatch test and see how that affects self
   * test all kinds of self / SELF_TYPE scenarios

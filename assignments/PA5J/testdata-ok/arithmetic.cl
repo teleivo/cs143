@@ -9,7 +9,12 @@ class B {
   b() : Int { b };
 };
 class Main inherits IO {
-	-- TODO test equality on void
+	c : A;
+	d : A;
+	f : A <- new A;
+	void_eq_itself() : Bool { c = d };
+	void_eq_nothing_else() : Bool { c = f };
+
 	-- TODO test equality on instance once I have new implemented and let for the true case
 	eq_int(a : Int, b : Int) : Bool {
 		a = b
