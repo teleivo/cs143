@@ -35,7 +35,6 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * static dispatch
   * let
   * loop
   * case

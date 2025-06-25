@@ -25,6 +25,14 @@ class A inherits IO {
 		}
 	};
 };
+class B inherits A {
+	a() : String {
+		"a from B"
+	};
+	b() : String {
+		self@A.b()
+	};
+};
 class Main inherits A {
 	bNumber : Int <- 10;
 	-- test child method overrides parent method
@@ -69,17 +77,19 @@ class Main inherits A {
 	};
 	main() : Object {
 		{
-			-- TODO implement let with init to extract prefix
-			print_string("Main.main", a());
-			print_string("Main.main", b());
-			print_string("Main.main", c());
-			print_string("Main.main", d());
+			print_string("Main.a()", a());
+			print_string("Main.b()", b());
+			print_string("Main.c()", c());
+			print_string("Main.d()", d());
 			print_string("Main String.concat", "foo".concat("bar"));
 			print_string("Main String.substr", "foobar".substr(0, 3));
-			print_int("Main String.length", "foo".length());
-			print_int("Main.main", numberA());
-			print_int("Main.main", numberB(11));
-			print_int("Main.test_assign", test_assign(10, 20));
+			print_string("new B.a()", new B.a());
+			print_string("new B@A.a()", new B@A.a());
+			print_string("new B.b()", new B.b());
+			print_int("String.length()", "foo".length());
+			print_int("Main.numberA()", numberA());
+			print_int("Main.numberB()", numberB(11));
+			print_int("Main.test_assign()", test_assign(10, 20));
 		}
 	};
 };

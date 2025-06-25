@@ -772,8 +772,7 @@ class static_dispatch extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -783,7 +782,39 @@ class static_dispatch extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    // evaluate actual parameters and put them on the stack where the callee expects them
+    for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {
+      Expression actual = ((Expression) actuals.nextElement());
+      actual.code(cls, env, dispatchTables, s);
+      CgenSupport.emitPush(CgenSupport.ACC, s);
+    }
+
+    // restore self
+    CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
+
+    // e0 is mandatory in a static dispatch as opposed to a dispatch where no e0 defaults to self
+    expr.code(cls, env, dispatchTables, s);
+
+    // The body is supposed to be evaluated in a fresh environment based of the attributes which
+    // should be the attributes of v0's class after having evaluated e0.
+    int label = CgenSupport.generateLocalLabel();
+    // handle dispatch on void
+    CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, label, s);
+    CgenSupport.emitLoadString(CgenSupport.ACC, (StringSymbol) cls.getFilename(), s);
+    CgenSupport.emitLoadImm(CgenSupport.T1, this.getLineNumber(), s);
+    CgenSupport.emitJal(CgenSupport.DISPATCH_ABORT, s);
+    // handle non-void dispatch
+    CgenSupport.emitLabelDef(label, s);
+    // load offset to the objects (self) dispatch table
+    CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
+    // This is the main difference to the normal dispatch: using the @T class to lookup the method
+    // as ACC will contain a reference to the e0 expression which we do not want to dispatch to
+    // but we do want to keep e0 evaluation in a0 as that is what we need to return
+    CgenSupport.emitLoadAddress(CgenSupport.T1, CgenSupport.dispTableRef(type_name), s);
+    // add the offset to the right method in the dispatch table
+    int dispatchOffset = dispatchTables.get(type_name.getString()).get(name.getString()).offset();
+    CgenSupport.emitLoad(CgenSupport.T1, dispatchOffset, CgenSupport.T1, s);
+    CgenSupport.emitJalr(CgenSupport.T1, s);
   }
 }
 

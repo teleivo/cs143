@@ -380,7 +380,11 @@ class CgenSupport {
    * @param s the output stream
    */
   static void emitDispTableRef(AbstractSymbol sym, PrintStream s) {
-    s.print(sym + DISPTAB_SUFFIX);
+    s.print(dispTableRef(sym));
+  }
+
+  static String dispTableRef(AbstractSymbol sym) {
+    return sym + DISPTAB_SUFFIX;
   }
 
   static void emitDispTableRef(AbstractSymbol sym, StringBuilder s) {
