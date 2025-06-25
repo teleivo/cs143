@@ -2056,45 +2056,36 @@ class new_ extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    AbstractSymbol dispatchClass;
-    // TODO is that the issue, am I returning an A instead of a B?
-    // I think so, here is what I get from coding the method
-    // type_name SELF_TYPE
-    // cls name A
-    //
-    // Idea: the type_name cannot help as its not known until runtime what type it will be
-    // AFAIK. But proto and init are at known locations. if SELF_TYPE, get that class tag via
-    // ACC or SELF and use that to fill ACC with proto address and dispatch to the init
-    // use class objTab
-    // A table, which at index (class tag) ∗ 8 contains a pointer to
-    // the prototype object and at index (class tag) ∗ 8 + 4 contains
-    // a pointer to the initialization method for that class.
     if (TreeConstants.SELF_TYPE.equals(type_name)) {
-      dispatchClass = cls.getName();
+      // we don't know the actual type at compile time so we need to use the class_objTab, class tag
+      // and the known offsets to get to the proto object and the classes init method
+      // get the proto object put into a0
+      // class objTab
+      // index (class tag) ∗ 8 contains a pointer to the prototype object
+      CgenSupport.emitLoadAddress(CgenSupport.T1, CgenSupport.CLASSOBJTAB, s);
+      CgenSupport.emitLoad(CgenSupport.T2, 0, CgenSupport.SELF, s);
+      CgenSupport.emitSll(CgenSupport.T2, CgenSupport.T2, 3, s);
+      CgenSupport.emitAdd(CgenSupport.T1, CgenSupport.T1, CgenSupport.T2, s);
+      // store for after the Object.copy call
+      CgenSupport.emitMove(CgenSupport.S1, CgenSupport.T1, s);
+      CgenSupport.emitLoad(CgenSupport.ACC, 0, CgenSupport.T1, s);
+
+      // copy proto object which will then be returned in a0
+      CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
+
+      // call classes initializer method
+      // class objTab
+      // index (class tag) ∗ 8 + 4 contains a pointer to the initialization method for that class
+      CgenSupport.emitLoad(CgenSupport.T1, 1, CgenSupport.S1, s);
+      CgenSupport.emitJalr(CgenSupport.T1, s);
     } else {
-      dispatchClass = type_name;
+      // get the proto object put into a0
+      CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.protoObjRef(type_name), s);
+      // copy proto object which will then be returned in a0
+      CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
+      // call initializer
+      CgenSupport.emitJal(CgenSupport.initMethodRef(type_name), s);
     }
-    // System.out.println("type_name " + type_name);
-    // System.out.println("cls name " + cls.getName());
-
-    // class objTab
-    // index (class tag) ∗ 8 contains a pointer to the prototype object
-    // index (class tag) ∗ 8 + 4 contains a pointer to the initialization method for that class
-    // get the proto object put into a0
-    CgenSupport.emitLoadImm(CgenSupport.T1, 8, s);
-    // TODO ACC or self?
-    CgenSupport.emitMul(CgenSupport.T1, CgenSupport.SELF, CgenSupport.T1, s);
-    CgenSupport.emitLoadAddress(CgenSupport.T2, CgenSupport.CLASSOBJTAB, s);
-    CgenSupport.emitAdd(CgenSupport.T1, CgenSupport.T1, CgenSupport.T2, s);
-    CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.T1, s);
-    // CgenSupport.emitLoadAddress(CgenSupport.ACC, CgenSupport.protoObjRef(dispatchClass), s);
-
-    // copy proto object which will then be returned in a0
-    CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
-    // call classes initializer method
-    CgenSupport.emitAddiu(CgenSupport.T1, CgenSupport.T1, 4, s);
-    // CgenSupport.emitJal(CgenSupport.initMethodRef(dispatchClass), s);
-    CgenSupport.emitJalr(CgenSupport.T1, s);
   }
 }
 

@@ -52,15 +52,12 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			-- these work
-			-- print_int("Main A.new_self().a()", (new A).new_self().a());
-			-- print_int("Main A.get_self().a()", (new A).get_self().a());
-			-- print_int("Main A.b().a()", (new A).b().a());
-			-- TODO this fails
+			print_int("Main A.new_self().a()", (new A).new_self().a());
+			print_int("Main A.get_self().a()", (new A).get_self().a());
+			print_int("Main A.b().a()", (new A).b().a());
 			print_int("Main B.new_self().a()", (new B).new_self().a());
-			-- these two work
-			-- print_int("Main B.get_self().a()", (new B).get_self().a());
-			-- print_int("Main B.b().a()", (new B).b().a());
+			print_int("Main B.get_self().a()", (new B).get_self().a());
+			print_int("Main B.b().a()", (new B).b().a());
 		}
 	};
 };

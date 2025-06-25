@@ -80,6 +80,7 @@ class CgenSupport {
   static final String ACC = "$a0"; // Accumulator
   static final String A1 = "$a1"; // For arguments to prim funcs
   static final String SELF = "$s0"; // Ptr to self (callee saved)
+  static final String S1 = "$s1"; // (callee saved)
   static final String T1 = "$t1"; // Temporary 1
   static final String T2 = "$t2"; // Temporary 2
   static final String T3 = "$t3"; // Temporary 3

@@ -35,8 +35,6 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * fix: use new in dispatch test and see how that affects self
-    * are there more self / SELF_TYPE scenarios to test?
   * assign
   * static dispatch
   * let
