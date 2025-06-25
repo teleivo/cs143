@@ -692,8 +692,7 @@ class assign extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -703,7 +702,9 @@ class assign extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    expr.code(cls, env, dispatchTables, s);
+    CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
+    CgenSupport.emitStore(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
   }
 }
 

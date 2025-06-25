@@ -18,6 +18,12 @@ class A inherits IO {
 	numberA() : Int {
 		aNumber
 	};
+	test_assign(a: Int, b: Int) : Int {
+		{
+			b <- a;
+			b;
+		}
+	};
 };
 class Main inherits A {
 	bNumber : Int <- 10;
@@ -73,6 +79,7 @@ class Main inherits A {
 			print_int("Main String.length", "foo".length());
 			print_int("Main.main", numberA());
 			print_int("Main.main", numberB(11));
+			print_int("Main.test_assign", test_assign(10, 20));
 		}
 	};
 };
