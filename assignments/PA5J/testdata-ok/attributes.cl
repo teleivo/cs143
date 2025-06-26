@@ -1,17 +1,17 @@
 -- tests mostly initialization of attributes
 class A {
-  a : Int <- b; -- should be 0 as bs' initializer will not have run yet
-  b : Int <- 10;
-  c : Int <- b; -- should be 10 as bs' initializer will have run
-  a() : Int { a };
-  b() : Int { b };
-  c() : Int { c };
+	a : Int <- b; -- should be 0 as bs' initializer will not have run yet
+	b : Int <- 10;
+	c : Int <- b; -- should be 10 as bs' initializer will have run
+	a() : Int { a };
+	b() : Int { b };
+	c() : Int { c };
 };
 class B {
-  a : A;
-  b : A <- new A;
-  a() : A { a };
-  b() : A { b };
+	a : A;
+	b : A <- new A;
+	a() : A { a };
+	b() : A { b };
 };
 class C inherits A {
 	e: Int <- b; -- should be 10 as As' initializers will have run
