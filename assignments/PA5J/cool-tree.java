@@ -1714,8 +1714,7 @@ class eq extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1729,12 +1728,18 @@ class eq extends Expression {
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     e2.code(cls, env, dispatchTables, s);
     CgenSupport.emitMove(CgenSupport.T2, CgenSupport.ACC, s);
-    // equality test whether the objects passed in $t1 and $t2 have the same primitive type
+
+    // equality_test tests whether the objects passed in $t1 and $t2 have the same primitive type
     // {Int,String,Bool} and the same value. If they do, the value in $a0 is returned, otherwise
     // $a1 is returned.
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
+    // this is necessary for non primitive types which are not handled by equality_test and
+    // considered equal by pointer equality
+    int endLabel = CgenSupport.generateLocalLabel();
+    CgenSupport.emitBeq(CgenSupport.T1, CgenSupport.T2, endLabel, s);
     CgenSupport.emitLoadBool(CgenSupport.A1, BoolConst.falsebool, s);
     CgenSupport.emitJal(CgenSupport.EQUALITY_TEST, s);
+    CgenSupport.emitLabelDef(endLabel, s);
   }
 }
 

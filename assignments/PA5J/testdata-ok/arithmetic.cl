@@ -14,8 +14,7 @@ class Main inherits IO {
 	f : A <- new A;
 	void_eq_itself() : Bool { c = d };
 	void_eq_nothing_else() : Bool { c = f };
-
-	-- TODO test equality on instance once I have new implemented and let for the true case
+	eq_instances() : Bool { f = f };
 	eq_int(a : Int, b : Int) : Bool {
 		a = b
 	};
@@ -93,6 +92,7 @@ class Main inherits IO {
 		{
 			print_bool("Main.eq_int", eq_int(5, 5));
 			print_bool("Main.eq_int", eq_int(6, 5));
+			print_bool("Main.eq_instances", eq_instances());
 			print_bool("Main.eq_int", eq_int((new A).a(), (new A).a()));
 			print_bool("Main.eq_bool", eq_bool(true,true));
 			print_bool("Main.eq_bool", eq_bool(false,false));
