@@ -1252,7 +1252,7 @@ class let extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // need to store s1 on stack before using it so I can restore it
+    // need to store s1 (callee-saved) on stack before evaluating the body so I can restore it
     CgenSupport.emitPush(CgenSupport.S1, s);
     if (init != null && !(init instanceof no_expr)) {
       init.code(cls, env, dispatchTables, s);
@@ -1272,7 +1272,6 @@ class let extends Expression {
     }
 
     env.enterScope();
-    // store in a callee-saved register before evaluating the body
     env.addId(identifier, new CgenClassTable.Register(CgenSupport.S1));
 
     body.code(cls, env, dispatchTables, s);
