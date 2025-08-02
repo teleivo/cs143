@@ -1048,8 +1048,7 @@ class loop extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1059,7 +1058,18 @@ class loop extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    int loopLabel = CgenSupport.generateLocalLabel();
+    int endLabel = CgenSupport.generateLocalLabel();
+
+    CgenSupport.emitLabelDef(loopLabel, s);
+    pred.code(cls, env, dispatchTables, s);
+    CgenSupport.emitLoadBool(CgenSupport.T1, BoolConst.truebool, s);
+    CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.T1, endLabel, s);
+    body.code(cls, env, dispatchTables, s);
+    CgenSupport.emitBranch(loopLabel, s);
+
+    CgenSupport.emitLabelDef(endLabel, s);
+    CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.ZERO, s);
   }
 }
 

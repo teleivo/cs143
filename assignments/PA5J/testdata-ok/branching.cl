@@ -1,4 +1,5 @@
 -- tests branching
+-- and loop
 class Main inherits IO {
 	-- TODO case
 	ifElse(pred : Bool) : Bool {
@@ -11,6 +12,15 @@ class Main inherits IO {
 			false
 		fi
 	};
+    looping(num: Int) : Object {
+		let i : Int in
+			 while i < num loop
+				{
+					i <- i + 1;
+					print_int("looping", i);
+				}
+			 pool
+    };
 
 	-- test helpers
 	print_int(prefix : String, arg : Int) : Object {
@@ -56,6 +66,7 @@ class Main inherits IO {
 			print_bool("Main.ifElseNested", ifElse(false));
 			print_bool("Main.ifElseNested", ifElseNested(true));
 			print_bool("Main.ifElseNested", ifElseNested(false));
+			looping(5);
 		}
 	};
 };

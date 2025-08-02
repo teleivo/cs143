@@ -80,16 +80,16 @@ class Main inherits A {
 
 	main() : Object {
 		{
-			-- print_int("let_without_initializer", let_without_initializer());
-			-- print_bool("let_without_initializer_bool", let_without_initializer_bool());
-			-- print_string("let_without_initializer_string", let_without_initializer_string());
-			-- print_bool("let_without_initializer_object", isvoid let_without_initializer_object());
+			print_int("let_without_initializer", let_without_initializer());
+			print_bool("let_without_initializer_bool", let_without_initializer_bool());
+			print_string("let_without_initializer_string", let_without_initializer_string());
+			print_bool("let_without_initializer_object", isvoid let_without_initializer_object());
 			print_int("let_without_initializer_object", let_without_initializer_object().a());
-			-- print_int("let_with_initializer", let_with_initializer());
-			-- print_int("let_hides_parameter", let_hides_parameter(10));
-			-- print_int("let_hides_attribute", let_hides_attribute());
-			-- print_int("let_initializer_access_attribute", let_initializer_access_attribute());
-			-- print_int("let_nested", let_nested());
+			print_int("let_with_initializer", let_with_initializer());
+			print_int("let_hides_parameter", let_hides_parameter(10));
+			print_int("let_hides_attribute", let_hides_attribute());
+			print_int("let_initializer_access_attribute", let_initializer_access_attribute());
+			print_int("let_nested", let_nested());
 		}
 	};
 };

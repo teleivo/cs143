@@ -35,7 +35,6 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * loop
   * case
   * add tests for the error cases like dispatch on void
     * do I need to do some void checks for example in the arith operators? some comparison to 0 and
