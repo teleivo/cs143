@@ -61,11 +61,15 @@ class IntSymbol extends AbstractSymbol {
    * @param s the output stream
    */
   public void codeRef(PrintStream s) {
-    s.print(CgenSupport.INTCONST_PREFIX + index);
+    s.print(getCodeRef());
   }
 
   public void codeRef(StringBuilder s) {
     s.append(CgenSupport.INTCONST_PREFIX).append(index);
+  }
+
+  public String getCodeRef() {
+    return CgenSupport.INTCONST_PREFIX + index;
   }
 
   /** Returns a copy of this symbol */

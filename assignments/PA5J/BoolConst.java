@@ -56,11 +56,15 @@ class BoolConst {
    * @param s the output stream
    */
   public void codeRef(PrintStream s) {
-    s.print(CgenSupport.BOOLCONST_PREFIX + (val ? "1" : "0"));
+    s.print(getCodeRef());
   }
 
   public void codeRef(StringBuilder s) {
-    s.append(CgenSupport.BOOLCONST_PREFIX + (val ? "1" : "0"));
+    s.append(getCodeRef());
+  }
+
+  public String getCodeRef() {
+    return CgenSupport.BOOLCONST_PREFIX + (val ? "1" : "0");
   }
 
   /**

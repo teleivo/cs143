@@ -8,8 +8,12 @@ class Main inherits A {
 	b : Int <- 2;
 	a() : Int{2};
 	d() : Int{2};
+	-- let_without_initializer() : Int {
+	-- 	let x : Int in x
+	-- };
 	let_without_initializer() : Int {
-		let x : Int in x
+		let x : Int in let y : Int in let a : Int in let b : Int in let c : Int in let d : Int in
+		let f : Int in let t : Int in let u : Int in let i : Int in let o : Int in let z : Int in d
 	};
 	let_with_initializer() : Int {
 		let x : Int <- 44 in x

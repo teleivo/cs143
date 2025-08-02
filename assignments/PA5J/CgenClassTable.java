@@ -565,6 +565,7 @@ class CgenClassTable extends SymbolTable {
         objectSize += 2;
         proto.append(CgenSupport.WORD);
         // pointer to string length (of zero)
+        // TODO should this not also be "0"?
         ((IntSymbol) AbstractTable.inttable.lookup(0)).codeRef(proto);
         proto.append('\n');
         proto.append(CgenSupport.WORD);
@@ -690,7 +691,9 @@ class CgenClassTable extends SymbolTable {
     return cls.getParentNd() != null && !cls.getParentNd().getName().equals(TreeConstants.No_class);
   }
 
-  record Location(int offset, String sourceRegister) {}
+  record Address(int offset, String sourceRegister) {}
+
+  record Register(String name) {}
 
   private void codeMethods() {
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
@@ -716,7 +719,7 @@ class CgenClassTable extends SymbolTable {
           for (int i = m.formals.getLength() - 1; i >= 0; i--) {
             formalc form = (formalc) m.formals.getNth(i);
             // the arg is put onto the stack and will be available by the calle via the framepointer
-            env.addId(form.name, new CgenClassTable.Location(argOffset, CgenSupport.FP));
+            env.addId(form.name, new CgenClassTable.Address(argOffset, CgenSupport.FP));
             argOffset++;
           }
 
@@ -748,7 +751,7 @@ class CgenClassTable extends SymbolTable {
       for (Enumeration f = cur.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
         if (feature instanceof attr attr) {
-          env.addId(attr.name, new Location(attrNumber, CgenSupport.SELF));
+          env.addId(attr.name, new Address(attrNumber, CgenSupport.SELF));
           attrNumber++;
         }
       }

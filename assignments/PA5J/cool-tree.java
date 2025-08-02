@@ -703,8 +703,13 @@ class assign extends Expression {
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     expr.code(cls, env, dispatchTables, s);
-    CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
-    CgenSupport.emitStore(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
+    Object ref = env.lookup(name);
+    if (ref instanceof CgenClassTable.Address address) {
+      CgenSupport.emitStore(CgenSupport.ACC, address.offset(), address.sourceRegister(), s);
+      // TODO(ivo) when would this case be possible? test this, is it an assignment in a let body?
+    } else if (ref instanceof CgenClassTable.Register register) {
+      CgenSupport.emitMove(register.name(), CgenSupport.ACC, s);
+    }
   }
 }
 
@@ -1237,8 +1242,7 @@ class let extends Expression {
   }
 
   /**
-   * Generates code for this expression. This method is to be completed in programming assignment 5.
-   * (You may add or remove parameters as you wish.)
+   * Generates code for this expression.
    *
    * @param s the output stream
    */
@@ -1248,7 +1252,38 @@ class let extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    // need to store s1 on stack before using it so I can restore it
+    CgenSupport.emitPush(CgenSupport.S1, s);
+    if (init != null && !(init instanceof no_expr)) {
+      init.code(cls, env, dispatchTables, s);
+      CgenSupport.emitMove(CgenSupport.S1, CgenSupport.ACC, s);
+    } else {
+      // TODO add default initialization, I think I need a la to S1 from these refs
+      if (TreeConstants.Bool.equals(type_decl)) {
+        CgenSupport.emitLoadAddress(CgenSupport.S1, BoolConst.falsebool.getCodeRef(), s);
+      } else if (TreeConstants.Int.equals(type_decl)) {
+        CgenSupport.emitLoadAddress(
+            CgenSupport.S1, ((IntSymbol) AbstractTable.inttable.lookup("0")).getCodeRef(), s);
+      } else if (TreeConstants.Str.equals(type_decl)) {
+        // TODO how to do this for Str?
+        // CgenSupport.emitLoadAddress(
+        //     CgenSupport.S1, ((StringSymbol) AbstractTable.stringtable.lookup("")).getCodeRef(),
+        // s);
+      } else {
+        // TODO there must be a zero, also use this consant in the code I got this if/else from
+        s.append(CgenSupport.ZERO); // set to void
+      }
+    }
+
+    env.enterScope();
+    // store in a callee-saved register before evaluating the body
+    env.addId(identifier, new CgenClassTable.Register(CgenSupport.S1));
+
+    body.code(cls, env, dispatchTables, s);
+
+    // TODO restore S1
+    CgenSupport.emitPop(1, s);
+    env.exitScope();
   }
 }
 
@@ -2285,8 +2320,12 @@ class object extends Expression {
     if (TreeConstants.self.equals(name)) {
       CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
     } else {
-      CgenClassTable.Location location = (CgenClassTable.Location) env.lookup(name);
-      CgenSupport.emitLoad(CgenSupport.ACC, location.offset(), location.sourceRegister(), s);
+      Object ref = env.lookup(name);
+      if (ref instanceof CgenClassTable.Address address) {
+        CgenSupport.emitLoad(CgenSupport.ACC, address.offset(), address.sourceRegister(), s);
+      } else if (ref instanceof CgenClassTable.Register register) {
+        CgenSupport.emitMove(CgenSupport.ACC, register.name(), s);
+      }
     }
   }
 }
