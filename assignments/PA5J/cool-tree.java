@@ -1258,20 +1258,16 @@ class let extends Expression {
       init.code(cls, env, dispatchTables, s);
       CgenSupport.emitMove(CgenSupport.S1, CgenSupport.ACC, s);
     } else {
-      // TODO add default initialization, I think I need a la to S1 from these refs
       if (TreeConstants.Bool.equals(type_decl)) {
         CgenSupport.emitLoadAddress(CgenSupport.S1, BoolConst.falsebool.getCodeRef(), s);
       } else if (TreeConstants.Int.equals(type_decl)) {
         CgenSupport.emitLoadAddress(
             CgenSupport.S1, ((IntSymbol) AbstractTable.inttable.lookup("0")).getCodeRef(), s);
       } else if (TreeConstants.Str.equals(type_decl)) {
-        // TODO how to do this for Str?
-        // CgenSupport.emitLoadAddress(
-        //     CgenSupport.S1, ((StringSymbol) AbstractTable.stringtable.lookup("")).getCodeRef(),
-        // s);
+        CgenSupport.emitLoadAddress(
+            CgenSupport.S1, ((StringSymbol) AbstractTable.stringtable.lookup("")).getCodeRef(), s);
       } else {
-        // TODO there must be a zero, also use this consant in the code I got this if/else from
-        s.append(CgenSupport.ZERO); // set to void
+        CgenSupport.emitMove(CgenSupport.S1, CgenSupport.ZERO, s);
       }
     }
 
@@ -1281,7 +1277,7 @@ class let extends Expression {
 
     body.code(cls, env, dispatchTables, s);
 
-    // TODO restore S1
+    // restore S1
     CgenSupport.emitPop(1, s);
     env.exitScope();
   }

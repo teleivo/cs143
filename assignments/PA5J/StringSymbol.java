@@ -67,11 +67,15 @@ class StringSymbol extends AbstractSymbol {
    * @param s the output stream
    */
   public void codeRef(PrintStream s) {
-    s.print(CgenSupport.STRCONST_PREFIX + index);
+    s.print(getCodeRef());
   }
 
   public void codeRef(StringBuilder s) {
-    s.append(CgenSupport.STRCONST_PREFIX + index);
+    s.append(getCodeRef());
+  }
+
+  public String getCodeRef() {
+    return CgenSupport.STRCONST_PREFIX + index;
   }
 
   /** Returns a copy of this symbol */
