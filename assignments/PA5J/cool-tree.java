@@ -1129,7 +1129,41 @@ class typcase extends Expression {
       SymbolTable env,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    throw new UnsupportedOperationException("not implemented");
+    // Case expressions provide runtime type tests on objects. First, expr0 is evaluated and its
+    // dynamic type C noted (if expr0 evaluates to void a run-time error is produced). Next, from
+    // among the
+    // branches the branch with the least type <typek> such that C ≤ <typek> is selected. The
+    // identifier <idk> is
+    // bound to the value of <expr0> and the expression <exprk> is evaluated. The result of the case
+    // is
+    // the value of <exprk>.
+    // The identifier id introduced by a branch of a case hides any variable or attribute definition
+    // for id visible in the containing scope.
+
+    expr.code(cls, env, dispatchTables, s);
+    // load class tag for dynamic runtime type tests
+    CgenSupport.emitLoad(CgenSupport.T2, 0, CgenSupport.ACC, s);
+
+    // TODO pick the correct branch based on dynamic type of whats in a0
+    // Create new env with br.name assigned to result of expr evaluated above
+    // Eval br.expr
+    // Exit new env
+    // Return result of eval? is automatic as that should already be in a0
+    for (Enumeration e = cases.getElements(); e.hasMoreElements(); ) {
+      branch br = (branch) e.nextElement();
+      // br.name
+      // br.type_decl
+      // br.expr.code(cls, env, dispatchTables, s);
+    }
+
+    int label = CgenSupport.generateLocalLabel();
+    // handle case expression evaluating to void
+    CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, label, s);
+    CgenSupport.emitLoadString(CgenSupport.ACC, (StringSymbol) cls.getFilename(), s);
+    CgenSupport.emitLoadImm(CgenSupport.T1, this.getLineNumber(), s);
+    CgenSupport.emitJal(CgenSupport.CASE_ABORT_2, s);
+    // handle non-void case expression
+    CgenSupport.emitLabelDef(label, s);
   }
 }
 

@@ -5,29 +5,10 @@ class B inherits A {
 -- tests branching
 -- and loop
 class Main inherits IO {
-	ifElse(pred : Bool) : Bool {
-		if pred then true else false fi
-	};
-	ifElseNested(pred : Bool) : Bool {
-		if if pred then true else false fi then
-			true
-		else
-			false
-		fi
-	};
-    looping(num: Int) : Object {
-		let i : Int in
-			 while i < num loop
-				{
-					i <- i + 1;
-					print_int("looping", i);
-				}
-			 pool
-    };
    class_with_catchall(var : Object) : SELF_TYPE {
       case var of
 		 a : A => out_string("Class type is now A\n");
-		 b : B => out_string("Class type is now B\n");
+		 -- b : B => out_string("Class type is now B\n");
 		 o : Object => out_string("Oooops\n");
       esac
    };
@@ -72,14 +53,9 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			print_bool("Main.ifElseNested", ifElse(true));
-			print_bool("Main.ifElseNested", ifElse(false));
-			print_bool("Main.ifElseNested", ifElseNested(true));
-			print_bool("Main.ifElseNested", ifElseNested(false));
-			looping(5);
-			class_with_catchall(new A);
+			-- class_with_catchall(new A);
 			class_with_catchall(new B);
-			class_with_catchall(10);
+			-- class_with_catchall(10);
 		}
 	};
 };

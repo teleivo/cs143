@@ -20,9 +20,11 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 */
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -46,7 +48,9 @@ class CgenClassTable extends SymbolTable {
   record DispatchTableEntry(method method, String methodRef, int offset) {}
   ;
 
-  // private final Map<String, Map<String, MethodRef>> methods;
+  // Range of class tags used for checking the case branches against the runtime type.
+  record Range(int min, int max) {}
+  ;
 
   /** This is the stream to which assembly instructions are output */
   private final PrintStream s;
@@ -395,9 +399,57 @@ class CgenClassTable extends SymbolTable {
     installClasses(cls);
     buildInheritanceTree();
 
+    System.out.println(this.classTags);
+    Map<String, List<Range>> ranges = new HashMap<>(cls.getLength());
+    branchRanges(root(), ranges);
+    System.out.println(ranges);
+
     code();
 
     exitScope();
+  }
+
+  // non-basic classes have continusous class tags due to how they are created. basic
+  // classes are created upfront leading to non-continuous class tags. this is why they
+  // need to be added separately and why this complicates range computations which would
+  // be easy in a search like tree.
+  private void branchRanges(CgenNode node, Map<String, List<CgenClassTable.Range>> ranges) {
+    if (node == null) {
+      return;
+    }
+
+    String name = node.getName().getString();
+    Integer tag = classTags.get(name);
+
+    List<Range> result = new ArrayList<>();
+    if (node.basic()) {
+      result.add(new Range(tag, tag));
+      ranges.put(name, result);
+    }
+
+    int max = tag;
+    for (Enumeration n = node.getChildren(); n.hasMoreElements(); ) {
+      CgenNode child = (CgenNode) n.nextElement();
+      String childName = child.getName().getString();
+      Integer childTag = classTags.get(childName);
+
+      branchRanges(child, ranges);
+
+      List<CgenClassTable.Range> childRanges = ranges.get(childName);
+      if (node.basic()) {
+        // TODO what about basic classes inheriting from basic classes like Object, do I
+        // need to spread here
+        result.add(childRanges.get(0));
+      } else {
+        // non-basic classes have continguous class tags leading to a single range
+        max = Math.max(max, childRanges.get(0).max);
+      }
+    }
+
+    if (!node.basic()) {
+      result.add(new Range(tag, max));
+      ranges.put(name, result);
+    }
   }
 
   /** Main code generation method. */

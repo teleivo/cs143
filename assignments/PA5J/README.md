@@ -36,7 +36,12 @@ To try yourself
 
 * implement missing expression
   * case
-  * add tests for the error cases like dispatch on void
+  * add tests for the error cases
+    * dispatch on void
+    * case
+      * expression that evals to void
+      * if no branch is selected
+      * case must have one branch at least, that is ensured in type checker right?
     * do I need to do some void checks for example in the arith operators? some comparison to 0 and
       then some kind of abort
   * what changes are needed to be able to use the GC? how can I also test that in test.sh?
