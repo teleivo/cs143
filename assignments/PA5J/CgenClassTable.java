@@ -20,11 +20,9 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 */
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -39,6 +37,9 @@ class CgenClassTable extends SymbolTable {
 
   // Class tags per class name stored in the prototype objects and used to refer to classes.
   private final Map<String, Integer> classTags;
+  // Class tags ranges per class name to check the the dynamic (runtime) class tag against a case
+  // branch class tag range.
+  private final Map<String, Range> classTagRanges;
   // Object size per class name to calculate attribute offsets in the object layout.
   private final Map<String, Integer> objectSizes;
   // Dispatch tables per class name to get the method offsets. Using a list is obviously not the
@@ -55,11 +56,11 @@ class CgenClassTable extends SymbolTable {
   /** This is the stream to which assembly instructions are output */
   private final PrintStream s;
 
-  private final int objectclasstag = 0;
-  private final int ioclasstag = 1;
-  private final int intclasstag = 2;
-  private final int boolclasstag = 3;
-  private final int stringclasstag = 4;
+  private int objectclasstag;
+  private int ioclasstag;
+  private int intclasstag;
+  private int boolclasstag;
+  private int stringclasstag;
 
   // The following methods emit code for constants and global
   // declarations.
@@ -231,7 +232,6 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(Object_class, CgenNode.Basic, this));
-    this.classTags.put(TreeConstants.Object_.getString(), objectclasstag);
 
     // The IO class inherits from Object. Its methods are
     //        out_string(Str) : SELF_TYPE  writes a string to the output
@@ -278,7 +278,6 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(IO_class, CgenNode.Basic, this));
-    this.classTags.put(TreeConstants.IO.getString(), ioclasstag);
 
     // The Int class has no methods and only a single attribute, the
     // "val" for the integer.
@@ -294,7 +293,6 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(Int_class, CgenNode.Basic, this));
-    this.classTags.put(TreeConstants.Int.getString(), intclasstag);
 
     // Bool also has only the "val" slot.
     class_c Bool_class =
@@ -308,7 +306,6 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(Bool_class, CgenNode.Basic, this));
-    this.classTags.put(TreeConstants.Bool.getString(), boolclasstag);
 
     // The class Str has a number of slots and operations:
     //       val                              the length of the string
@@ -349,7 +346,6 @@ class CgenClassTable extends SymbolTable {
             filename);
 
     installClass(new CgenNode(Str_class, CgenNode.Basic, this));
-    this.classTags.put(TreeConstants.Str.getString(), stringclasstag);
   }
 
   // The following creates an inheritance graph from
@@ -362,7 +358,6 @@ class CgenClassTable extends SymbolTable {
     if (probe(name) != null) return;
     nds.addElement(nd);
     addId(name, nd);
-    this.classTags.put(name.getString(), this.classTags.size());
   }
 
   private void installClasses(Classes cs) {
@@ -388,6 +383,7 @@ class CgenClassTable extends SymbolTable {
     this.nds = new Vector<CgenNode>();
     int basicClassNumber = 5;
     this.classTags = new HashMap<>(basicClassNumber + cls.getLength());
+    this.classTagRanges = new HashMap<>(basicClassNumber + cls.getLength());
     this.objectSizes = new HashMap<>(basicClassNumber + cls.getLength());
     this.dispatchTables = new HashMap<>(basicClassNumber + cls.getLength());
     this.s = str;
@@ -399,57 +395,43 @@ class CgenClassTable extends SymbolTable {
     installClasses(cls);
     buildInheritanceTree();
 
+    generateClassTags(root(), 0);
     System.out.println(this.classTags);
-    Map<String, List<Range>> ranges = new HashMap<>(cls.getLength());
-    branchRanges(root(), ranges);
-    System.out.println(ranges);
+    System.out.println(classTagRanges);
 
     code();
 
     exitScope();
   }
 
-  // non-basic classes have continusous class tags due to how they are created. basic
-  // classes are created upfront leading to non-continuous class tags. this is why they
-  // need to be added separately and why this complicates range computations which would
-  // be easy in a search like tree.
-  private void branchRanges(CgenNode node, Map<String, List<CgenClassTable.Range>> ranges) {
+  // TODO docs
+  private int generateClassTags(CgenNode node, int tag) {
     if (node == null) {
-      return;
-    }
-
-    String name = node.getName().getString();
-    Integer tag = classTags.get(name);
-
-    List<Range> result = new ArrayList<>();
-    if (node.basic()) {
-      result.add(new Range(tag, tag));
-      ranges.put(name, result);
+      return tag;
     }
 
     int max = tag;
     for (Enumeration n = node.getChildren(); n.hasMoreElements(); ) {
       CgenNode child = (CgenNode) n.nextElement();
-      String childName = child.getName().getString();
-      Integer childTag = classTags.get(childName);
 
-      branchRanges(child, ranges);
-
-      List<CgenClassTable.Range> childRanges = ranges.get(childName);
-      if (node.basic()) {
-        // TODO what about basic classes inheriting from basic classes like Object, do I
-        // need to spread here
-        result.add(childRanges.get(0));
-      } else {
-        // non-basic classes have continguous class tags leading to a single range
-        max = Math.max(max, childRanges.get(0).max);
-      }
+      max = generateClassTags(child, max + 1);
     }
 
-    if (!node.basic()) {
-      result.add(new Range(tag, max));
-      ranges.put(name, result);
+    if (TreeConstants.Object_.equals(node.getName())) {
+      objectclasstag = tag;
+    } else if (TreeConstants.IO.equals(node.getName())) {
+      ioclasstag = tag;
+    } else if (TreeConstants.Int.equals(node.getName())) {
+      intclasstag = tag;
+    } else if (TreeConstants.Bool.equals(node.getName())) {
+      boolclasstag = tag;
+    } else if (TreeConstants.Str.equals(node.getName())) {
+      stringclasstag = tag;
     }
+    String name = node.getName().getString();
+    classTags.put(name, tag);
+    classTagRanges.put(name, new Range(tag, max));
+    return max;
   }
 
   /** Main code generation method. */

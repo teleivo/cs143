@@ -1,15 +1,19 @@
-class A {
-};
-class B inherits A {
-};
--- tests branching
--- and loop
+class Book inherits IO {};
+class Article inherits Book {};
+class BookList inherits IO {};
+class A {};
+class Nil inherits BookList {};
+class B inherits IO {};
+class Cons inherits BookList {};
+class C inherits B {};
+
+-- tests case
 class Main inherits IO {
    class_with_catchall(var : Object) : SELF_TYPE {
       case var of
-		 a : A => out_string("Class type is now A\n");
+		 a : IO => out_string("Class type is now A\n");
 		 -- b : B => out_string("Class type is now B\n");
-		 o : Object => out_string("Oooops\n");
+		 -- o : Object => out_string("Oooops\n");
       esac
    };
 
