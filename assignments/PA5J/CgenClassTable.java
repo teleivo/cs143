@@ -35,11 +35,14 @@ class CgenClassTable extends SymbolTable {
   /** All classes in the program, represented as CgenNode */
   private final Vector<CgenNode> nds;
 
-  // Class tags per class name stored in the prototype objects and used to refer to classes.
-  private final Map<String, Integer> classTags;
+  // Range of class tags used for checking the case branches against the runtime type.
+  record Range(int min, int max) {}
+  ;
+
   // Class tags ranges per class name to check the the dynamic (runtime) class tag against a case
-  // branch class tag range.
-  private final Map<String, Range> classTagRanges;
+  // branch class tag range and to generate the prototype objects and used to refer to classes. The
+  // range is [itself itself|max child].
+  private final Map<String, Range> classTags;
   // Object size per class name to calculate attribute offsets in the object layout.
   private final Map<String, Integer> objectSizes;
   // Dispatch tables per class name to get the method offsets. Using a list is obviously not the
@@ -47,10 +50,6 @@ class CgenClassTable extends SymbolTable {
   private final Map<String, Map<String, DispatchTableEntry>> dispatchTables;
 
   record DispatchTableEntry(method method, String methodRef, int offset) {}
-  ;
-
-  // Range of class tags used for checking the case branches against the runtime type.
-  record Range(int min, int max) {}
   ;
 
   /** This is the stream to which assembly instructions are output */
@@ -383,7 +382,6 @@ class CgenClassTable extends SymbolTable {
     this.nds = new Vector<CgenNode>();
     int basicClassNumber = 5;
     this.classTags = new HashMap<>(basicClassNumber + cls.getLength());
-    this.classTagRanges = new HashMap<>(basicClassNumber + cls.getLength());
     this.objectSizes = new HashMap<>(basicClassNumber + cls.getLength());
     this.dispatchTables = new HashMap<>(basicClassNumber + cls.getLength());
     this.s = str;
@@ -396,15 +394,18 @@ class CgenClassTable extends SymbolTable {
     buildInheritanceTree();
 
     generateClassTags(root(), 0);
-    System.out.println(this.classTags);
-    System.out.println(classTagRanges);
 
     code();
 
     exitScope();
   }
 
-  // TODO docs
+  /**
+   * Generate class tags and class tag ranges using dfs assigning class tags as if the tree would be
+   * a search tree. Each class will have a class tag range of {@code [itself itself|max child]}. The
+   * class tag range is then used in case branches to test against the dynamic class tag of the case
+   * expression.
+   */
   private int generateClassTags(CgenNode node, int tag) {
     if (node == null) {
       return tag;
@@ -429,8 +430,7 @@ class CgenClassTable extends SymbolTable {
       stringclasstag = tag;
     }
     String name = node.getName().getString();
-    classTags.put(name, tag);
-    classTagRanges.put(name, new Range(tag, max));
+    classTags.put(name, new Range(tag, max));
     return max;
   }
 
@@ -570,7 +570,8 @@ class CgenClassTable extends SymbolTable {
       s.print(CgenSupport.LABEL);
 
       s.print(CgenSupport.WORD);
-      s.print(classTags.get(className.getString()));
+      CgenClassTable.Range range = classTags.get(className.getString());
+      s.print(range.min);
       s.println();
 
       s.print(CgenSupport.WORD);
@@ -698,7 +699,7 @@ class CgenClassTable extends SymbolTable {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
         if (a.init != null && !(a.init instanceof no_expr)) {
-          a.init.code(cls, env, dispatchTables, s);
+          a.init.code(cls, env, classTags, dispatchTables, s);
           // store initialization value into corresponding attribute
           CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }
@@ -792,7 +793,7 @@ class CgenClassTable extends SymbolTable {
     }
   }
 
-  private void codeMethod(SymbolTable environment, CgenNode cls, method m) {
+  private void codeMethod(SymbolTable env, CgenNode cls, method m) {
     CgenSupport.emitMethodRef(cls.getName(), m.name, s);
     s.print(CgenSupport.LABEL);
 
@@ -807,7 +808,7 @@ class CgenClassTable extends SymbolTable {
     // a0
     CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
 
-    m.expr.code(cls, environment, dispatchTables, s);
+    m.expr.code(cls, env, classTags, dispatchTables, s);
 
     // restore callee saved registers from the stack
     CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);

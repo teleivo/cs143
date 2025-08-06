@@ -11,7 +11,9 @@ class C inherits B {};
 class Main inherits IO {
    class_with_catchall(var : Object) : SELF_TYPE {
       case var of
-		 a : IO => out_string("Class type is now A\n");
+		 a : IO => out_string("Class type is now IO\n");
+		 b : BookList => out_string("Class type is now BookList\n");
+		 c : A => out_string("Class type is now A\n");
 		 -- b : B => out_string("Class type is now B\n");
 		 -- o : Object => out_string("Oooops\n");
       esac
