@@ -754,7 +754,7 @@ class CgenClassTable extends SymbolTable {
           for (int i = m.formals.getLength() - 1; i >= 0; i--) {
             formalc form = (formalc) m.formals.getNth(i);
             // the arg is put onto the stack and will be available by the calle via the framepointer
-            env.addId(form.name, new CgenClassTable.Address(argOffset, CgenSupport.FP));
+            env.addId(form.name, new Address(argOffset, CgenSupport.FP));
             argOffset++;
           }
 

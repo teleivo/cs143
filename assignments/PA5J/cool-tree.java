@@ -1138,17 +1138,6 @@ class typcase extends Expression {
       Map<String, CgenClassTable.Range> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // Case expressions provide runtime type tests on objects. First, expr0 is evaluated and its
-    // dynamic type C noted (if expr0 evaluates to void a run-time error is produced). Next, from
-    // among the
-    // branches the branch with the least type <typek> such that C ≤ <typek> is selected. The
-    // identifier <idk> is
-    // bound to the value of <expr0> and the expression <exprk> is evaluated. The result of the case
-    // is
-    // the value of <exprk>.
-    // The identifier id introduced by a branch of a case hides any variable or attribute definition
-    // for id visible in the containing scope.
-
     expr.code(cls, env, classTags, dispatchTables, s);
 
     int nonVoid = CgenSupport.generateLocalLabel();
@@ -1178,12 +1167,8 @@ class typcase extends Expression {
     for (int i = 0; i < branches.size(); i++) {
       branchLabels.add(CgenSupport.generateLocalLabel());
     }
+    int endLabel = CgenSupport.generateLocalLabel();
 
-    // TODO how to create new env with br.name assigned to result of expr in a loop without
-    // creating many nested envs? Do I need to clone the env?
-    // Return result of eval? is automatic as that should already be in a0
-    // or is it ok to just create one new env? as only one branch is picked. That does not work as
-    // each branch has their own identifier
     for (int i = 0; i < branches.size(); i++) {
       CgenSupport.emitLabelDef(branchLabels.get(i), s);
 
@@ -1197,11 +1182,24 @@ class typcase extends Expression {
       CgenSupport.emitBlti(CgenSupport.T2, range.min(), branchLabels.get(i + 1), s);
       CgenSupport.emitBgti(CgenSupport.T2, range.max(), branchLabels.get(i + 1), s);
 
-      // branch.expr.code(cls, env, classTags, dispatchTables, s);
+      // each branch is based on the current environment declaring only the branches
+      // identifier
+      SymbolTable branchEnv = (SymbolTable) env.clone();
+      CgenSupport.emitMove(CgenSupport.S1, CgenSupport.ACC, s);
+
+      branchEnv.enterScope();
+      env.addId(branch.name, new CgenClassTable.Register(CgenSupport.S1));
+
+      branch.expr.code(cls, env, classTags, dispatchTables, s);
+
+      branchEnv.exitScope();
+      CgenSupport.emitBranch(endLabel, s);
     }
 
     CgenSupport.emitLabelDef(branchLabels.get(branchLabels.size() - 1), s);
     CgenSupport.emitJal(CgenSupport.CASE_ABORT, s);
+
+    CgenSupport.emitLabelDef(endLabel, s);
   }
 }
 

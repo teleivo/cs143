@@ -13,7 +13,7 @@ class Main inherits IO {
       case var of
 		 a : IO => out_string("Class type is now IO\n");
 		 b : BookList => out_string("Class type is now BookList\n");
-		 c : A => out_string("Class type is now A\n");
+		 -- c : A => out_string("Class type is now A\n");
 		 -- b : B => out_string("Class type is now B\n");
 		 -- o : Object => out_string("Oooops\n");
       esac
@@ -59,8 +59,8 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			-- class_with_catchall(new A);
-			class_with_catchall(new B);
+			class_with_catchall(new A);
+			-- class_with_catchall(new B);
 			-- class_with_catchall(10);
 		}
 	};
