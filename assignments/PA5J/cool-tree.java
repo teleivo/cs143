@@ -1162,7 +1162,7 @@ class typcase extends Expression {
 
     // generate # branches + 1 labels, one for each branch and one for no branch matched the runtime
     // type -> _case_abort
-    List<Integer> branchLabels = new ArrayList<>(branches.size());
+    List<Integer> branchLabels = new ArrayList<>(branches.size() + 1);
     branchLabels.add(nonVoid); // first branch
     for (int i = 0; i < branches.size(); i++) {
       branchLabels.add(CgenSupport.generateLocalLabel());
@@ -1179,8 +1179,9 @@ class typcase extends Expression {
 
       branch branch = branches.get(i);
       CgenClassTable.Range range = classTags.get(branch.type_decl.getString());
-      CgenSupport.emitBlti(CgenSupport.T2, range.min(), branchLabels.get(i + 1), s);
-      CgenSupport.emitBgti(CgenSupport.T2, range.max(), branchLabels.get(i + 1), s);
+      Integer nextBranch = branchLabels.get(i + 1);
+      CgenSupport.emitBlti(CgenSupport.T2, range.min(), nextBranch, s);
+      CgenSupport.emitBgti(CgenSupport.T2, range.max(), nextBranch, s);
 
       // each branch is based on the current environment declaring only the branches
       // identifier
@@ -1188,9 +1189,9 @@ class typcase extends Expression {
       CgenSupport.emitMove(CgenSupport.S1, CgenSupport.ACC, s);
 
       branchEnv.enterScope();
-      env.addId(branch.name, new CgenClassTable.Register(CgenSupport.S1));
+      branchEnv.addId(branch.name, new CgenClassTable.Register(CgenSupport.S1));
 
-      branch.expr.code(cls, env, classTags, dispatchTables, s);
+      branch.expr.code(cls, branchEnv, classTags, dispatchTables, s);
 
       branchEnv.exitScope();
       CgenSupport.emitBranch(endLabel, s);
