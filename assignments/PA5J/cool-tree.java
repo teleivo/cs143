@@ -1138,11 +1138,16 @@ class typcase extends Expression {
       Map<String, CgenClassTable.Range> classTags,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    expr.code(cls, env, classTags, dispatchTables, s);
+    // need to store s1 (callee-saved) on stack before evaluating the body so I can restore it
+    CgenSupport.emitPush(CgenSupport.S1, s);
 
-    int nonVoid = CgenSupport.generateLocalLabel();
+    expr.code(cls, env, classTags, dispatchTables, s);
+    // TODO why is Main in a0?
+    // CgenSupport.emitJal(CgenSupport.CASE_ABORT, s);
+
+    int firstBranch = CgenSupport.generateLocalLabel();
     // handle case expression evaluating to void
-    CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, nonVoid, s);
+    CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, firstBranch, s);
     CgenSupport.emitLoadString(CgenSupport.ACC, (StringSymbol) cls.getFilename(), s);
     CgenSupport.emitLoadImm(CgenSupport.T1, this.getLineNumber(), s);
     CgenSupport.emitJal(CgenSupport.CASE_ABORT_2, s);
@@ -1163,7 +1168,7 @@ class typcase extends Expression {
     // generate # branches + 1 labels, one for each branch and one for no branch matched the runtime
     // type -> _case_abort
     List<Integer> branchLabels = new ArrayList<>(branches.size() + 1);
-    branchLabels.add(nonVoid); // first branch
+    branchLabels.add(firstBranch);
     for (int i = 0; i < branches.size(); i++) {
       branchLabels.add(CgenSupport.generateLocalLabel());
     }
@@ -1193,14 +1198,16 @@ class typcase extends Expression {
 
       branch.expr.code(cls, branchEnv, classTags, dispatchTables, s);
 
-      branchEnv.exitScope();
       CgenSupport.emitBranch(endLabel, s);
+      branchEnv.exitScope();
     }
 
     CgenSupport.emitLabelDef(branchLabels.get(branchLabels.size() - 1), s);
     CgenSupport.emitJal(CgenSupport.CASE_ABORT, s);
 
     CgenSupport.emitLabelDef(endLabel, s);
+    // restore S1
+    CgenSupport.emitPop(1, s);
   }
 }
 

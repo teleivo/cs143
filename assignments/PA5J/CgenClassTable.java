@@ -746,7 +746,6 @@ class CgenClassTable extends SymbolTable {
       for (Enumeration f = cls.features.getElements(); f.hasMoreElements(); ) {
         Feature feature = ((Feature) f.nextElement());
         if (feature instanceof method m) {
-          // System.out.println("codeMethod for " + cls.getName() + " method " + m.name);
           env.enterScope();
           int argOffset = 3;
           // need to add locations in reverse as args are pushed in increasing order (1.,

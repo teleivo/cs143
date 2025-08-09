@@ -36,16 +36,27 @@ To try yourself
 
 * implement missing expression
   * case
+    * fix case_no_match test, why is Main in a0 at the time the _case_abort is called?
+    * write tests for the complex class tree with all kinds of branch combinations and input
+    expressions as well as show the clone env at work
+    * write nested case expression
   * add tests for the error cases
-    * dispatch on void
-    * case
-      * expression that evals to void
-      * if no branch is selected
-      * case must have one branch at least, that is ensured in type checker right?
     * do I need to do some void checks for example in the arith operators? some comparison to 0 and
       then some kind of abort
+    * move error cases to testdata-ok? or merge them into testdata as here the same script works on
+      both
   * what changes are needed to be able to use the GC? how can I also test that in test.sh?
   * what else?
+
+* I implemented clone in SymbolTable but it looks as if its implemented in a gitignored file so
+mention this somewhere
+
+```java
+  @Override
+  public Object clone() {
+    return new SymbolTable((Stack) tbl.clone());
+  }
+```
 
 * how to get the example programs to do something useful? They did not even have a main before I
 added one
@@ -53,7 +64,8 @@ added one
 * get fibonacci to work
   * or print sequence of fibonacci using the Cons from the manual?
 
-* run only my implementation in the `my` case in test.sh
+* up to now I ran my generator with the reference tool chain: run only my implementation in the `my`
+case in test.sh
 
 ## Limitations and improvements
 
