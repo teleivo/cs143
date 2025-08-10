@@ -1,3 +1,4 @@
+-- tests case expression
 class Book inherits IO {};
 class Article inherits Book {};
 class BookList inherits IO {};
@@ -7,15 +8,13 @@ class B inherits IO {};
 class Cons inherits BookList {};
 class C inherits B {};
 
--- tests case
 class Main inherits IO {
-   class_with_catchall(var : Object) : SELF_TYPE {
+   class_with_object_branch(var : Object) : SELF_TYPE {
       case var of
-		 a : IO => out_string("Class type is now IO\n");
-		 b : BookList => out_string("Class type is now BookList\n");
-		 -- c : A => out_string("Class type is now A\n");
-		 -- b : B => out_string("Class type is now B\n");
-		 -- o : Object => out_string("Oooops\n");
+		 a : A => out_string("branch A\n");
+		 b : IO => out_string("branch IO\n");
+		 c : B => out_string("branch B\n");
+		 d : Object => out_string("branch Object\n");
       esac
    };
 
@@ -59,9 +58,16 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			class_with_catchall(new A);
-			-- class_with_catchall(new B);
-			-- class_with_catchall(10);
+			class_with_object_branch(new Book);
+			class_with_object_branch(new Article);
+			class_with_object_branch(new BookList);
+			class_with_object_branch(new A);
+			class_with_object_branch(new Nil);
+			class_with_object_branch(new B);
+			class_with_object_branch(new Cons);
+			class_with_object_branch(new C);
+			class_with_object_branch(10);
+			class_with_object_branch(true);
 		}
 	};
 };
