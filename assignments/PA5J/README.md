@@ -36,7 +36,6 @@ To try yourself
 
 * implement missing expression
   * case
-    * fix case_no_match test, why is Main in a0 at the time the _case_abort is called?
     * write tests for the complex class tree with all kinds of branch combinations and input
     expressions as well as show the clone env at work
     * write nested case expression
@@ -46,6 +45,7 @@ To try yourself
     * move error cases to testdata-ok? or merge them into testdata as here the same script works on
       both
   * what changes are needed to be able to use the GC? how can I also test that in test.sh?
+  * clean up todos
   * what else?
 
 * I implemented clone in SymbolTable but it looks as if its implemented in a gitignored file so

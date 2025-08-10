@@ -1142,8 +1142,6 @@ class typcase extends Expression {
     CgenSupport.emitPush(CgenSupport.S1, s);
 
     expr.code(cls, env, classTags, dispatchTables, s);
-    // TODO why is Main in a0?
-    // CgenSupport.emitJal(CgenSupport.CASE_ABORT, s);
 
     int firstBranch = CgenSupport.generateLocalLabel();
     // handle case expression evaluating to void
