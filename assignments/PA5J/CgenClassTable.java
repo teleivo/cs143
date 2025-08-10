@@ -20,9 +20,11 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 */
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -458,11 +460,12 @@ class CgenClassTable extends SymbolTable {
   }
 
   private void codeClassNameTable() {
+    List<CgenNode> ordered = nodesInClassTagOrder();
+
     s.print(CgenSupport.CLASSNAMETAB + CgenSupport.LABEL);
-    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+    for (CgenNode n : ordered) {
       StringSymbol className =
-          (StringSymbol)
-              AbstractTable.stringtable.lookup(((CgenNode) e.nextElement()).getName().getString());
+          (StringSymbol) AbstractTable.stringtable.lookup(n.getName().getString());
       s.print(CgenSupport.WORD);
       className.codeRef(s);
       s.println();
@@ -470,9 +473,11 @@ class CgenClassTable extends SymbolTable {
   }
 
   private void codeClassObjectTable() {
+    List<CgenNode> ordered = nodesInClassTagOrder();
+
     s.print(CgenSupport.CLASSOBJTAB + CgenSupport.LABEL);
-    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
-      AbstractSymbol className = ((CgenNode) e.nextElement()).getName();
+    for (CgenNode n : ordered) {
+      AbstractSymbol className = n.getName();
       s.print(CgenSupport.WORD);
       CgenSupport.emitProtObjRef(className, s);
       s.println();
@@ -480,6 +485,20 @@ class CgenClassTable extends SymbolTable {
       CgenSupport.emitInitRef(className, s);
       s.println();
     }
+  }
+
+  private List<CgenNode> nodesInClassTagOrder() {
+    List<CgenNode> ordered = new ArrayList<>(classTags.size());
+    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
+      ordered.add((CgenNode) e.nextElement());
+    }
+    ordered.sort(
+        (n1, n2) -> {
+          CgenClassTable.Range r1 = classTags.get(n1.getName().getString());
+          CgenClassTable.Range r2 = classTags.get(n2.getName().getString());
+          return r1.min() - r2.min();
+        });
+    return ordered;
   }
 
   /*
@@ -539,7 +558,7 @@ class CgenClassTable extends SymbolTable {
   }
 
   private void emitDispatchTables() {
-    // does the order matter in which I output the tables? if not iterate over disptables?
+    // TODO does the order matter in which I output the tables? if not iterate over disptables?
     for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
       CgenNode cls = (CgenNode) e.nextElement();
 
