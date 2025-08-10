@@ -2,7 +2,7 @@
 
 set -e
 
-TEST_DIR="${1:-./testdata-ok}"
+TEST_DIR="${1:-./testdata}"
 
 if [ ! -d "$TEST_DIR" ]; then
     echo "Error: Directory '$TEST_DIR' does not exist"

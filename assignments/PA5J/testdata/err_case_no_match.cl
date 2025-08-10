@@ -1,14 +1,15 @@
 class A {};
+class B {};
 
 class Main inherits IO {
-	case_on_void(var : Object) : SELF_TYPE {
+	case_no_match(var : B) : SELF_TYPE {
 		case var of
 			a : A => out_string("chosen branch A\n");
 		esac
 	};
 	main() : Object {
 		{
-			let x : A in case_on_void(x);
+			case_no_match(new B);
 		}
 	};
 };
