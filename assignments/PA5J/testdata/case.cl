@@ -17,6 +17,13 @@ class Main inherits IO {
 		 d : Object => out_string("branch Object\n");
       esac
    };
+   class_without_object_branch(var : Object) : SELF_TYPE {
+      case var of
+		 a : A => out_string("branch A\n");
+		 b : IO => out_string("branch IO\n");
+		 c : B => out_string("branch B\n");
+      esac
+   };
 
 	-- test helpers
 	print_int(prefix : String, arg : Int) : Object {
@@ -68,6 +75,15 @@ class Main inherits IO {
 			class_with_object_branch(new C);
 			class_with_object_branch(10);
 			class_with_object_branch(true);
+
+			class_without_object_branch(new Book);
+			class_without_object_branch(new Article);
+			class_without_object_branch(new BookList);
+			class_without_object_branch(new A);
+			class_without_object_branch(new Nil);
+			class_without_object_branch(new B);
+			class_without_object_branch(new Cons);
+			class_without_object_branch(new C);
 		}
 	};
 };
