@@ -710,7 +710,6 @@ class assign extends Expression {
     Object ref = env.lookup(name);
     if (ref instanceof CgenClassTable.Address address) {
       CgenSupport.emitStore(CgenSupport.ACC, address.offset(), address.sourceRegister(), s);
-      // TODO(ivo) when would this case be possible? test this, is it an assignment in a let body?
     } else if (ref instanceof CgenClassTable.Register register) {
       CgenSupport.emitMove(register.name(), CgenSupport.ACC, s);
     }

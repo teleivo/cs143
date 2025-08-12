@@ -21,6 +21,8 @@ class Main inherits IO {
 							case b-1 of
 								b : Int => {
 									print_int("b in branch Int/in second case", b);
+									b <- b-1; -- assign
+									print_int("b in branch Int/in second case/after assign", b);
 								};
 							esac;
 							print_int("after second case", b);
