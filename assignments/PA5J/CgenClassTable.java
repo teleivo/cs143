@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -47,8 +48,7 @@ class CgenClassTable extends SymbolTable {
   private final Map<String, Range> classTags;
   // Object size per class name to calculate attribute offsets in the object layout.
   private final Map<String, Integer> objectSizes;
-  // Dispatch tables per class name to get the method offsets. Using a list is obviously not the
-  // fastest way but that is not the goal here.
+  // Dispatch tables per class name to get the method offsets.
   private final Map<String, Map<String, DispatchTableEntry>> dispatchTables;
 
   record DispatchTableEntry(method method, String methodRef, int offset) {}
@@ -558,16 +558,12 @@ class CgenClassTable extends SymbolTable {
   }
 
   private void emitDispatchTables() {
-    // TODO does the order matter in which I output the tables? if not iterate over disptables?
-    for (Enumeration e = nds.elements(); e.hasMoreElements(); ) {
-      CgenNode cls = (CgenNode) e.nextElement();
+    for (Entry<String, Map<String, DispatchTableEntry>> dispatchTable : dispatchTables.entrySet()) {
 
-      AbstractSymbol name = cls.getName();
-      CgenSupport.emitDispTableRef(name, s);
+      CgenSupport.emitDispTableRef(dispatchTable.getKey(), s);
       s.print(CgenSupport.LABEL);
 
-      Map<String, DispatchTableEntry> dispatchTable = dispatchTables.get(name.getString());
-      for (Map.Entry<String, DispatchTableEntry> entry : dispatchTable.entrySet()) {
+      for (Map.Entry<String, DispatchTableEntry> entry : dispatchTable.getValue().entrySet()) {
         s.print(CgenSupport.WORD);
         s.print(entry.getValue().methodRef);
         s.println();

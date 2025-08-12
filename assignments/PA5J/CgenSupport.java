@@ -386,7 +386,15 @@ class CgenSupport {
     s.print(dispTableRef(sym));
   }
 
+  static void emitDispTableRef(String sym, PrintStream s) {
+    s.print(dispTableRef(sym));
+  }
+
   static String dispTableRef(AbstractSymbol sym) {
+    return sym + DISPTAB_SUFFIX;
+  }
+
+  static String dispTableRef(String sym) {
     return sym + DISPTAB_SUFFIX;
   }
 
