@@ -151,7 +151,7 @@ class CgenClassTable extends SymbolTable {
   private void codeConstants() {
     // Add constants that are required by the code generator.
     AbstractTable.stringtable.addString("");
-    AbstractTable.inttable.addString("0");
+    AbstractTable.inttable.addInt(0);
 
     AbstractTable.stringtable.codeStringTable(stringclasstag, s);
     AbstractTable.inttable.codeStringTable(intclasstag, s);
@@ -619,8 +619,7 @@ class CgenClassTable extends SymbolTable {
         objectSize += 2;
         proto.append(CgenSupport.WORD);
         // pointer to string length (of zero)
-        // TODO should this not also be "0"?
-        ((IntSymbol) AbstractTable.inttable.lookup(0)).codeRef(proto);
+        ((IntSymbol) AbstractTable.inttable.lookup("0")).codeRef(proto);
         proto.append('\n');
         proto.append(CgenSupport.WORD);
         proto.append(0); // empty string

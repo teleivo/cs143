@@ -231,16 +231,15 @@ class ClassTable {
 
     // build graph using adjacency list
     Map<String, List<String>> graph = new HashMap<>();
-    // TODO can I improve this? can I add all builtin classes in a way I have less conditions?
     // I need to add the Str class not because its needed in the graph to check for cycles but
-    // for collecting the methods later on
-    // root of inheritance with builtin children that have methods
-    List<String> foo = new ArrayList<>();
-    foo.add(TreeConstants.IO.toString());
-    foo.add(TreeConstants.Str.toString());
-    foo.add(TreeConstants.Int.toString());
-    foo.add(TreeConstants.Bool.toString());
-    graph.put(TreeConstants.Object_.toString(), foo);
+    // for collecting the methods later on root of inheritance with builtin children that have
+    // methods
+    List<String> base = new ArrayList<>();
+    base.add(TreeConstants.IO.toString());
+    base.add(TreeConstants.Str.toString());
+    base.add(TreeConstants.Int.toString());
+    base.add(TreeConstants.Bool.toString());
+    graph.put(TreeConstants.Object_.toString(), base);
     graph.put(TreeConstants.IO.toString(), new ArrayList<>());
     graph.put(TreeConstants.Str.toString(), new ArrayList<>());
     graph.put(TreeConstants.Int.toString(), new ArrayList<>());
