@@ -5,15 +5,13 @@ This is my implementation of the assignment described in `./README`. The
 
 I ran my code generator against
 
-TODO update the following
-
 * all valid Cool `.cl` files from all previous assignments
-* some more test input of valid `./testdata-ok/` and invalid `./testdata-err/` Cool code
+* some more test input of valid and invalid Cool code `./testdata`
 * and the `../../examples/`
 
-Note: you might need to add a `Main` class like this
+Note: you'll need to add a `Main` class like this
 
-```
+```cool
 class Main {
 	main() : Bool {
 		true
@@ -23,27 +21,8 @@ class Main {
 
 to the example Cool code out there. The semantic analysis will otherwise fail.
 
-To try yourself
-
-* build my semantic analyzer using `make cgen`
-* run it
-  * against some Cool code using `./mycoolc -o code.s code.cl`
-  * against my test samples of valid Cool `./test.sh`
-  * against my test samples of invalid Cool `./test-err.sh`
-  * against all the course examples `./test.sh ../../examples`
-
-## TODO
-
-* implement missing expression
-  * add tests for the error cases
-    * do I need to do some void checks for example in the arith operators? some comparison to 0 and
-      then some kind of abort
-  * what changes are needed to be able to use the GC? how can I also test that in test.sh?
-  * clean up todos
-  * what else?
-
-* I implemented clone in SymbolTable but it looks as if its implemented in a gitignored file so
-mention this somewhere
+I implemented clone in `SymbolTable` to clone the Cool environment for each case branch which
+can define a different identifier. You need to add this method
 
 ```java
   @Override
@@ -51,6 +30,20 @@ mention this somewhere
     return new SymbolTable((Stack) tbl.clone());
   }
 ```
+
+To then try yourself
+
+* build my semantic analyzer using `make cgen`
+* run it
+  * against some Cool code using `./mycoolc -o code.s code.cl`
+  * against my test samples of valid/invalid Cool `./test.sh`
+  * against all the course examples `./test.sh ../../examples`
+
+## TODO
+
+* clean up todos
+* cleanup javadocs
+* what changes are needed to be able to use the GC? how can I also test that in test.sh?
 
 * how to get the example programs to do something useful? They did not even have a main before I
 added one
@@ -60,6 +53,8 @@ added one
 
 * up to now I ran my generator with the reference tool chain: run only my implementation in the `my`
 case in test.sh
+* cleanup readme
+* cleanup readmes
 
 ## Limitations and improvements
 
