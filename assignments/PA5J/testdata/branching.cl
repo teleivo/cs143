@@ -24,13 +24,6 @@ class Main inherits IO {
 				}
 			 pool
     };
-   class_with_catchall(var : Object) : SELF_TYPE {
-      case var of
-		 a : A => out_string("Class type is now A\n");
-		 b : B => out_string("Class type is now B\n");
-		 o : Object => out_string("Oooops\n");
-      esac
-   };
 
 	-- test helpers
 	print_int(prefix : String, arg : Int) : Object {
@@ -77,9 +70,6 @@ class Main inherits IO {
 			print_bool("Main.ifElseNested", ifElseNested(true));
 			print_bool("Main.ifElseNested", ifElseNested(false));
 			looping(5);
-			class_with_catchall(new A);
-			class_with_catchall(new B);
-			class_with_catchall(10);
 		}
 	};
 };

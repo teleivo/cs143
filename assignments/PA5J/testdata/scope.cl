@@ -33,10 +33,25 @@ class Main inherits A {
 	let_initializer_access_attribute() : Int {
 		let b : Int <- b + 1 in b
 	};
-	let_nested() : Int {
-		let a : Int <- 1 in
-			let a : Int <- a+1 in
-				let a : Int <- a+1 in a
+	let_nested(a : Int) : Object {
+		{
+			print_int("before lets", a);
+			let a : Int <- a-1 in
+				{
+					print_int("inside first let", a);
+					let a : Int <- a-1 in
+						{
+							print_int("inside second let", a);
+							let a : Int <- a-1 in
+								{
+									print_int("inside third let", a);
+								};
+							print_int("after third let", a);
+						};
+					print_int("after second let", a);
+				};
+			print_int("after lets", a);
+		}
 	};
 
 	-- test helpers
@@ -84,12 +99,11 @@ class Main inherits A {
 			print_bool("let_without_initializer_bool", let_without_initializer_bool());
 			print_string("let_without_initializer_string", let_without_initializer_string());
 			print_bool("let_without_initializer_object", isvoid let_without_initializer_object());
-			print_int("let_without_initializer_object", let_without_initializer_object().a());
 			print_int("let_with_initializer", let_with_initializer());
 			print_int("let_hides_parameter", let_hides_parameter(10));
 			print_int("let_hides_attribute", let_hides_attribute());
 			print_int("let_initializer_access_attribute", let_initializer_access_attribute());
-			print_int("let_nested", let_nested());
+			let_nested(10);
 		}
 	};
 };

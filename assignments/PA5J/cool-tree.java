@@ -1196,8 +1196,8 @@ class typcase extends Expression {
 
       branch.expr.code(cls, branchEnv, classTags, dispatchTables, s);
 
-      CgenSupport.emitBranch(endLabel, s);
       branchEnv.exitScope();
+      CgenSupport.emitBranch(endLabel, s);
     }
 
     CgenSupport.emitLabelDef(branchLabels.get(branchLabels.size() - 1), s);
@@ -1206,6 +1206,7 @@ class typcase extends Expression {
     CgenSupport.emitLabelDef(endLabel, s);
     // restore S1
     CgenSupport.emitPop(1, s);
+    CgenSupport.emitLoad(CgenSupport.S1, 0, CgenSupport.SP, s);
   }
 }
 
@@ -1366,6 +1367,7 @@ class let extends Expression {
 
     // restore S1
     CgenSupport.emitPop(1, s);
+    CgenSupport.emitLoad(CgenSupport.S1, 0, CgenSupport.SP, s);
     env.exitScope();
   }
 }

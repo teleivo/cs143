@@ -35,15 +35,9 @@ To try yourself
 ## TODO
 
 * implement missing expression
-  * case
-    * write tests for the complex class tree with all kinds of branch combinations and input
-    expressions as well as show the clone env at work
-    * write nested case expression
   * add tests for the error cases
     * do I need to do some void checks for example in the arith operators? some comparison to 0 and
       then some kind of abort
-    * move error cases to testdata-ok? or merge them into testdata as here the same script works on
-      both
   * what changes are needed to be able to use the GC? how can I also test that in test.sh?
   * clean up todos
   * what else?

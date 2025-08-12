@@ -9,21 +9,51 @@ class Cons inherits BookList {};
 class C inherits B {};
 
 class Main inherits IO {
-   class_with_object_branch(var : Object) : SELF_TYPE {
-      case var of
-		 a : A => out_string("branch A\n");
-		 b : IO => out_string("branch IO\n");
-		 c : B => out_string("branch B\n");
-		 d : Object => out_string("branch Object\n");
-      esac
-   };
-   class_without_object_branch(var : Object) : SELF_TYPE {
-      case var of
-		 a : A => out_string("branch A\n");
-		 b : IO => out_string("branch IO\n");
-		 c : B => out_string("branch B\n");
-      esac
-   };
+	case_scopes(b : Int) : Object {
+		{
+			print_int("before let/cases", b);
+			let b : Int <- b-1 in
+				{
+					print_int("in let/before first case", b);
+					case b-1 of
+						b : Int => {
+							print_int("b in branch Int/before second case", b);
+							case b-1 of
+								b : Int => {
+									print_int("b in branch Int/in second case", b);
+								};
+							esac;
+							print_int("after second case", b);
+						};
+						b : Bool => print_bool("b in branch bool", b);
+					esac;
+					print_int("b in let/after cases", b);
+				};
+			print_int("b arg after let/cases", b);
+		}
+	};
+	case_with_object_branch(var : Object) : SELF_TYPE {
+		case var of
+			a : A => out_string("branch A\n");
+			b : IO => out_string("branch IO\n");
+			c : B => out_string("branch B\n");
+			d : Object => out_string("branch Object\n");
+		esac
+	};
+	case_without_object_branch(var : Object) : SELF_TYPE {
+		case var of
+			a : A => out_string("branch A\n");
+			b : IO => out_string("branch IO\n");
+			c : B => out_string("branch B\n");
+		esac
+	};
+	case_value(var : Object) : Int {
+		case var of
+			a : A => 1;
+			b : Nil => 2;
+			c : Cons => 3;
+		esac
+	};
 
 	-- test helpers
 	print_int(prefix : String, arg : Int) : Object {
@@ -65,25 +95,29 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
-			class_with_object_branch(new Book);
-			class_with_object_branch(new Article);
-			class_with_object_branch(new BookList);
-			class_with_object_branch(new A);
-			class_with_object_branch(new Nil);
-			class_with_object_branch(new B);
-			class_with_object_branch(new Cons);
-			class_with_object_branch(new C);
-			class_with_object_branch(10);
-			class_with_object_branch(true);
+			case_with_object_branch(new Book);
+			case_with_object_branch(new Article);
+			case_with_object_branch(new BookList);
+			case_with_object_branch(new A);
+			case_with_object_branch(new Nil);
+			case_with_object_branch(new B);
+			case_with_object_branch(new Cons);
+			case_with_object_branch(new C);
+			case_with_object_branch(10);
+			case_with_object_branch(true);
 
-			class_without_object_branch(new Book);
-			class_without_object_branch(new Article);
-			class_without_object_branch(new BookList);
-			class_without_object_branch(new A);
-			class_without_object_branch(new Nil);
-			class_without_object_branch(new B);
-			class_without_object_branch(new Cons);
-			class_without_object_branch(new C);
+			case_without_object_branch(new Book);
+			case_without_object_branch(new Article);
+			case_without_object_branch(new BookList);
+			case_without_object_branch(new A);
+			case_without_object_branch(new Nil);
+			case_without_object_branch(new B);
+			case_without_object_branch(new Cons);
+			case_without_object_branch(new C);
+
+			case_scopes(10);
+
+			print_int("case_value", case_value(new Nil));
 		}
 	};
 };
