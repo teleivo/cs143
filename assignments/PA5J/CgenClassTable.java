@@ -43,7 +43,7 @@ class CgenClassTable extends SymbolTable {
   ;
 
   // Class tags ranges per class name to check the the dynamic (runtime) class tag against a case
-  // branch class tag range and to generate the prototype objects and used to refer to classes. The
+  // branch class tag range, generate the prototype objects and used to refer to classes. The
   // range is [itself itself|max child].
   private final Map<String, Range> classTags;
   // Object size per class name to calculate attribute offsets in the object layout.
@@ -63,8 +63,7 @@ class CgenClassTable extends SymbolTable {
   private int boolclasstag;
   private int stringclasstag;
 
-  // The following methods emit code for constants and global
-  // declarations.
+  // The following methods emit code for constants and global declarations.
 
   /** Emits code to start the .data segment and to declare the global names. */
   private void codeGlobalData() {
@@ -158,21 +157,14 @@ class CgenClassTable extends SymbolTable {
     codeBools(boolclasstag);
   }
 
-  /**
-   * Creates data structures representing basic Cool classes (Object, IO, Int, Bool, String). Please
-   * note: as is this method does not do anything useful; you will need to edit it to make if do
-   * what you want.
-   */
+  /** Creates data structures representing basic Cool classes (Object, IO, Int, Bool, String). */
   private void installBasicClasses() {
     AbstractSymbol filename = AbstractTable.stringtable.addString("<basic class>");
 
-    // A few special class names are installed in the lookup table
-    // but not the class list.  Thus, these classes exist, but are
-    // not part of the inheritance hierarchy.  No_class serves as
-    // the parent of Object and the other special classes.
-    // SELF_TYPE is the self class; it cannot be redefined or
-    // inherited.  prim_slot is a class known to the code generator.
-
+    // A few special class names are installed in the lookup table but not the class list. Thus,
+    // these classes exist, but are not part of the inheritance hierarchy. No_class serves as the
+    // parent of Object and the other special classes. SELF_TYPE is the self class; it cannot be
+    // redefined or inherited. prim_slot is a class known to the code generator.
     addId(
         TreeConstants.No_class,
         new CgenNode(
@@ -349,10 +341,8 @@ class CgenClassTable extends SymbolTable {
     installClass(new CgenNode(Str_class, CgenNode.Basic, this));
   }
 
-  // The following creates an inheritance graph from
-  // a list of classes.  The graph is implemented as
-  // a tree of `CgenNode', and class names are placed
-  // in the base class symbol table.
+  // The following creates an inheritance graph from a list of classes. The graph is implemented as
+  // a tree of `CgenNode', and class names are placed in the base class symbol table.
 
   private void installClass(CgenNode nd) {
     AbstractSymbol name = nd.getName();
@@ -404,9 +394,13 @@ class CgenClassTable extends SymbolTable {
 
   /**
    * Generate class tags and class tag ranges using dfs assigning class tags as if the tree would be
-   * a search tree. Each class will have a class tag range of {@code [itself itself|max child]}. The
-   * class tag range is then used in case branches to test against the dynamic class tag of the case
-   * expression.
+   * a search tree. Each class will have a class tag range of {@code [itself itself|max child]}
+   * (inclusive). The class tag range is then used in case branches to test against the dynamic
+   * class tag of the case expression.
+   *
+   * <p>The class tags for the base classes differ from the ones in the originial template code. I
+   * first tried to make it work but the algorithm is way easier if class tags are arranged like in
+   * a "binary" search tree with contiguous tag numbers.
    */
   private int generateClassTags(CgenNode node, int tag) {
     if (node == null) {
@@ -701,8 +695,7 @@ class CgenClassTable extends SymbolTable {
 
     // 1. all attributes are visible to the initializers via the environment
     // 2. initializers are run in greates ancestor + code order
-    // 3. if an attribute is thus accessed before its initializer has run, its default will be
-    // seen
+    // 3. if an attribute is thus accessed before its initializer has run, its default will be seen
     SymbolTable env = new SymbolTable();
     env.enterScope();
     addAttributes(env, cls);

@@ -41,8 +41,6 @@ To then try yourself
 
 ## TODO
 
-* clean up todos
-* cleanup javadocs
 * what changes are needed to be able to use the GC? how can I also test that in test.sh?
 * how to get the example programs to do something useful? They did not even have a main before I
 added one
@@ -51,7 +49,6 @@ added one
   * or print sequence of fibonacci using the Cons from the manual?
 * up to now I ran my generator with the reference tool chain: run only my implementation in the `my`
 case in test.sh
-* cleanup readme
 * fix main README.md todos
 
 ## Limitations and improvements
