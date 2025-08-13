@@ -41,12 +41,12 @@ To then try yourself
 
 ## TODO
 
-* what changes are needed to be able to use the GC? how can I also test that in test.sh?
-* how to get the example programs to do something useful? They did not even have a main before I
-added one
-* why is -4 not valid according to the reference parser?
+* fix bug in gc_test.cl
 * get fibonacci to work
   * or print sequence of fibonacci using the Cons from the manual?
+* why is -4 not valid according to the reference parser?
+* how to get the example programs to do something useful? They did not even have a main before I
+added one
 * up to now I ran my generator with the reference tool chain: run only my implementation in the `my`
 case in test.sh
 * fix main README.md todos

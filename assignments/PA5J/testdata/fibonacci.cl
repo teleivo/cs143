@@ -1,4 +1,4 @@
-class Main {
+class Main inherits IO {
 	fib(n : Int) : Int {
 		if n < 2 then
 			n
