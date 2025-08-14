@@ -192,7 +192,7 @@ abstract class Expression extends TreeNode {
     }
   }
 
-  public abstract void code(
+  public abstract int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -700,7 +700,7 @@ class assign extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -714,6 +714,7 @@ class assign extends Expression {
     } else if (ref instanceof CgenClassTable.Register register) {
       CgenSupport.emitMove(register.name(), CgenSupport.ACC, s);
     }
+    return fpOffset;
   }
 }
 
@@ -786,13 +787,14 @@ class static_dispatch extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
+    // TODO think about actual.code and its effect on fpOffset
     // evaluate actual parameters and put them on the stack where the callee expects them
     for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {
       Expression actual = ((Expression) actuals.nextElement());
@@ -826,6 +828,7 @@ class static_dispatch extends Expression {
     int dispatchOffset = dispatchTables.get(type_name.getString()).get(name.getString()).offset();
     CgenSupport.emitLoad(CgenSupport.T1, dispatchOffset, CgenSupport.T1, s);
     CgenSupport.emitJalr(CgenSupport.T1, s);
+    return fpOffset;
   }
 }
 
@@ -891,13 +894,14 @@ class dispatch extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
+    // TODO think about actual.code ands its effect on fpOffset
     // evaluate actual parameters and put them on the stack where the callee expects them. stack is
     // (including arguments) is restored by callee
     for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {
@@ -914,6 +918,7 @@ class dispatch extends Expression {
     if (TreeConstants.SELF_TYPE.equals(expr.get_type())) {
       dispatchClass = cls.getName().getString();
     } else {
+      // TODO can change fpOffset
       expr.code(cls, env, classTags, fpOffset, dispatchTables, s);
       dispatchClass = expr.get_type().getString();
     }
@@ -934,6 +939,7 @@ class dispatch extends Expression {
     int dispatchOffset = dispatchTables.get(dispatchClass).get(name.getString()).offset();
     CgenSupport.emitLoad(CgenSupport.T1, dispatchOffset, CgenSupport.T1, s);
     CgenSupport.emitJalr(CgenSupport.T1, s);
+    return fpOffset;
   }
 }
 
@@ -995,7 +1001,7 @@ class cond extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1012,6 +1018,7 @@ class cond extends Expression {
     CgenSupport.emitLabelDef(elseLabel, s);
     else_exp.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitLabelDef(fiLabel, s);
+    return fpOffset;
   }
 }
 
@@ -1064,7 +1071,7 @@ class loop extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1083,6 +1090,7 @@ class loop extends Expression {
 
     CgenSupport.emitLabelDef(endLabel, s);
     CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.ZERO, s);
+    return fpOffset;
   }
 }
 
@@ -1137,13 +1145,14 @@ class typcase extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
+    // TODO use stack instead of S1
     // need to store s1 (callee-saved) on stack before evaluating the body so I can restore it
     CgenSupport.emitPush(CgenSupport.S1, s);
 
@@ -1213,6 +1222,7 @@ class typcase extends Expression {
     // restore S1
     CgenSupport.emitPop(1, s);
     CgenSupport.emitLoad(CgenSupport.S1, 0, CgenSupport.SP, s);
+    return fpOffset;
   }
 }
 
@@ -1262,7 +1272,7 @@ class block extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1275,6 +1285,7 @@ class block extends Expression {
       // restoring a0 to self
       exp.code(cls, env, classTags, fpOffset, dispatchTables, s);
     }
+    return fpOffset;
   }
 }
 
@@ -1342,19 +1353,13 @@ class let extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO use stack and fpOffset instead of s1
-    // TODO do I need to preserve a0? now that I write to it, a0 is not callee saved so I don't
-    // think so
-    // need to store s1 (callee-saved) on stack before evaluating the body so I can restore it
-    // CgenSupport.emitPush(CgenSupport.S1, s);
-
     if (init != null && !(init instanceof no_expr)) {
       init.code(cls, env, classTags, fpOffset, dispatchTables, s);
     } else {
@@ -1373,13 +1378,13 @@ class let extends Expression {
 
     env.enterScope();
     env.addId(identifier, new CgenClassTable.Address(fpOffset, CgenSupport.FP));
+    CgenSupport.emitPush(CgenSupport.ACC, s);
 
-    body.code(cls, env, classTags, fpOffset + 4, dispatchTables, s);
+    body.code(cls, env, classTags, fpOffset - 1, dispatchTables, s);
 
-    // TODO restore, I need to return the fpOffset so I can restore it here, do I need to restore it
-    // here? or only in the method code generated in CgenClassTable?
-    // CgenSupport.emitPop(1, s);
     env.exitScope();
+    CgenSupport.emitPop(1, s);
+    return fpOffset;
   }
 }
 
@@ -1432,7 +1437,7 @@ class plus extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1453,6 +1458,7 @@ class plus extends Expression {
     // update the result objects int attribute with the sum
     CgenSupport.emitStore(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
     CgenSupport.emitPop(1, s);
+    return fpOffset;
   }
 }
 
@@ -1506,7 +1512,7 @@ class sub extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1527,6 +1533,7 @@ class sub extends Expression {
     // update the result objects int attribute with the sum
     CgenSupport.emitStore(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
     CgenSupport.emitPop(1, s);
+    return fpOffset;
   }
 }
 
@@ -1579,7 +1586,7 @@ class mul extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1600,6 +1607,7 @@ class mul extends Expression {
     // update the result objects int attribute with the sum
     CgenSupport.emitStore(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
     CgenSupport.emitPop(1, s);
+    return fpOffset;
   }
 }
 
@@ -1652,7 +1660,7 @@ class divide extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1660,6 +1668,9 @@ class divide extends Expression {
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
+    // TODO how do these expressions affect fpOffset and my pushing the first result onto the
+    // stack? I should increment the fpOffset right? this affects all arithmetic expressions/or
+    // anything that uses emitPush
     CgenSupport.emitPush(CgenSupport.ACC, s);
     e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
@@ -1673,6 +1684,7 @@ class divide extends Expression {
     // update the result objects int attribute with the sum
     CgenSupport.emitStore(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
     CgenSupport.emitPop(1, s);
+    return fpOffset;
   }
 }
 
@@ -1720,7 +1732,7 @@ class neg extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1735,6 +1747,7 @@ class neg extends Expression {
     CgenSupport.emitNeg(CgenSupport.T1, CgenSupport.T1, s);
     // update the result objects int attribute
     CgenSupport.emitStore(CgenSupport.T1, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+    return fpOffset;
   }
 }
 
@@ -1787,7 +1800,7 @@ class lt extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1810,6 +1823,7 @@ class lt extends Expression {
     CgenSupport.emitBlt(CgenSupport.T2, CgenSupport.T3, endLabel, s);
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
     CgenSupport.emitLabelDef(endLabel, s);
+    return fpOffset;
   }
 }
 
@@ -1862,7 +1876,7 @@ class eq extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1885,6 +1899,7 @@ class eq extends Expression {
     CgenSupport.emitLoadBool(CgenSupport.A1, BoolConst.falsebool, s);
     CgenSupport.emitJal(CgenSupport.EQUALITY_TEST, s);
     CgenSupport.emitLabelDef(endLabel, s);
+    return fpOffset;
   }
 }
 
@@ -1938,7 +1953,7 @@ class leq extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -1961,6 +1976,7 @@ class leq extends Expression {
     CgenSupport.emitBleq(CgenSupport.T2, CgenSupport.T3, endLabel, s);
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
     CgenSupport.emitLabelDef(endLabel, s);
+    return fpOffset;
   }
 }
 
@@ -2008,7 +2024,7 @@ class comp extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -2027,6 +2043,7 @@ class comp extends Expression {
     CgenSupport.emitBeqz(CgenSupport.T2, endLabel, s);
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
     CgenSupport.emitLabelDef(endLabel, s);
+    return fpOffset;
   }
 }
 
@@ -2074,7 +2091,7 @@ class int_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -2083,6 +2100,7 @@ class int_const extends Expression {
       PrintStream s) {
     CgenSupport.emitLoadInt(
         CgenSupport.ACC, (IntSymbol) AbstractTable.inttable.lookup(token.getString()), s);
+    return fpOffset;
   }
 }
 
@@ -2130,7 +2148,7 @@ class bool_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -2138,6 +2156,7 @@ class bool_const extends Expression {
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     CgenSupport.emitLoadBool(CgenSupport.ACC, new BoolConst(val), s);
+    return fpOffset;
   }
 }
 
@@ -2187,7 +2206,7 @@ class string_const extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -2196,6 +2215,7 @@ class string_const extends Expression {
       PrintStream s) {
     CgenSupport.emitLoadString(
         CgenSupport.ACC, (StringSymbol) AbstractTable.stringtable.lookup(token.getString()), s);
+    return fpOffset;
   }
 }
 
@@ -2243,7 +2263,7 @@ class new_ extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -2280,6 +2300,7 @@ class new_ extends Expression {
       // call initializer
       CgenSupport.emitJal(CgenSupport.initMethodRef(type_name), s);
     }
+    return fpOffset;
   }
 }
 
@@ -2327,7 +2348,7 @@ class isvoid extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -2341,6 +2362,7 @@ class isvoid extends Expression {
     CgenSupport.emitBeqz(CgenSupport.T1, endLabel, s);
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.falsebool, s);
     CgenSupport.emitLabelDef(endLabel, s);
+    return fpOffset;
   }
 }
 
@@ -2383,7 +2405,7 @@ class no_expr extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -2438,7 +2460,7 @@ class object extends Expression {
    * @param s the output stream
    */
   @Override
-  public void code(
+  public int code(
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
@@ -2455,5 +2477,6 @@ class object extends Expression {
         CgenSupport.emitMove(CgenSupport.ACC, register.name(), s);
       }
     }
+    return fpOffset;
   }
 }

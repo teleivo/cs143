@@ -673,7 +673,9 @@ class CgenClassTable extends SymbolTable {
     CgenSupport.emitPush(CgenSupport.SELF, s); // save previous self
     // save previous return address (needed in case method itself makes calls)
     CgenSupport.emitPush(CgenSupport.RA, s);
-    // set FP of the current activation to its top of the stack
+    // set FP of the current activation to the callers RA (FP + positive offsets = parameters from
+    // caller; FP - negative offsets = local variables; FP + 0 = return address as frame
+    // boundary)
     CgenSupport.emitAddiu(CgenSupport.FP, CgenSupport.SP, 4, s);
 
     // save self
@@ -707,7 +709,8 @@ class CgenClassTable extends SymbolTable {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
         if (a.init != null && !(a.init instanceof no_expr)) {
-          a.init.code(cls, env, classTags, 0, dispatchTables, s);
+          // TODO what to do with fpOffset in this case?
+          int fpOffset = a.init.code(cls, env, classTags, -1, dispatchTables, s);
           // store initialization value into corresponding attribute
           CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }
@@ -809,14 +812,16 @@ class CgenClassTable extends SymbolTable {
     CgenSupport.emitPush(CgenSupport.SELF, s); // save previous self
     // save previous return address (needed in case method itself makes calls)
     CgenSupport.emitPush(CgenSupport.RA, s);
-    // set FP of the current activation to its top of the stack
+    // set FP of the current activation to the callers RA (FP + positive offsets = parameters from
+    // caller; FP - negative offsets = local variables; FP + 0 = return address as frame
+    // boundary)
     CgenSupport.emitAddiu(CgenSupport.FP, CgenSupport.SP, 4, s);
 
     // move self stored in a0 into s0 as the result of evaluating an expression will be put into
     // a0
     CgenSupport.emitMove(CgenSupport.SELF, CgenSupport.ACC, s);
 
-    m.expr.code(cls, env, classTags, 0, dispatchTables, s);
+    m.expr.code(cls, env, classTags, -1, dispatchTables, s);
 
     // restore callee saved registers from the stack
     CgenSupport.emitLoad(CgenSupport.FP, 3, CgenSupport.SP, s);
