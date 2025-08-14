@@ -31,6 +31,13 @@ and or PDF, the directory will be named "PA5J".
 I took the course suggestion to heart: don't spend much time on optimizing the amount of passes as
 there is plenty of logic to get right 😅. There is definitely lots of room for improvement!
 
+Some improvements I or you :yum: could make
+* use proper generics in the CS143 template code like `Enumeration`
+* expand the stack in one go for all things that the current activation needs to store instead of
+pushing/incrementing every single item
+* store local variables in registers before using the stack (register allocation)
+* only store local variables that are actually used (dead code elimination)
+
 ## License
 
 This repo contains my solutions to the [CS143 Compilers](https://web.stanford.edu/class/cs143/)

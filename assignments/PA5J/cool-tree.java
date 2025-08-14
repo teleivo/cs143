@@ -1,4 +1,3 @@
-// -*- mode: java -*-
 //
 // file: cool-tree.m4
 //
@@ -197,6 +196,7 @@ abstract class Expression extends TreeNode {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s);
 }
@@ -704,9 +704,10 @@ class assign extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    expr.code(cls, env, classTags, dispatchTables, s);
+    expr.code(cls, env, classTags, fpOffset, dispatchTables, s);
     Object ref = env.lookup(name);
     if (ref instanceof CgenClassTable.Address address) {
       CgenSupport.emitStore(CgenSupport.ACC, address.offset(), address.sourceRegister(), s);
@@ -789,12 +790,13 @@ class static_dispatch extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // evaluate actual parameters and put them on the stack where the callee expects them
     for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {
       Expression actual = ((Expression) actuals.nextElement());
-      actual.code(cls, env, classTags, dispatchTables, s);
+      actual.code(cls, env, classTags, fpOffset, dispatchTables, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
     }
 
@@ -802,7 +804,7 @@ class static_dispatch extends Expression {
     CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.SELF, s);
 
     // e0 is mandatory in a static dispatch as opposed to a dispatch where no e0 defaults to self
-    expr.code(cls, env, classTags, dispatchTables, s);
+    expr.code(cls, env, classTags, fpOffset, dispatchTables, s);
 
     // The body is supposed to be evaluated in a fresh environment based of the attributes which
     // should be the attributes of v0's class after having evaluated e0.
@@ -893,12 +895,14 @@ class dispatch extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // evaluate actual parameters and put them on the stack where the callee expects them
+    // evaluate actual parameters and put them on the stack where the callee expects them. stack is
+    // (including arguments) is restored by callee
     for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {
       Expression actual = ((Expression) actuals.nextElement());
-      actual.code(cls, env, classTags, dispatchTables, s);
+      actual.code(cls, env, classTags, fpOffset, dispatchTables, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
     }
 
@@ -910,7 +914,7 @@ class dispatch extends Expression {
     if (TreeConstants.SELF_TYPE.equals(expr.get_type())) {
       dispatchClass = cls.getName().getString();
     } else {
-      expr.code(cls, env, classTags, dispatchTables, s);
+      expr.code(cls, env, classTags, fpOffset, dispatchTables, s);
       dispatchClass = expr.get_type().getString();
     }
 
@@ -995,17 +999,18 @@ class cond extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    pred.code(cls, env, classTags, dispatchTables, s);
+    pred.code(cls, env, classTags, fpOffset, dispatchTables, s);
     int elseLabel = CgenSupport.generateLocalLabel();
     int fiLabel = CgenSupport.generateLocalLabel();
     CgenSupport.emitLoadBool(CgenSupport.T1, BoolConst.truebool, s);
     CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.T1, elseLabel, s);
-    then_exp.code(cls, env, classTags, dispatchTables, s);
+    then_exp.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitBranch(fiLabel, s);
     CgenSupport.emitLabelDef(elseLabel, s);
-    else_exp.code(cls, env, classTags, dispatchTables, s);
+    else_exp.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitLabelDef(fiLabel, s);
   }
 }
@@ -1063,16 +1068,17 @@ class loop extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     int loopLabel = CgenSupport.generateLocalLabel();
     int endLabel = CgenSupport.generateLocalLabel();
 
     CgenSupport.emitLabelDef(loopLabel, s);
-    pred.code(cls, env, classTags, dispatchTables, s);
+    pred.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitLoadBool(CgenSupport.T1, BoolConst.truebool, s);
     CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.T1, endLabel, s);
-    body.code(cls, env, classTags, dispatchTables, s);
+    body.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitBranch(loopLabel, s);
 
     CgenSupport.emitLabelDef(endLabel, s);
@@ -1135,12 +1141,13 @@ class typcase extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // need to store s1 (callee-saved) on stack before evaluating the body so I can restore it
     CgenSupport.emitPush(CgenSupport.S1, s);
 
-    expr.code(cls, env, classTags, dispatchTables, s);
+    expr.code(cls, env, classTags, fpOffset, dispatchTables, s);
 
     int firstBranch = CgenSupport.generateLocalLabel();
     // handle case expression evaluating to void
@@ -1193,7 +1200,7 @@ class typcase extends Expression {
       branchEnv.enterScope();
       branchEnv.addId(branch.name, new CgenClassTable.Register(CgenSupport.S1));
 
-      branch.expr.code(cls, branchEnv, classTags, dispatchTables, s);
+      branch.expr.code(cls, branchEnv, classTags, fpOffset, dispatchTables, s);
 
       branchEnv.exitScope();
       CgenSupport.emitBranch(endLabel, s);
@@ -1259,13 +1266,14 @@ class block extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     for (Enumeration e = body.getElements(); e.hasMoreElements(); ) {
       Expression exp = (Expression) e.nextElement();
       // a block results in the last expression which is handled by this setting a0 and not
       // restoring a0 to self
-      exp.code(cls, env, classTags, dispatchTables, s);
+      exp.code(cls, env, classTags, fpOffset, dispatchTables, s);
     }
   }
 }
@@ -1338,35 +1346,39 @@ class let extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
+    // TODO use stack and fpOffset instead of s1
+    // TODO do I need to preserve a0? now that I write to it, a0 is not callee saved so I don't
+    // think so
     // need to store s1 (callee-saved) on stack before evaluating the body so I can restore it
-    CgenSupport.emitPush(CgenSupport.S1, s);
+    // CgenSupport.emitPush(CgenSupport.S1, s);
+
     if (init != null && !(init instanceof no_expr)) {
-      init.code(cls, env, classTags, dispatchTables, s);
-      CgenSupport.emitMove(CgenSupport.S1, CgenSupport.ACC, s);
+      init.code(cls, env, classTags, fpOffset, dispatchTables, s);
     } else {
       if (TreeConstants.Bool.equals(type_decl)) {
-        CgenSupport.emitLoadAddress(CgenSupport.S1, BoolConst.falsebool.getCodeRef(), s);
+        CgenSupport.emitLoadAddress(CgenSupport.ACC, BoolConst.falsebool.getCodeRef(), s);
       } else if (TreeConstants.Int.equals(type_decl)) {
         CgenSupport.emitLoadAddress(
-            CgenSupport.S1, ((IntSymbol) AbstractTable.inttable.lookup("0")).getCodeRef(), s);
+            CgenSupport.ACC, ((IntSymbol) AbstractTable.inttable.lookup("0")).getCodeRef(), s);
       } else if (TreeConstants.Str.equals(type_decl)) {
         CgenSupport.emitLoadAddress(
-            CgenSupport.S1, ((StringSymbol) AbstractTable.stringtable.lookup("")).getCodeRef(), s);
+            CgenSupport.ACC, ((StringSymbol) AbstractTable.stringtable.lookup("")).getCodeRef(), s);
       } else {
-        CgenSupport.emitMove(CgenSupport.S1, CgenSupport.ZERO, s);
+        CgenSupport.emitMove(CgenSupport.ACC, CgenSupport.ZERO, s);
       }
     }
 
     env.enterScope();
-    env.addId(identifier, new CgenClassTable.Register(CgenSupport.S1));
+    env.addId(identifier, new CgenClassTable.Address(fpOffset, CgenSupport.FP));
 
-    body.code(cls, env, classTags, dispatchTables, s);
+    body.code(cls, env, classTags, fpOffset + 4, dispatchTables, s);
 
-    // restore S1
-    CgenSupport.emitPop(1, s);
-    CgenSupport.emitLoad(CgenSupport.S1, 0, CgenSupport.SP, s);
+    // TODO restore, I need to return the fpOffset so I can restore it here, do I need to restore it
+    // here? or only in the method code generated in CgenClassTable?
+    // CgenSupport.emitPop(1, s);
     env.exitScope();
   }
 }
@@ -1424,11 +1436,12 @@ class plus extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1497,11 +1510,12 @@ class sub extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1569,11 +1583,12 @@ class mul extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1641,11 +1656,12 @@ class divide extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1708,9 +1724,10 @@ class neg extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // copy e1 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of the freshly copied e1 into t1
@@ -1774,14 +1791,15 @@ class lt extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // evaluate e1 then e2
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
-    e2.code(cls, env, classTags, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // get the value of e2 into t3 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
@@ -1848,11 +1866,12 @@ class eq extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitMove(CgenSupport.T2, CgenSupport.ACC, s);
 
     // equality_test tests whether the objects passed in $t1 and $t2 have the same primitive type
@@ -1923,14 +1942,15 @@ class leq extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     // evaluate e1 then e2
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
-    e2.code(cls, env, classTags, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // get the value of e2 into t3 (load reference to int object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T3, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
@@ -1992,9 +2012,10 @@ class comp extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     // get the value of e1 into t2 (load reference to bool object, then retrieve its attribute)
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
@@ -2057,6 +2078,7 @@ class int_const extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     CgenSupport.emitLoadInt(
@@ -2112,6 +2134,7 @@ class bool_const extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     CgenSupport.emitLoadBool(CgenSupport.ACC, new BoolConst(val), s);
@@ -2168,6 +2191,7 @@ class string_const extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     CgenSupport.emitLoadString(
@@ -2223,6 +2247,7 @@ class new_ extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     if (TreeConstants.SELF_TYPE.equals(type_name)) {
@@ -2306,9 +2331,10 @@ class isvoid extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    e1.code(cls, env, classTags, dispatchTables, s);
+    e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitMove(CgenSupport.T1, CgenSupport.ACC, s);
     CgenSupport.emitLoadBool(CgenSupport.ACC, BoolConst.truebool, s);
     int endLabel = CgenSupport.generateLocalLabel();
@@ -2361,6 +2387,7 @@ class no_expr extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     throw new UnsupportedOperationException("not implemented");
@@ -2415,6 +2442,7 @@ class object extends Expression {
       Class_ cls,
       SymbolTable env,
       Map<String, CgenClassTable.Range> classTags,
+      int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     if (TreeConstants.self.equals(name)) {

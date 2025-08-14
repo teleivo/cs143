@@ -33,7 +33,7 @@ class Main inherits A {
 	let_initializer_access_attribute() : Int {
 		let b : Int <- b + 1 in b
 	};
-	let_nested(a : Int) : Object {
+	let_nested_hide(a : Int) : Object {
 		{
 			print_int("before lets", a);
 			let a : Int <- a-1 in
@@ -51,6 +51,22 @@ class Main inherits A {
 					print_int("after second let", a);
 				};
 			print_int("after lets", a);
+		}
+	};
+	let_nested(a : Int) : Object {
+		{
+			print_int("before lets a", a);
+			let a : Int <- a-1 in
+				{
+					print_int("inside first let a", a);
+					let b : Int <- 3 in
+						{
+							print_int("inside second let a", a);
+							print_int("inside second let b", b);
+						};
+					print_int("after second let a", a);
+				};
+			print_int("after lets a", a);
 		}
 	};
 
@@ -103,7 +119,9 @@ class Main inherits A {
 			print_int("let_hides_parameter", let_hides_parameter(10));
 			print_int("let_hides_attribute", let_hides_attribute());
 			print_int("let_initializer_access_attribute", let_initializer_access_attribute());
-			let_nested(10);
+			let_nested_hide(10);
+			-- TODO move fix.cl test over here when done
+			-- let_nested(10);
 		}
 	};
 };

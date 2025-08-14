@@ -42,8 +42,12 @@ To then try yourself
 ## TODO
 
 * fix bug in gc_test.cl
-* get fibonacci to work
-  * or print sequence of fibonacci using the Cons from the manual?
+  * add a test using dispatches with params and their own lets in between to ensure the invariant of
+    stack is restored is uphold/tested
+* how does deep arithmatic work with regards to registers? do I also need the stack/fp for it?
+* fibonacci show it actually works
+  * print sequence of fibonacci using the Cons from the manual?
+* does Cool support closures?
 * why is -4 not valid according to the reference parser?
 * how to get the example programs to do something useful? They did not even have a main before I
 added one

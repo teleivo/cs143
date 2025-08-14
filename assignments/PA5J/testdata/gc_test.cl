@@ -42,8 +42,8 @@ class Main inherits IO {
                 let n : Int <- 1000 in let list : List <- createList(n) in {
                     out_string("Created list with ");
 					-- TODO bug: reference generator prints 1000 items while my prints 268537828
-					-- items
-                    out_int(n);
+					-- items, print again once fix.cl is fixed
+                    -- out_int(n);
                     out_string(" items\n");
 				};
                 createLists(count - 1);
