@@ -794,12 +794,13 @@ class static_dispatch extends Expression {
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO think about actual.code and its effect on fpOffset
+    // TODO fix
     // evaluate actual parameters and put them on the stack where the callee expects them
     for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {
       Expression actual = ((Expression) actuals.nextElement());
       actual.code(cls, env, classTags, fpOffset, dispatchTables, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
+      fpOffset = fpOffset - 1;
     }
 
     // restore self
@@ -901,13 +902,14 @@ class dispatch extends Expression {
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO think about actual.code ands its effect on fpOffset
+    // TODO fix
     // evaluate actual parameters and put them on the stack where the callee expects them. stack is
     // (including arguments) is restored by callee
     for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {
       Expression actual = ((Expression) actuals.nextElement());
       actual.code(cls, env, classTags, fpOffset, dispatchTables, s);
       CgenSupport.emitPush(CgenSupport.ACC, s);
+      fpOffset = fpOffset - 1;
     }
 
     // restore self
@@ -918,7 +920,6 @@ class dispatch extends Expression {
     if (TreeConstants.SELF_TYPE.equals(expr.get_type())) {
       dispatchClass = cls.getName().getString();
     } else {
-      // TODO can change fpOffset
       expr.code(cls, env, classTags, fpOffset, dispatchTables, s);
       dispatchClass = expr.get_type().getString();
     }
@@ -1446,7 +1447,7 @@ class plus extends Expression {
       PrintStream s) {
     e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset - 1, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1521,7 +1522,7 @@ class sub extends Expression {
       PrintStream s) {
     e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset - 1, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1595,7 +1596,7 @@ class mul extends Expression {
       PrintStream s) {
     e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset - 1, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
@@ -1668,11 +1669,8 @@ class divide extends Expression {
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
     e1.code(cls, env, classTags, fpOffset, dispatchTables, s);
-    // TODO how do these expressions affect fpOffset and my pushing the first result onto the
-    // stack? I should increment the fpOffset right? this affects all arithmetic expressions/or
-    // anything that uses emitPush
     CgenSupport.emitPush(CgenSupport.ACC, s);
-    e2.code(cls, env, classTags, fpOffset, dispatchTables, s);
+    e2.code(cls, env, classTags, fpOffset - 1, dispatchTables, s);
     // copy e2 int object which will then be returned in a0
     CgenSupport.emitJal(CgenSupport.methodRef(TreeConstants.Object_, TreeConstants.copy), s);
     // get the value of e1 into t2 (load reference to int object, then retrieve its attribute)
