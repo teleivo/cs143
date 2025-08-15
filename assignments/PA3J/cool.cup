@@ -202,7 +202,7 @@ expr
 	| expr:e DOT OBJECTID:o LPAREN actual:a RPAREN
 	    {: RESULT = new dispatch(curr_lineno(), e, o, a); :}
 	| OBJECTID:o LPAREN actual:a RPAREN
-	    {: RESULT = new dispatch(curr_lineno(), new no_expr(curr_lineno()), o, a); :}
+	    {: RESULT = new dispatch(curr_lineno(), new object(curr_lineno(), TreeConstants.self), o, a); :}
 	| OBJECTID:n ASSIGN expr:e
 	    {: RESULT = new assign(curr_lineno(), n, e); :}
 	;
