@@ -21,7 +21,7 @@ for file in "$TEST_DIR"/*.cl; do
         fi
 
         # Run my implementation with error handling
-        if ! my=$(../../bin/lexer "$file" | ../../bin/parser | ./semant 2>&1); then
+        if ! my=$(../PA2J/lexer "$file" | ../PA3J/parser | ./semant 2>&1); then
             echo "FAILED (my implementation)"
             failed=1
             continue
