@@ -28,7 +28,7 @@ for file in "$TEST_DIR"/*.cl; do
         fi
 
         # Compile with my implementation
-        if ! ../../bin/lexer "$file" | ../../bin/parser | ../../bin/semant | ./cgen > "$my_asm" 2> /tmp/my_compile_error.txt; then
+        if ! ../PA2J/lexer "$file" | ../PA3J/parser | ../PA4J/semant | ./cgen > "$my_asm" 2> /tmp/my_compile_error.txt; then
             echo "FAILED (my compilation)"
             echo "Compilation errors:"
             cat /tmp/my_compile_error.txt

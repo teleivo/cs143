@@ -1151,8 +1151,7 @@ class typcase extends Expression {
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO use stack instead of S1
-    // need to store s1 (callee-saved) on stack before evaluating the body so I can restore it
+    // need to store s1 (callee-saved) on stack before using it for the case expression
     CgenSupport.emitPush(CgenSupport.S1, s);
 
     expr.code(cls, env, classTags, fpOffset, dispatchTables, s);

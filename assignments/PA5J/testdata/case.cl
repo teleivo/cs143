@@ -9,29 +9,29 @@ class Cons inherits BookList {};
 class C inherits B {};
 
 class Main inherits IO {
-	case_scopes(b : Int) : Object {
+	case_scopes(a : Int) : Object {
 		{
-			print_int("before let/cases", b);
-			let b : Int <- b-1 in
+			print_int("before let/cases", a);
+			let a : Int <- a-1 in
 				{
-					print_int("in let/before first case", b);
-					case b-1 of
-						b : Int => {
-							print_int("b in branch Int/before second case", b);
-							case b-1 of
-								b : Int => {
-									print_int("b in branch Int/in second case", b);
-									b <- b-1; -- assign
-									print_int("b in branch Int/in second case/after assign", b);
+					print_int("in let/before first case", a);
+					case a-1 of
+						a : Int => {
+							print_int("a in branch Int/before second case", a);
+							case a-1 of
+								a : Int => {
+									print_int("a in branch Int/in second case", a);
+									a <- a-1; -- assign
+									print_int("a in branch Int/in second case/after assign", a);
 								};
 							esac;
-							print_int("after second case", b);
+							print_int("after second case", a);
 						};
-						b : Bool => print_bool("b in branch bool", b);
+						a : Bool => print_bool("a in branch bool", a);
 					esac;
-					print_int("b in let/after cases", b);
+					print_int("a in let/after cases", a);
 				};
-			print_int("b arg after let/cases", b);
+			print_int("a arg after let/cases", a);
 		}
 	};
 	case_with_object_branch(var : Object) : SELF_TYPE {

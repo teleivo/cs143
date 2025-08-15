@@ -93,6 +93,26 @@ class Main inherits A {
 			out_string("\n");
 		}
 	};
+	let_one(a : Int, b : Int, c : Int) : Object {
+		let a : Int <- 1 in {
+			print_int("let_one before let_two", a);
+			let_two(b, c);
+			print_int("let_one after let_two", a);
+		}
+	};
+	let_two(a : Int, b : Int) : Object {
+		let a : Int <- a-1 in {
+			print_int("let_two before let_three", a);
+			let_three(b);
+			print_int("let_two after let_three", a);
+		}
+	};
+	let_three(a : Int) : Object {
+		let b : Int <- a-1 in {
+			print_int("let_three", a);
+			print_int("let_three", b);
+		}
+	};
 
 	-- test helpers
 	print_int(prefix : String, arg : Int) : Object {
@@ -146,6 +166,7 @@ class Main inherits A {
 			let_nested_hide(10);
 			let_nested(10);
 			let_nested_2();
+			let_one(10, 5, 2);
 		}
 	};
 };
