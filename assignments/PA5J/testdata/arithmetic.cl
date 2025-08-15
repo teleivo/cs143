@@ -90,6 +90,8 @@ class Main inherits IO {
 	};
 	main() : Object {
 		{
+			print_int("some calculation", 12 + 34 + 123 / 35 - 44 * 2345 + 42 * 21 / 12 - 56 + 78);
+
 			print_bool("Main.eq_int", eq_int(5, 5));
 			print_bool("Main.eq_int", eq_int(6, 5));
 			print_bool("Main.eq_instances", eq_instances());
