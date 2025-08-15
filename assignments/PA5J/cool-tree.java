@@ -794,7 +794,6 @@ class static_dispatch extends Expression {
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO fix
     // evaluate actual parameters and put them on the stack where the callee expects them
     for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {
       Expression actual = ((Expression) actuals.nextElement());
@@ -902,7 +901,6 @@ class dispatch extends Expression {
       int fpOffset,
       Map<String, Map<String, CgenClassTable.DispatchTableEntry>> dispatchTables,
       PrintStream s) {
-    // TODO fix
     // evaluate actual parameters and put them on the stack where the callee expects them. stack is
     // (including arguments) is restored by callee
     for (Enumeration actuals = actual.getElements(); actuals.hasMoreElements(); ) {

@@ -709,8 +709,7 @@ class CgenClassTable extends SymbolTable {
       Feature feature = ((Feature) f.nextElement());
       if (feature instanceof attr a) {
         if (a.init != null && !(a.init instanceof no_expr)) {
-          // TODO what to do with fpOffset in this case?
-          int fpOffset = a.init.code(cls, env, classTags, -1, dispatchTables, s);
+          a.init.code(cls, env, classTags, -1, dispatchTables, s);
           // store initialization value into corresponding attribute
           CgenSupport.emitStore(CgenSupport.ACC, attrNumber, CgenSupport.SELF, s);
         }

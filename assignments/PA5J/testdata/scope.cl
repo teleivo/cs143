@@ -69,6 +69,30 @@ class Main inherits A {
 			print_int("after lets a", a);
 		}
 	};
+	let_nested_2() : Object {
+		let a : Int <- 1 in let b : Int <- 2 in let c : Int <- 3 in let d : Int <- 4 in let e : Int <- 5 in let f : Int <- 6 in let g : Int <- 7 in let h : Int <- 8 in let i : Int <- 9 in let j : Int <- 10 in { -- TODO bug
+			out_int(a);
+			out_string("\n");
+			out_int(b);
+			out_string("\n");
+			out_int(c);
+			out_string("\n");
+			out_int(d);
+			out_string("\n");
+			out_int(e);
+			out_string("\n");
+			out_int(f);
+			out_string("\n");
+			out_int(g);
+			out_string("\n");
+			out_int(h);
+			out_string("\n");
+			out_int(i);
+			out_string("\n");
+			out_int(j);
+			out_string("\n");
+		}
+	};
 
 	-- test helpers
 	print_int(prefix : String, arg : Int) : Object {
@@ -120,8 +144,8 @@ class Main inherits A {
 			print_int("let_hides_attribute", let_hides_attribute());
 			print_int("let_initializer_access_attribute", let_initializer_access_attribute());
 			let_nested_hide(10);
-			-- TODO move fix.cl test over here when done
-			-- let_nested(10);
+			let_nested(10);
+			let_nested_2();
 		}
 	};
 };
