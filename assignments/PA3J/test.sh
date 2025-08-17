@@ -9,6 +9,8 @@ if [ ! -d "$TEST_DIR" ]; then
     exit 1
 fi
 
+failed=0
+
 for file in "$TEST_DIR"/*.cl; do
     if [ -f "$file" ]; then
         # ignore line numbers: lines that contain only whitespace followed by # and a number
@@ -21,7 +23,7 @@ for file in "$TEST_DIR"/*.cl; do
     fi
 done
 
-if [ -n "$failed" ]; then
+if [ "$failed" -ne 0 ]; then
     exit 1
 fi
 
