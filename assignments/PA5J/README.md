@@ -39,11 +39,10 @@ To then try yourself
   * against my test samples of valid/invalid Cool `./test.sh`
   * against all the course examples `./test.sh ../../examples`
 
-## TODO
+## Notes
 
-* does Cool support closures?
-* how to get the example programs to do something useful? They did not even have a main before I
-added one
+**Making example programs useful:**
+The `../../examples-ok/` directory contains Cool programs with meaningful `Main` classes that exercise the example code and produce useful output. These examples can be tested with your compiler using `./test.sh ../../examples-ok/` to verify your implementation produces the same output as the reference compiler.
 
 ## Limitations and improvements
 

@@ -46,7 +46,8 @@ ${OUTPUT}: cgen
 cgen: Makefile ${CLS}
 	@rm -f cgen
 	echo '#!/bin/sh' >> cgen
-	echo 'java -classpath ${CLASSPATH} Cgen $$*' >> cgen
+	echo 'SCRIPT_DIR=`dirname $$0`' >> cgen
+	echo 'java -classpath ${CLASSPATH}:$$SCRIPT_DIR Cgen $$*' >> cgen
 	chmod 755 cgen
 
 symtab-example: Makefile ${CLS}

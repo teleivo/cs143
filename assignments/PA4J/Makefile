@@ -60,7 +60,8 @@ symtab-example: Makefile ${CLS}
 semant: Makefile ${CLS}
 	@rm -f semant
 	echo '#!/bin/sh' >> semant
-	echo 'java -classpath ${CLASSPATH}:`dirname $$0` Semant $$*' >> semant
+	echo 'SCRIPT_DIR=`dirname $$0`' >> semant
+	echo 'java -classpath ${CLASSPATH}:$$SCRIPT_DIR Semant $$*' >> semant
 	chmod 755 semant
 
 dotest:	cgen example.cl

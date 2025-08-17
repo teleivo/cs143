@@ -46,7 +46,8 @@ ${OUTPUT}:	lexer test.cl
 lexer: Makefile ${CLS}
 	@rm -f lexer
 	echo '#!/bin/sh' >> lexer
-	echo 'java -classpath ${CLASSPATH}:`dirname $$0` Lexer $$*' >> lexer
+	echo 'SCRIPT_DIR=`dirname $$0`' >> lexer
+	echo 'java -classpath ${CLASSPATH}:$$SCRIPT_DIR Lexer $$*' >> lexer
 	chmod 755 lexer
 
 CoolLexer.java: cool.lex
