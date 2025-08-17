@@ -45,7 +45,7 @@ for file in "$TEST_DIR"/*.cl; do
     fi
 done
 
-if [ -n "$failed" ]; then
+if [ "$failed" -ne 0 ]; then
     exit 1
 fi
 
