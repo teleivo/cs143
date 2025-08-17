@@ -37,15 +37,5 @@ To then try yourself
 * run it
   * against some Cool code using `./mycoolc -o code.s code.cl`
   * against my test samples of valid/invalid Cool `./test.sh`
-  * against all the course examples `./test.sh ../../examples`
-
-## Notes
-
-**Making example programs useful:**
-The `../../examples-ok/` directory contains Cool programs with meaningful `Main` classes that exercise the example code and produce useful output. These examples can be tested with your compiler using `./test.sh ../../examples-ok/` to verify your implementation produces the same output as the reference compiler.
-
-## Limitations and improvements
-
-I took the course suggestion to heart: don't spend much time on optimizing the amount of passes as
-there is plenty of logic to get right 😅. There is definitely lots of room for improvement!
+  * against all the course examples with useful main methods `./test.sh ../../examples-ok`
 

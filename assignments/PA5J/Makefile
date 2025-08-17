@@ -18,7 +18,6 @@ CSRC = \
 	Cgen.java \
 	StringTable.java \
 	SymbolTable.java \
-	SymtabExample.java \
 	TokenConstants.java \
 	TreeNode.java \
 	Utilities.java
@@ -50,11 +49,6 @@ cgen: Makefile ${CLS}
 	echo 'java -classpath ${CLASSPATH}:$$SCRIPT_DIR Cgen $$*' >> cgen
 	chmod 755 cgen
 
-symtab-example: Makefile ${CLS}
-	@rm -f symtab-example
-	echo '#!/bin/sh' >> symtab-example
-	echo 'java -classpath ${CLASSPATH} SymtabExample $$*' >> symtab-example
-	chmod 755 symtab-example
 
 dotest:	cgen example.cl
 	@echo "\nRunning code generator on example.cl\n"
@@ -76,7 +70,7 @@ ${HSRC}:
 	-ln -s ${CLASSDIR}/include/PA${ASSN}/$@ $@
 
 clean :
-	-rm -f ${OUTPUT} *.s core ${CLS} ${CGEN} parser cgen semant lexer symtab-example *~
+	-rm -f ${OUTPUT} *.s core ${CLS} ${CGEN} parser cgen semant lexer *~
 
 
 

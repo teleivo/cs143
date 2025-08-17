@@ -16,6 +16,21 @@ Try solving them yourself before you peek :grin:.
 4. I also had to add `./bin/java_cup` with an absolute path to the CUP library. You will need to
    adjust that path.
 
+## Testing
+
+Each assignment
+
+* **PA2J (Lexer)**
+* **PA3J (Parser)**
+* **PA4J (Semantic Analyzer)**
+* **PA5J (Code Generator)**
+
+includes a `test.sh` (some also a `test-err.sh`) script that verify the compiler implementation
+against the reference implementation.
+
+The `examples-ok` directory contains additional Cool programs based on the course example code. I've
+added useful `main()` methods so the example code is actually running.
+
 ## Assignment Numbers
 
 The assignment numbers are offset by 1. Even though the assignment number might be 4 on the website
@@ -24,8 +39,6 @@ and or PDF, the directory will be named "PA5J".
 ## TODO
 
 * try fresh checkout of the project and follow instructions to see if they work
-  * do I only want to include my files? but then I cannot guarantee that I am able to run this in
-  the future
 * make repo public
 
 ## Limitations and improvements

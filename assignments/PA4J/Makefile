@@ -15,11 +15,9 @@ CSRC = \
 	IdTable.java \
 	IntTable.java \
 	ListNode.java \
-	Cgen.java \
 	Semant.java \
 	StringTable.java \
 	SymbolTable.java \
-	SymtabExample.java \
 	TokenConstants.java \
 	TreeNode.java \
 	ClassTable.java \
@@ -51,11 +49,6 @@ cgen: Makefile ${CLS}
 	echo 'java -classpath ${CLASSPATH} Cgen $$*' >> cgen
 	chmod 755 cgen
 
-symtab-example: Makefile ${CLS}
-	@rm -f symtab-example
-	echo '#!/bin/sh' >> symtab-example
-	echo 'java -classpath ${CLASSPATH} SymtabExample $$*' >> symtab-example
-	chmod 755 symtab-example
 
 semant: Makefile ${CLS}
 	@rm -f semant
@@ -93,10 +86,10 @@ ${HSRC}:
 	-ln -s ${CLASSDIR}/include/PA${ASSN}/$@ $@
 
 submit-clean: ${OUTPUT}
-	-rm -f *.s core ${CLS} *~ ${CGEN} parser cgen semant lexer symtab-example
+	-rm -f *.s core ${CLS} *~ ${CGEN} parser cgen semant lexer
 
 clean :
-	-rm -f ${OUTPUT} *.s core ${CLS} ${CGEN} parser cgen semant lexer symtab-example *~
+	-rm -f ${OUTPUT} *.s core ${CLS} ${CGEN} parser cgen semant lexer *~
 
 
 

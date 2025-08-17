@@ -1,14 +1,31 @@
-*/*
-# assembly files
+# Exclude everything at the top level except what we specifically want
+/*
+!/assignments/
+!/examples-ok/
+!README.md
+!LICENSE
+!.gitignore
+
+# Assembly files
 *.s
 *.tar.gz
+
+# Exclude everything in assignments except specific directories
+assignments/*
 !assignments/PA2J/
 !assignments/PA3J/
 !assignments/PA4J/
 !assignments/PA5J/
-/assignments/PA2J/*.class
-/assignments/PA3J/*.class
-/assignments/PA3J/*.output
-/assignments/PA4J/*.class
-/assignments/PA5J/*.class
-/examples-ok/*
+
+# Exclude generated files in assignments
+assignments/*/lexer
+assignments/*/parser
+assignments/*/semant
+assignments/*/cgen
+assignments/*/mycoolc
+*.class
+*.output
+
+# Include Cool programs and docs in examples-ok, exclude generated files
+examples-ok/*.s
+examples-ok/*.class
