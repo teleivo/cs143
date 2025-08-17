@@ -1,2 +1,3 @@
 #!/bin/sh
-java -classpath ../../lib:.:`dirname $0` Parser $*
+SCRIPT_DIR=`dirname $0`
+java -classpath ../../lib:$SCRIPT_DIR:$SCRIPT_DIR Parser $*

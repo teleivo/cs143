@@ -11,9 +11,9 @@ fi
 
 for file in "$TEST_DIR"/*.cl; do
     if [ -f "$file" ]; then
-        # Run the command and capture only stderr, then sort line number (numerically)
-        output1=$(../../bin/lexer "$file" | ../../bin/parser | ../../bin/semant 2>&1 1>/dev/null | sort -t: -k2n)
-        output2=$(../../bin/lexer "$file" | ../../bin/parser | ./semant 2>&1 1>/dev/null | sort -t: -k2n)
+        # Run the command and capture only stderr, remove line numbers, then sort
+        output1=$(../../bin/lexer "$file" | ../../bin/parser "$file" | ../../bin/semant "$file" 2>&1 1>/dev/null | sed 's/:[0-9]*:/:/' | sort)
+        output2=$(../PA2J/lexer "$file" | ../PA3J/parser "$file" | ./semant "$file" 2>&1 1>/dev/null | sed 's/:[0-9]*:/:/' | sort)
 
         if ! diff <(echo "$output1") <(echo "$output2"); then
             echo "Testing $file: failed"

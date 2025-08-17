@@ -16,7 +16,7 @@ for file in "$TEST_DIR"/*.cl; do
         echo -n "Testing $file: "
 
         # Run reference implementation with error handling
-        if ! reference=$(../../bin/lexer "$file" | ../../bin/parser | ../../bin/semant 2>/tmp/ref_error.txt); then
+        if ! reference=$(../../bin/lexer "$file" | ../../bin/parser "$file" | ../../bin/semant "$file" 2>/tmp/ref_error.txt); then
             echo "FAILED (reference implementation)"
             echo "Reference errors:"
             cat /tmp/ref_error.txt
@@ -25,7 +25,7 @@ for file in "$TEST_DIR"/*.cl; do
         fi
 
         # Run my implementation with error handling
-        if ! my=$(../PA2J/lexer "$file" | ../PA3J/parser | ./semant 2>/tmp/my_error.txt); then
+        if ! my=$(../PA2J/lexer "$file" | ../PA3J/parser "$file" | ./semant "$file" 2>/tmp/my_error.txt); then
             echo "FAILED (my implementation)"
             echo "My implementation errors:"
             cat /tmp/my_error.txt

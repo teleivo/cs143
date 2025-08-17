@@ -21,14 +21,13 @@ CSRC = \
 	SymtabExample.java \
 	TokenConstants.java \
 	TreeNode.java \
-	ClassTable.java \
 	Utilities.java
 
 TSRC= mycoolc cool-tree.aps
-CGEN= 
+CGEN=
 LIBS= lexer parser semant
 CFIL= ${CSRC} ${CGEN} CgenClassTable.java CgenNode.java CgenSupport.java TreeConstants.java cool-tree.java IntSymbol.java StringSymbol.java BoolConst.java
-HFIL= 
+HFIL=
 LSRC= Makefile
 CLS= ${CFIL:.java=.class}
 OUTPUT= example.output
@@ -42,7 +41,7 @@ source: ${SRC} ${TSRC} ${LSRC} ${LIBS} ${CSRC}
 
 ${OUTPUT}: cgen
 	@rm -f ${OUTPUT}
-	./mycoolc  example.cl >example.output 2>&1 
+	./mycoolc  example.cl >example.output 2>&1
 
 cgen: Makefile ${CLS}
 	@rm -f cgen
@@ -76,7 +75,7 @@ ${HSRC}:
 	-ln -s ${CLASSDIR}/include/PA${ASSN}/$@ $@
 
 clean :
-	-rm -f ${OUTPUT} *.s core ${CLS} ${CGEN} parser cgen semant lexer symtab-example *~ 
+	-rm -f ${OUTPUT} *.s core ${CLS} ${CGEN} parser cgen semant lexer symtab-example *~
 
 
 

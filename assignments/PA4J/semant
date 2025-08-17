@@ -1,2 +1,3 @@
 #!/bin/sh
-java -classpath ../../lib:.:/usr/java/lib/rt.jar:`dirname $0` Semant $*
+SCRIPT_DIR=`dirname $0`
+java -classpath ../../lib:$SCRIPT_DIR:/usr/java/lib/rt.jar:$SCRIPT_DIR Semant $*

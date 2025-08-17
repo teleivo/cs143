@@ -6,4 +6,4 @@
 # ../../bin/lexer $* | ../../bin/parser $* | ../../bin/semant $* | ./cgen $*
 
 # uncomment to only use my implementations
-../PA2J/lexer  $* | ../PA3J/parser $* | ../PA4J/semant $* | ./cgen
+../PA2J/lexer  $* | ../PA3J/parser $* | ../PA4J/semant $* | ./cgen $*

@@ -70,7 +70,7 @@ class Main inherits A {
 		}
 	};
 	let_nested_2() : Object {
-		let a : Int <- 1 in let b : Int <- 2 in let c : Int <- 3 in let d : Int <- 4 in let e : Int <- 5 in let f : Int <- 6 in let g : Int <- 7 in let h : Int <- 8 in let i : Int <- 9 in let j : Int <- 10 in { -- TODO bug
+		let a : Int <- 1 in let b : Int <- 2 in let c : Int <- 3 in let d : Int <- 4 in let e : Int <- 5 in let f : Int <- 6 in let g : Int <- 7 in let h : Int <- 8 in let i : Int <- 9 in let j : Int <- 10 in {
 			out_int(a);
 			out_string("\n");
 			out_int(b);

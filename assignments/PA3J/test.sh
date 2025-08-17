@@ -12,7 +12,7 @@ fi
 for file in "$TEST_DIR"/*.cl; do
     if [ -f "$file" ]; then
         # ignore line numbers: lines that contain only whitespace followed by # and a number
-        if ! diff <(../../bin/lexer "$file" | ../../bin/parser | grep -v '^\s*#[0-9]\+$') <(./myparser "$file" | grep -v '^\s*#[0-9]\+$'); then
+        if ! diff <(../../bin/lexer "$file" | ../../bin/parser "$file" | grep -v '^\s*#[0-9]\+$') <(../PA2J/lexer "$file" | ./parser "$file" | grep -v '^\s*#[0-9]\+$'); then
             echo "Testing $file: failed"
             failed=1
         else

@@ -12,7 +12,7 @@ To try yourself
 
 * build my parser using `make parser`
 * run it
-  * against some cool code using `./myparser code.cl`
+  * against some Cool code using `./myparser code.cl`
   * against my test samples `./test.sh`
   * against all the course examples `./test.sh ../../examples`
 

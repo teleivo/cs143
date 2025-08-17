@@ -322,29 +322,12 @@ class program extends Program {
   /**
    * This method is the entry point to the semantic checker. You will need to complete it in
    * programming assignment 4.
-   *
-   * <p>Your checker should do the following two things:
-   *
-   * <ol>
-   *   <li>Check that the program is semantically correct
-   *   <li>Decorate the abstract syntax tree with type information by setting the type field in each
-   *       Expression node. (see tree.h)
-   * </ol>
-   *
-   * <p>You are free to first do (1) and make sure you catch all semantic errors. Part (2) can be
-   * done in a second stage when you want to test the complete compiler.
    */
   @Override
   public void semant() {
-    /* ClassTable constructor may do some semantic analysis */
-    ClassTable classTable = new ClassTable(classes);
-
-    /* some semantic analysis code may go here */
-
-    if (classTable.errors()) {
-      System.err.println("Compilation halted due to static semantic errors.");
-      System.exit(1);
-    }
+    // Removed the code in here so I could remove the PA5J ClassTable.java which was interfering
+    // with the PA4J one. Semantic analysis is completed in ../PA4J/Semant.java with
+    // ../PA4J/ClassTable.java. PA5J uses the PA4J stages output.
   }
 
   /**

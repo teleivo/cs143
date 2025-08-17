@@ -41,13 +41,9 @@ To then try yourself
 
 ## TODO
 
-* up to now I ran my generator with the reference tool chain: run only my implementation in the `my`
-case in test.sh
-  * why is my semantic analysis not working with my parser/lexer?
 * does Cool support closures?
 * how to get the example programs to do something useful? They did not even have a main before I
 added one
-* fix main README.md todos
 
 ## Limitations and improvements
 

@@ -19,7 +19,7 @@ for file in "$TEST_DIR"/*.cl; do
         my_asm="${file}-my.s"
 
         # Compile with reference implementation
-        if ! ../../bin/lexer "$file" | ../../bin/parser | ../../bin/semant | ../../bin/cgen > "$ref_asm" 2> /tmp/ref_compile_error.txt; then
+        if ! ../../bin/lexer "$file" | ../../bin/parser "$file" | ../../bin/semant "$file" | ../../bin/cgen "$file" > "$ref_asm" 2> /tmp/ref_compile_error.txt; then
             echo "FAILED (reference compilation)"
             echo "Compilation errors:"
             cat /tmp/ref_compile_error.txt
@@ -28,7 +28,7 @@ for file in "$TEST_DIR"/*.cl; do
         fi
 
         # Compile with my implementation
-        if ! ../PA2J/lexer "$file" | ../PA3J/parser | ../PA4J/semant | ./cgen > "$my_asm" 2> /tmp/my_compile_error.txt; then
+        if ! ../PA2J/lexer "$file" | ../PA3J/parser "$file" | ../PA4J/semant "$file" | ./cgen "$file" > "$my_asm" 2> /tmp/my_compile_error.txt; then
             echo "FAILED (my compilation)"
             echo "Compilation errors:"
             cat /tmp/my_compile_error.txt

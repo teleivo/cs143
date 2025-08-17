@@ -1,2 +1,3 @@
 #!/bin/sh
-java -classpath ../../lib:.:/usr/java/lib/rt.jar Cgen $*
+SCRIPT_DIR=`dirname $0`
+java -classpath ../../lib:$SCRIPT_DIR:/usr/java/lib/rt.jar:$SCRIPT_DIR Cgen $*

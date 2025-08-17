@@ -27,6 +27,6 @@ unterminated strings only until the end of the line to adhere to
 resume lexing after the end of the string. The end of the string is defined as either
 1. the beginning of the next line if an unescaped newline occurs at any point in the string;
 
-and not match too greadily. On the other hand I need to detect that there is no next character
+and not match too greedily. On the other hand I need to detect that there is no next character
 anymore inside of my `lexString` method. I do not know of such a possibility. This might also be why
 the reference implementation behaves in the same way :shrug:.

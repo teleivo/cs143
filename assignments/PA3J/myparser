@@ -5,4 +5,4 @@
 # ../../bin/lexer  $* | ./parser $*
 
 # uncomment to only use my implementations
-../PA2J/lexer $* | ./parser $
+../PA2J/lexer $* | ./parser $*
