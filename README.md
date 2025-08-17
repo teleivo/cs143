@@ -25,11 +25,12 @@ Each assignment
 * **PA4J (Semantic Analyzer)**
 * **PA5J (Code Generator)**
 
-includes a `test.sh` (some also a `test-err.sh`) script that verify the compiler implementation
+includes a `test.sh` (some also a `test-err.sh`) script that verify my compiler implementation
 against the reference implementation.
 
 The `examples-ok` directory contains additional Cool programs based on the course example code. I've
-added useful `main()` methods so the example code is actually running.
+added `main()` methods so the example code is actually running and can automatically be tested using
+`test.sh`.
 
 ## Assignment Numbers
 
@@ -43,8 +44,10 @@ and or PDF, the directory will be named "PA5J".
 
 ## Limitations and improvements
 
-I took the course suggestion to heart 😅 There is definitely lots of room for improvement!
+I took the course suggestion to heart 😅
 > don't spend much time on optimizing the amount of passes as there is plenty of logic to get right
+
+There is definitely lots of room for improvement!
 
 Some improvements I or you :yum: could make
 * use proper generics in the CS143 template code like `Enumeration`
