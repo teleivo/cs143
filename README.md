@@ -15,6 +15,7 @@ Try solving them yourself before you peek :grin:.
    https://github.com/afterthat97/cool-compiler helped me in setting up the missing dependencies.
 4. I also had to add `./bin/java_cup` with an absolute path to the CUP library. You will need to
    adjust that path.
+5. Ensure you have at least Java 17 installed if you want to run my code.
 
 ## Testing
 
@@ -25,8 +26,13 @@ Each assignment
 * **PA4J (Semantic Analyzer)**
 * **PA5J (Code Generator)**
 
-includes a `test.sh` (some also a `test-err.sh`) script that verify my compiler implementation
-against the reference implementation.
+includes
+
+* a `README` which guides you through the assignments template code
+* a `Makefile` to build the assignment
+* my `README.md` with instructions and notes specific to my solution
+* my `test.sh` (some also a `test-err.sh`) script that verifies my implementation against the
+reference implementation
 
 The `examples-ok` directory contains additional Cool programs based on the course example code. I've
 added `main()` methods so the example code is actually running and can automatically be tested using
@@ -35,12 +41,7 @@ added `main()` methods so the example code is actually running and can automatic
 ## Assignment Numbers
 
 The assignment numbers are offset by 1. Even though the assignment number might be 4 on the website
-and or PDF, the directory will be named "PA5J".
-
-## TODO
-
-* try fresh checkout of the project and follow instructions to see if they work
-* make repo public
+and or PDF, the directory will be named "PA5J". I have no clue why that is.
 
 ## Limitations and improvements
 
@@ -55,6 +56,7 @@ Some improvements I or you :yum: could make
 pushing/incrementing every single item
 * store local variables in registers before using the stack (register allocation)
 * only store local variables that are actually used (dead code elimination)
+* ...
 
 ## License
 
